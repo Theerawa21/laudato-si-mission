@@ -7,7 +7,7 @@
   <meta name="description" content="Laudato Si’ Mission เกมผจญภัยเพื่อการศึกษา สำรวจโรงเรียนและลงมือดูแลบ้านส่วนรวม">
   <meta property="og:title" content="Laudato Si’ Mission">
   <meta property="og:description" content="เรียนรู้ ดูแล และลงมือเปลี่ยนโลก เริ่มจากโรงเรียนของเรา">
-  <meta property="og:image" content="/assets/og-garden.jpg">
+  <meta property="og:image" content="/assets/og-creative-space.jpg">
   <meta property="og:type" content="website">
   <title>Laudato Si' Mission</title>
   <style>
@@ -523,6 +523,24 @@
       pointer-events: auto;
     }
 
+    .creative-scene {
+      position: fixed;
+      z-index: 63;
+      inset: 0;
+      overflow: hidden;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      background: #dce7cb;
+      transition: opacity .3s ease, visibility .3s ease;
+    }
+
+    .creative-scene.show {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     .classroom-world {
       position: absolute;
       inset: 0;
@@ -566,6 +584,21 @@
       inset: 0;
       pointer-events: none;
       background: radial-gradient(circle at 58% 48%, transparent 48%, rgba(20, 55, 25, .16) 100%);
+    }
+
+    .creative-world {
+      position: absolute;
+      inset: 0;
+      background: url("/assets/creative-space.jpg") center center / cover no-repeat;
+      transform: scale(1.01);
+    }
+
+    .creative-world::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 58% 50%, transparent 46%, rgba(40, 54, 29, .14) 100%);
     }
 
     .classroom-back {
@@ -821,6 +854,64 @@
     .solution-feedback.success { color: #1e7d41; }
     .solution-submit[disabled] { cursor: not-allowed; opacity: .5; box-shadow: none; }
 
+    .creator-medal-icon svg {
+      width: 25px;
+      height: 25px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .creator-dialog {
+      position: absolute;
+      z-index: 6;
+      left: 62%;
+      top: 53%;
+      width: min(900px, calc(100vw - 74px));
+      padding: 23px 26px 21px;
+      border: 2px solid rgba(255,255,255,.88);
+      border-radius: 28px;
+      color: var(--ink);
+      background: rgba(248, 252, 244, .9);
+      box-shadow: 0 28px 80px rgba(42, 53, 27, .34);
+      transform: translate(-50%, -50%);
+      backdrop-filter: blur(18px) saturate(1.08);
+    }
+
+    .creator-dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+    .creator-dialog h2 { margin: 0; color: var(--green-900); font-size: clamp(22px, 2.15vw, 31px); line-height: 1.25; letter-spacing: -.5px; }
+    .creator-progress { flex: 0 0 auto; margin-top: 3px; padding: 7px 11px; border: 1px solid rgba(73,111,74,.22); border-radius: 12px; color: #4c6750; background: rgba(255,255,255,.74); font-size: 10px; font-weight: 900; }
+    .creator-lead { margin: 7px 0 13px; color: #52695a; font-size: 11px; line-height: 1.5; }
+    .creator-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
+    .creator-field { min-width: 0; }
+    .creator-field.full { grid-column: 1 / -1; }
+    .creator-field label { display: block; margin: 0 0 5px; color: var(--green-900); font-size: 11px; font-weight: 900; }
+
+    .creator-field input,
+    .creator-field textarea {
+      width: 100%;
+      border: 1px solid rgba(47,99,51,.34);
+      border-radius: 13px;
+      color: var(--ink);
+      background: rgba(255,255,255,.88);
+      box-shadow: inset 0 2px 7px rgba(31,66,31,.05);
+      font: 12px/1.45 "Noto Sans Thai", "Leelawadee UI", "Tahoma", sans-serif;
+    }
+
+    .creator-field input { height: 42px; padding: 0 12px; }
+    .creator-field textarea { min-height: 61px; max-height: 92px; padding: 9px 12px; resize: vertical; }
+    .creator-field input:focus,
+    .creator-field textarea:focus { outline: 3px solid rgba(78,157,74,.2); border-color: #4e9d4a; }
+    .creator-field input:disabled,
+    .creator-field textarea:disabled { color: #49614f; background: rgba(236,244,231,.8); opacity: 1; }
+    .creator-footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 13px; }
+    .creator-feedback { min-height: 20px; color: var(--muted); font-size: 10px; font-weight: 800; }
+    .creator-feedback.success { color: #1e7d41; }
+    .creator-submit { min-width: 175px; }
+    .creator-submit[disabled] { cursor: not-allowed; opacity: .5; box-shadow: none; }
+
     @keyframes classroomPulse {
       0%, 100% { transform: rotate(-45deg) translate(0,0) scale(1); }
       50% { transform: rotate(-45deg) translate(-3px,-3px) scale(1.06); }
@@ -880,6 +971,7 @@
       .cafeteria-marker.overflow { right: 11%; top: 38%; }
       .cafeteria-marker.mixed { right: 14%; bottom: 32%; }
       .solution-dialog { left: 50%; width: calc(100vw - 30px); padding: 20px; }
+      .creator-dialog { left: 50%; width: calc(100vw - 30px); padding: 20px; }
       .mission-dialog { top: auto; bottom: 16px; padding: 18px; transform: translateX(-50%); }
       .mission-dialog h2 { font-size: 20px; }
       .mission-question { font-size: 14px; }
@@ -900,6 +992,7 @@
       .classroom-world { background-position: center center; }
       .cafeteria-world { background-size: auto 70%; background-position: 75% top; background-repeat: no-repeat; }
       .garden-world { background-size: auto 69%; background-position: 44% top; background-repeat: no-repeat; }
+      .creative-world { background-size: auto 67%; background-position: 47% top; background-repeat: no-repeat; }
       .classroom-back span { display: none; }
       .classroom-back { width: 44px; padding: 0; justify-content: center; }
       .wake-medal span:last-child { display: none; }
@@ -934,6 +1027,18 @@
       .solution-footer { margin-top: 8px; }
       .solution-feedback { font-size: 9px; }
       .solution-submit { min-height: 36px; padding: 0 12px; font-size: 11px; }
+      .creator-dialog { top: auto; bottom: 10px; width: calc(100vw - 20px); padding: 13px; border-radius: 20px; transform: translateX(-50%); }
+      .creator-dialog-head { gap: 8px; }
+      .creator-dialog h2 { font-size: 16px; line-height: 1.22; }
+      .creator-progress { padding: 5px 7px; font-size: 8px; white-space: nowrap; }
+      .creator-lead { display: none; }
+      .creator-form-grid { gap: 7px 8px; margin-top: 9px; }
+      .creator-field label { margin-bottom: 3px; font-size: 8px; }
+      .creator-field input { height: 34px; padding: 0 8px; font-size: 10px; }
+      .creator-field textarea { min-height: 47px; max-height: 56px; padding: 6px 8px; font-size: 9px; }
+      .creator-footer { gap: 8px; margin-top: 8px; }
+      .creator-feedback { font-size: 8px; }
+      .creator-submit { min-width: 128px; min-height: 36px; padding: 0 10px; font-size: 10px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -957,6 +1062,7 @@
     <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2S5.5 9.2 5.5 14.2a6.5 6.5 0 0 0 13 0C18.5 9.2 12 2 12 2Z"/><path d="M9 16.5c.8 1.2 1.8 1.8 3 1.8"/></symbol>
     <symbol id="i-target" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><circle cx="11" cy="13" r="3"/><path d="m13.5 10.5 6-6M16 4.5h3.5V8"/></symbol>
     <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16.5 8"/></symbol>
+    <symbol id="i-brush-leaf" viewBox="0 0 24 24"><path d="m4 20 5.5-1.5L20 8l-4-4L5.5 14.5 4 20Z"/><path d="m12.5 7.5 4 4M4 20l3-3"/><path d="M14.5 18.5c2.7-4.7 5.1-5.9 7-6-1.1 4.1-3.2 6.2-7 6Z"/><path d="M14.5 18.5c1.4-1.7 2.9-3 4.8-4.1"/></symbol>
   </svg>
 
   <main class="game-shell">
@@ -1125,6 +1231,55 @@
     </article>
   </section>
 
+  <section class="creative-scene" id="creativeScene" aria-hidden="true" aria-labelledby="creatorMissionTitle">
+    <div class="creative-world" role="img" aria-label="ลานสร้างสรรค์ผลงานในโรงเรียนมัธยมปลายแบบ isometric มีบอร์ดนิทรรศการไม้ โต๊ะคราฟต์ และนักเรียนผู้เล่น"></div>
+    <button class="classroom-back" id="creativeBack" type="button">
+      <svg aria-hidden="true"><use href="#i-arrow-left"></use></svg><span>กลับสู่แผนที่โรงเรียน</span>
+    </button>
+
+    <section class="classroom-hud" aria-label="คะแนนและเหรียญ Creator">
+      <div class="classroom-score">Score: <b id="creatorScore">160</b></div>
+      <div class="wake-medal"><span class="wake-medal-icon creator-medal-icon"><svg aria-hidden="true"><use href="#i-brush-leaf"></use></svg></span><span>Creator</span></div>
+    </section>
+
+    <article class="creator-dialog" aria-live="polite">
+      <header class="creator-dialog-head">
+        <h2 id="creatorMissionTitle">Mission 4: Create &amp; Launch - ผลงานรักษ์โลกของฉัน</h2>
+        <span class="creator-progress" id="creatorProgress">กรอกแล้ว 0/5 ช่อง</span>
+      </header>
+      <p class="creator-lead">เปลี่ยนแนวคิดให้เป็นผลงานที่สื่อสารปัญหา ทางออก และชวนทุกคนร่วมดูแลบ้านส่วนรวม</p>
+
+      <form id="creatorForm">
+        <div class="creator-form-grid">
+          <div class="creator-field full">
+            <label for="creatorTitle">ชื่อผลงาน</label>
+            <input id="creatorTitle" name="title" maxlength="80" placeholder="เช่น โรงเรียนเติมน้ำ ลดขวดพลาสติก" autocomplete="off">
+          </div>
+          <div class="creator-field">
+            <label for="creatorProblem">ปัญหาที่ต้องการแก้ไข</label>
+            <textarea id="creatorProblem" name="problem" maxlength="240" placeholder="ปัญหานี้เกิดขึ้นที่ไหน และส่งผลอย่างไร"></textarea>
+          </div>
+          <div class="creator-field">
+            <label for="creatorSolution">แนวทางแก้ไข</label>
+            <textarea id="creatorSolution" name="solution" maxlength="240" placeholder="เราจะลงมือทำอะไรให้เกิดขึ้นจริง"></textarea>
+          </div>
+          <div class="creator-field">
+            <label for="creatorCampaign">ข้อความรณรงค์</label>
+            <textarea id="creatorCampaign" name="campaign" maxlength="160" placeholder="ประโยคสั้น ๆ ที่ชวนเพื่อนร่วมเปลี่ยนแปลง"></textarea>
+          </div>
+          <div class="creator-field">
+            <label for="creatorLaudato">แนวคิด Laudato Si'</label>
+            <textarea id="creatorLaudato" name="laudato" maxlength="240" placeholder="ผลงานนี้เชื่อมโยงกับการดูแลบ้านส่วนรวมอย่างไร"></textarea>
+          </div>
+        </div>
+        <footer class="creator-footer">
+          <div class="creator-feedback" id="creatorFeedback" role="status">กรอกข้อมูลให้ครบทั้ง 5 ช่องเพื่อเปิดตัวผลงาน</div>
+          <button class="primary-button creator-submit" id="creatorSubmit" type="submit" disabled>เปิดตัวผลงาน</button>
+        </footer>
+      </form>
+    </article>
+  </section>
+
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
   <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
     <header class="drawer-head">
@@ -1143,7 +1298,7 @@
       school: { number: 1, title: "อาคารเรียน", subtitle: "Wake Up Call", points: 100, description: "สำรวจพฤติกรรมในห้องเรียนที่ช่วยประหยัดพลังงานและลดการใช้ทรัพยากรโดยไม่จำเป็น", action: "สำรวจห้องเรียน" },
       canteen: { number: 2, title: "โรงอาหาร", subtitle: "Eco Detective", points: 120, description: "สืบหาเบาะแสปัญหาขยะในโรงอาหาร เรียนรู้การลดพลาสติก ลดเศษอาหาร และคัดแยกให้ถูกประเภท", action: "เริ่มสืบหาเบาะแส" },
       garden: { number: 3, title: "สวนสีเขียว", subtitle: "Mission Possible", points: 150, description: "ออกแบบทางแก้ที่เหมาะสม เป็นไปได้ และเชื่อมโยงกับการดูแลบ้านส่วนรวมตาม Laudato Si'", action: "ออกแบบทางออกของฉัน" },
-      court: { number: 4, title: "ลานกิจกรรม", subtitle: "Create & Share", points: 180, description: "ออกแบบกิจกรรมเล็ก ๆ เพื่อชวนเพื่อนทั้งโรงเรียนร่วมดูแลบ้านส่วนรวมของเรา", action: "สร้างกิจกรรม" },
+      court: { number: 4, title: "ลานกิจกรรม", subtitle: "Create & Launch", points: 180, description: "สร้างผลงานรักษ์โลก ตั้งแต่ชื่อ ปัญหา ทางออก ไปจนถึงข้อความรณรงค์ที่เชื่อมโยงกับ Laudato Si'", action: "สร้างและเปิดตัวผลงาน" },
       community: { number: 5, title: "ประตูสู่ชุมชน", subtitle: "Real Life Quest", points: 250, description: "นำสิ่งที่เรียนรู้จากโรงเรียนไปทำภารกิจจริงร่วมกับครอบครัวและชุมชนใกล้ตัว", action: "ออกสู่ชุมชน" }
     };
 
@@ -1223,10 +1378,13 @@
           gardenScore: Number(saved.gardenScore || 110),
           gardenIdea: typeof saved.gardenIdea === "string" ? saved.gardenIdea : "",
           gardenActions: Array.isArray(saved.gardenActions) ? saved.gardenActions : [],
-          gardenSubmitted: Boolean(saved.gardenSubmitted)
+          gardenSubmitted: Boolean(saved.gardenSubmitted),
+          creatorScore: Number(saved.creatorScore || 160),
+          creatorDraft: saved.creatorDraft && typeof saved.creatorDraft === "object" ? saved.creatorDraft : { title: "", problem: "", solution: "", campaign: "", laudato: "" },
+          creatorLaunched: Boolean(saved.creatorLaunched)
         };
       } catch (error) {
-        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [], gardenScore: 110, gardenIdea: "", gardenActions: [], gardenSubmitted: false };
+        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [], gardenScore: 110, gardenIdea: "", gardenActions: [], gardenSubmitted: false, creatorScore: 160, creatorDraft: { title: "", problem: "", solution: "", campaign: "", laudato: "" }, creatorLaunched: false };
       }
     }
 
@@ -1323,6 +1481,10 @@
         openGarden();
         return;
       }
+      if (id === "court") {
+        openCreative();
+        return;
+      }
       openDrawer(zoneContent(id));
     }
 
@@ -1369,6 +1531,19 @@
     function closeGarden() {
       document.querySelector("#gardenScene").classList.remove("show");
       document.querySelector("#gardenScene").setAttribute("aria-hidden", "true");
+    }
+
+    function openCreative() {
+      closeDrawer();
+      renderCreative();
+      document.querySelector("#creativeScene").classList.add("show");
+      document.querySelector("#creativeScene").setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => (state.creatorLaunched ? document.querySelector("#creativeBack") : document.querySelector("#creatorTitle")).focus());
+    }
+
+    function closeCreative() {
+      document.querySelector("#creativeScene").classList.remove("show");
+      document.querySelector("#creativeScene").setAttribute("aria-hidden", "true");
     }
 
     function selectCafeteriaIssue(id) {
@@ -1555,6 +1730,55 @@
       showToast("Mission Possible: +40 คะแนน");
     }
 
+    function creatorFields() {
+      return ["title", "problem", "solution", "campaign", "laudato"];
+    }
+
+    function renderCreative() {
+      const launched = state.creatorLaunched;
+      const fields = creatorFields();
+      fields.forEach((key) => {
+        const control = document.querySelector(`#creatorForm [name="${key}"]`);
+        const value = typeof state.creatorDraft[key] === "string" ? state.creatorDraft[key] : "";
+        if (control.value !== value) control.value = value;
+        control.disabled = launched;
+      });
+      const filled = fields.filter((key) => String(state.creatorDraft[key] || "").trim().length > 0).length;
+      document.querySelector("#creatorProgress").textContent = `กรอกแล้ว ${filled}/5 ช่อง`;
+      document.querySelector("#creatorScore").textContent = state.creatorScore;
+      const ready = fields.every((key) => String(state.creatorDraft[key] || "").trim().length >= (key === "title" ? 2 : 8));
+      const submit = document.querySelector("#creatorSubmit");
+      submit.disabled = launched || !ready;
+      submit.textContent = launched ? "เปิดตัวผลงานแล้ว ✓" : "เปิดตัวผลงาน";
+      const feedback = document.querySelector("#creatorFeedback");
+      feedback.className = launched ? "creator-feedback success" : "creator-feedback";
+      feedback.textContent = launched
+        ? "ผลงานรักษ์โลกของคุณพร้อมสร้างแรงบันดาลใจแล้ว +50 คะแนน"
+        : ready
+          ? "ข้อมูลครบแล้ว ตรวจทานอีกครั้งก่อนเปิดตัวผลงาน"
+          : "กรอกข้อมูลให้ครบทั้ง 5 ช่อง โดยอธิบายแต่ละแนวคิดอย่างน้อย 8 ตัวอักษร";
+    }
+
+    function updateCreatorDraft(event) {
+      if (state.creatorLaunched) return;
+      state.creatorDraft[event.target.name] = event.target.value;
+      saveState();
+      renderCreative();
+    }
+
+    function submitCreator(event) {
+      event.preventDefault();
+      const ready = creatorFields().every((key) => String(state.creatorDraft[key] || "").trim().length >= (key === "title" ? 2 : 8));
+      if (state.creatorLaunched || !ready) return;
+      state.creatorLaunched = true;
+      state.creatorScore += 50;
+      state.points = Math.min(MAX_POINTS, state.points + 50);
+      saveState();
+      renderProgress();
+      renderCreative();
+      showToast("Create & Launch: +50 คะแนน");
+    }
+
     function completeZone(id) {
       if (state.completed.includes(id)) return;
       const zone = zones[id];
@@ -1616,6 +1840,9 @@
       saveState();
       renderGarden();
     });
+    document.querySelector("#creativeBack").addEventListener("click", closeCreative);
+    document.querySelector("#creatorForm").addEventListener("input", updateCreatorDraft);
+    document.querySelector("#creatorForm").addEventListener("submit", submitCreator);
     document.querySelector("#soundButton").addEventListener("click", (event) => {
       const pressed = event.currentTarget.getAttribute("aria-pressed") === "true";
       event.currentTarget.setAttribute("aria-pressed", String(!pressed));
@@ -1624,7 +1851,9 @@
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && document.querySelector("#cafeteriaScene").classList.contains("show")) {
+      if (event.key === "Escape" && document.querySelector("#creativeScene").classList.contains("show")) {
+        closeCreative();
+      } else if (event.key === "Escape" && document.querySelector("#cafeteriaScene").classList.contains("show")) {
         closeCafeteria();
       } else if (event.key === "Escape" && document.querySelector("#gardenScene").classList.contains("show")) {
         closeGarden();
@@ -1639,6 +1868,7 @@
     renderClassroom();
     renderCafeteria();
     renderGarden();
+    renderCreative();
   </script>
 </body>
 </html>
