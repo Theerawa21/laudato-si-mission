@@ -2920,7 +2920,7 @@
       </div>
       <div>
         <div class="start-visual" aria-hidden="true"><div class="mini-school"></div></div>
-        <form class="start-form" id="playerForm">
+        <form class="start-form" id="playerForm" novalidate>
           <div class="form-grid">
             <div class="field">
               <label for="playerName">ชื่อ - นามสกุล</label>
@@ -3545,6 +3545,23 @@
       openMission(nearest.index, true);
     }
 
+    function firstPlayableMissionIndex() {
+      const index = missions.findIndex((mission, missionIndex) => isUnlocked(missionIndex) && !state.completed.includes(mission.id));
+      return index === -1 ? missions.length - 1 : index;
+    }
+
+    function openFirstMissionAfterEntry() {
+      const index = firstPlayableMissionIndex();
+      state.pos = { ...missionPositions[index] };
+      render();
+      setTimeout(() => openMission(index, true), 220);
+    }
+
+    function focusMissingPlayerField() {
+      const missing = [$("#playerName"), $("#playerRoom"), $("#playerNo")].find((field) => !field.value.trim());
+      if (missing) missing.focus();
+    }
+
     function renderNotebook() {
       const score = totalScore();
       $("#notebookScore").textContent = score;
@@ -3711,11 +3728,12 @@
       state.player.alias = $("#playerAlias").value.trim() || "ผู้พิทักษ์บ้านส่วนรวม";
       if (!state.player.name || !state.player.room || !state.player.number) {
         showToast("กรอกชื่อ ห้อง และเลขที่ให้ครบ");
+        focusMissingPlayerField();
         return;
       }
       $("#startScreen").classList.remove("show");
-      showToast("เริ่มภารกิจ 3 มิติได้เลย");
-      render();
+      showToast("เข้าสู่โรงเรียนแล้ว เปิดภารกิจแรกได้เลย");
+      openFirstMissionAfterEntry();
     });
 
     $("#openMissionBtn").addEventListener("click", openNearestMission);
