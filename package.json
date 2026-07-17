@@ -1,0 +1,15 @@
+{
+  "name": "laudato-si-3d-mission",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local web server and file database for Laudato Si' 3D Mission.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "check": "node scripts/check.js",
+    "test": "npm run check"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

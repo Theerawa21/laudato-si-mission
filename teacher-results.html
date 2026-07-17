@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ฐานข้อมูลผลคะแนน Laudato Si' 3D Mission</title>
+  <style>
+    :root {
+      --bg: #f4f8f5;
+      --surface: #ffffff;
+      --line: #d9e7dd;
+      --text: #17251e;
+      --muted: #66756b;
+      --green: #1e7a4a;
+      --amber: #d99922;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Noto Sans Thai", "Segoe UI", Tahoma, sans-serif;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px clamp(14px, 3vw, 28px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--green);
+      font-size: clamp(22px, 3vw, 34px);
+      line-height: 1.15;
+    }
+
+    p {
+      margin: 5px 0 0;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    button,
+    a.button {
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--green);
+      padding: 9px 12px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .primary {
+      border-color: var(--green);
+      background: var(--green);
+      color: #fff;
+    }
+
+    main {
+      width: min(1180px, calc(100vw - 28px));
+      margin: 22px auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric,
+    .table-wrap {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 14px 34px rgba(23, 37, 30, 0.08);
+    }
+
+    .metric {
+      padding: 14px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .metric b {
+      display: block;
+      margin-top: 4px;
+      font-size: 28px;
+      color: var(--green);
+    }
+
+    .table-wrap {
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 920px;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: #eef7f0;
+      color: var(--green);
+      font-size: 12px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .empty {
+      padding: 28px;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .level {
+      display: inline-flex;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: rgba(217, 153, 34, 0.15);
+      color: #8a5a08;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 760px) {
+      header {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .actions {
+        justify-content: stretch;
+      }
+
+      .actions > * {
+        flex: 1 1 auto;
+        text-align: center;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>ฐานข้อมูลผลคะแนน</h1>
+      <p>Laudato Si' 3D Mission: ภารกิจพิทักษ์บ้านส่วนรวม</p>
+    </div>
+    <div class="actions">
+      <button class="primary" id="refreshBtn" type="button">รีเฟรช</button>
+      <a class="button" href="/api/export.csv">ดาวน์โหลด CSV</a>
+      <a class="button" href="/">กลับหน้าเกม</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="metrics">
+      <div class="metric"><span>จำนวนรายการ</span><b id="countMetric">0</b></div>
+      <div class="metric"><span>คะแนนเฉลี่ย</span><b id="avgMetric">0</b></div>
+      <div class="metric"><span>คะแนนสูงสุด</span><b id="maxMetric">0</b></div>
+      <div class="metric"><span>ส่งล่าสุด</span><b id="latestMetric">-</b></div>
+    </section>
+
+    <section class="table-wrap" id="tableWrap">
+      <div class="empty">กำลังโหลดข้อมูล...</div>
+    </section>
+  </main>
+
+  <script>
+    const tableWrap = document.querySelector("#tableWrap");
+    const countMetric = document.querySelector("#countMetric");
+    const avgMetric = document.querySelector("#avgMetric");
+    const maxMetric = document.querySelector("#maxMetric");
+    const latestMetric = document.querySelector("#latestMetric");
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function missionScore(row, id) {
+      return Number((row.missionScores || {})[id] || 0);
+    }
+
+    function renderRows(rows) {
+      if (!rows.length) {
+        tableWrap.innerHTML = '<div class="empty">ยังไม่มีข้อมูลคะแนน กดส่งคะแนนจากหน้าเกมก่อน</div>';
+        return;
+      }
+
+      tableWrap.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>เวลา</th>
+              <th>นักเรียน</th>
+              <th>ห้อง/เลขที่</th>
+              <th>คะแนน</th>
+              <th>ระดับ</th>
+              <th>เหรียญ</th>
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+              <th>4</th>
+              <th>5</th>
+              <th>6</th>
+              <th>คำมั่นสัญญา</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((row) => {
+              const player = row.player || {};
+              const promise = row.answers?.real?.promise || "";
+              return `
+                <tr>
+                  <td>${escapeHtml(new Date(row.receivedAt).toLocaleString("th-TH"))}</td>
+                  <td><b>${escapeHtml(player.name || "-")}</b><br>${escapeHtml(player.alias || "")}</td>
+                  <td>${escapeHtml(player.room || "-")} / ${escapeHtml(player.number || "-")}</td>
+                  <td><b>${escapeHtml(row.score || 0)}</b>/${escapeHtml(row.maxScore || 250)}</td>
+                  <td><span class="level">${escapeHtml(row.level || "-")}</span></td>
+                  <td>${escapeHtml((row.medals || []).join(", ") || "-")}</td>
+                  <td>${missionScore(row, "wake")}</td>
+                  <td>${missionScore(row, "detective")}</td>
+                  <td>${missionScore(row, "solution")}</td>
+                  <td>${missionScore(row, "create")}</td>
+                  <td>${missionScore(row, "pitch")}</td>
+                  <td>${missionScore(row, "real")}</td>
+                  <td>${escapeHtml(promise || "-")}</td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    async function loadRows() {
+      try {
+        const response = await fetch("/api/submissions", { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        const rows = data.submissions || [];
+        const scores = rows.map((row) => Number(row.score || 0));
+        countMetric.textContent = rows.length;
+        avgMetric.textContent = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+        maxMetric.textContent = scores.length ? Math.max(...scores) : 0;
+        latestMetric.textContent = rows[0] ? new Date(rows[0].receivedAt).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }) : "-";
+        renderRows(rows);
+      } catch (error) {
+        tableWrap.innerHTML = `<div class="empty">โหลดฐานข้อมูลไม่สำเร็จ: ${escapeHtml(error.message)}</div>`;
+      }
+    }
+
+    document.querySelector("#refreshBtn").addEventListener("click", loadRows);
+    loadRows();
+  </script>
+</body>
+</html>
