@@ -21,6 +21,8 @@ const classroomWebp = fs.readFileSync(path.join(ROOT, "assets", "classroom.webp"
 const classroomOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-classroom.jpg")).toString("base64");
 const cafeteriaJpg = fs.readFileSync(path.join(ROOT, "assets", "cafeteria.jpg")).toString("base64");
 const cafeteriaOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-cafeteria.jpg")).toString("base64");
+const gardenJpg = fs.readFileSync(path.join(ROOT, "assets", "garden.jpg")).toString("base64");
+const gardenOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-garden.jpg")).toString("base64");
 
 const runtime = String.raw`const INDEX_HTML = __INDEX_HTML__;
 const TEACHER_RESULTS_HTML = __TEACHER_RESULTS_HTML__;
@@ -30,6 +32,8 @@ const CLASSROOM_WEBP = __CLASSROOM_WEBP__;
 const CLASSROOM_OG_JPG = __CLASSROOM_OG_JPG__;
 const CAFETERIA_JPG = __CAFETERIA_JPG__;
 const CAFETERIA_OG_JPG = __CAFETERIA_OG_JPG__;
+const GARDEN_JPG = __GARDEN_JPG__;
+const GARDEN_OG_JPG = __GARDEN_OG_JPG__;
 
 const CSV_HEADERS = [
   "id",
@@ -312,6 +316,14 @@ export default {
       return imageResponse(CAFETERIA_OG_JPG, "image/jpeg");
     }
 
+    if (url.pathname === "/assets/garden.jpg") {
+      return imageResponse(GARDEN_JPG, "image/jpeg");
+    }
+
+    if (url.pathname === "/assets/og-garden.jpg") {
+      return imageResponse(GARDEN_OG_JPG, "image/jpeg");
+    }
+
     return new Response("Not found", {
       status: 404,
       headers: { "Content-Type": "text/plain; charset=utf-8" }
@@ -328,7 +340,9 @@ const worker = runtime
   .replace("__CLASSROOM_WEBP__", JSON.stringify(classroomWebp))
   .replace("__CLASSROOM_OG_JPG__", JSON.stringify(classroomOgJpg))
   .replace("__CAFETERIA_JPG__", JSON.stringify(cafeteriaJpg))
-  .replace("__CAFETERIA_OG_JPG__", JSON.stringify(cafeteriaOgJpg));
+  .replace("__CAFETERIA_OG_JPG__", JSON.stringify(cafeteriaOgJpg))
+  .replace("__GARDEN_JPG__", JSON.stringify(gardenJpg))
+  .replace("__GARDEN_OG_JPG__", JSON.stringify(gardenOgJpg));
 
 writeText(path.join(OUT_DIR, "index.js"), worker);
 console.log("Built dist/server/index.js");

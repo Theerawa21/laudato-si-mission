@@ -7,7 +7,7 @@
   <meta name="description" content="Laudato Si’ Mission เกมผจญภัยเพื่อการศึกษา สำรวจโรงเรียนและลงมือดูแลบ้านส่วนรวม">
   <meta property="og:title" content="Laudato Si’ Mission">
   <meta property="og:description" content="เรียนรู้ ดูแล และลงมือเปลี่ยนโลก เริ่มจากโรงเรียนของเรา">
-  <meta property="og:image" content="/assets/og-cafeteria.jpg">
+  <meta property="og:image" content="/assets/og-garden.jpg">
   <meta property="og:type" content="website">
   <title>Laudato Si' Mission</title>
   <style>
@@ -505,6 +505,24 @@
       pointer-events: auto;
     }
 
+    .garden-scene {
+      position: fixed;
+      z-index: 62;
+      inset: 0;
+      overflow: hidden;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      background: #cfe3b6;
+      transition: opacity .3s ease, visibility .3s ease;
+    }
+
+    .garden-scene.show {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     .classroom-world {
       position: absolute;
       inset: 0;
@@ -533,6 +551,21 @@
       inset: 0;
       pointer-events: none;
       background: radial-gradient(circle at 48% 48%, transparent 48%, rgba(37, 51, 33, .12) 100%);
+    }
+
+    .garden-world {
+      position: absolute;
+      inset: 0;
+      background: url("/assets/garden.jpg") center center / cover no-repeat;
+      transform: scale(1.01);
+    }
+
+    .garden-world::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 58% 48%, transparent 48%, rgba(20, 55, 25, .16) 100%);
     }
 
     .classroom-back {
@@ -710,6 +743,84 @@
       stroke-linejoin: round;
     }
 
+    .solution-dialog {
+      position: absolute;
+      z-index: 6;
+      left: 61%;
+      top: 52%;
+      width: min(880px, calc(100vw - 76px));
+      padding: 24px 28px 22px;
+      border: 2px solid rgba(255,255,255,.84);
+      border-radius: 28px;
+      color: var(--ink);
+      background: rgba(248, 252, 244, .88);
+      box-shadow: 0 28px 80px rgba(23, 54, 21, .34);
+      transform: translate(-50%, -50%);
+      backdrop-filter: blur(18px) saturate(1.08);
+    }
+
+    .solution-dialog h2 { margin: 0; color: var(--green-900); font-size: clamp(23px, 2.25vw, 32px); letter-spacing: -.55px; text-align: center; }
+    .solution-lead { max-width: 680px; margin: 8px auto 15px; color: #52695a; font-size: 12px; line-height: 1.55; text-align: center; }
+    .solution-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+    .solution-choice {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid rgba(68,127,66,.28);
+      border-radius: 17px;
+      color: var(--green-900);
+      background: rgba(255,255,255,.78);
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+
+    .solution-choice:hover { transform: translateY(-2px); border-color: #75ad68; }
+    .solution-choice[aria-pressed="true"] { border-color: #4e9d4a; background: #e5f5dc; box-shadow: 0 0 0 3px rgba(80,155,72,.13); }
+    .solution-choice-icon { width: 43px; height: 43px; display: grid; place-items: center; border-radius: 14px; color: var(--green-800); background: #dff1d2; }
+    .solution-choice:nth-child(3) .solution-choice-icon { color: #247da3; background: #dff3fb; }
+    .solution-choice svg { width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .solution-input-wrap { margin-top: 13px; }
+    .solution-input-label { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; color: var(--green-900); font-size: 12px; font-weight: 900; }
+    .solution-input-label span:last-child { color: var(--muted); font-size: 10px; }
+
+    .solution-textarea {
+      width: 100%;
+      min-height: 104px;
+      resize: vertical;
+      padding: 13px 15px;
+      border: 1px solid rgba(47,99,51,.38);
+      border-radius: 15px;
+      color: var(--ink);
+      background: rgba(255,255,255,.86);
+      box-shadow: inset 0 2px 7px rgba(31,66,31,.06);
+      font: 14px/1.55 "Noto Sans Thai", "Leelawadee UI", "Tahoma", sans-serif;
+    }
+
+    .solution-textarea:focus { outline: 3px solid rgba(78,157,74,.2); border-color: #4e9d4a; }
+    .rubric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 13px; }
+    .rubric-card { min-width: 0; padding: 10px; border: 1px solid rgba(73,111,74,.2); border-radius: 14px; background: rgba(255,255,255,.7); }
+    .rubric-card-head { display: flex; align-items: center; gap: 8px; min-height: 34px; }
+    .rubric-icon { width: 32px; height: 32px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 11px; color: #267c43; background: #dff1d8; }
+    .rubric-card:nth-child(2) .rubric-icon { color: #9a6800; background: #fff0bd; }
+    .rubric-card:nth-child(3) .rubric-icon { color: #7251a8; background: #eadfff; }
+    .rubric-card:nth-child(4) .rubric-icon { color: #247da3; background: #dff3fb; }
+    .rubric-icon svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .rubric-card strong { min-width: 0; font-size: 10px; line-height: 1.3; }
+    .rubric-dots { display: flex; gap: 4px; margin: 8px 0 0 40px; }
+    .rubric-dot { width: 7px; height: 7px; border-radius: 50%; background: #c8cfca; transition: background .2s ease, transform .2s ease; }
+    .rubric-dot.on { background: #51a151; transform: scale(1.13); }
+    .solution-footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 14px; }
+    .solution-feedback { min-height: 20px; color: var(--muted); font-size: 11px; font-weight: 800; }
+    .solution-feedback.success { color: #1e7d41; }
+    .solution-submit[disabled] { cursor: not-allowed; opacity: .5; box-shadow: none; }
+
     @keyframes classroomPulse {
       0%, 100% { transform: rotate(-45deg) translate(0,0) scale(1); }
       50% { transform: rotate(-45deg) translate(-3px,-3px) scale(1.06); }
@@ -768,6 +879,7 @@
       .cafeteria-marker.cup { left: 12%; top: 22%; }
       .cafeteria-marker.overflow { right: 11%; top: 38%; }
       .cafeteria-marker.mixed { right: 14%; bottom: 32%; }
+      .solution-dialog { left: 50%; width: calc(100vw - 30px); padding: 20px; }
       .mission-dialog { top: auto; bottom: 16px; padding: 18px; transform: translateX(-50%); }
       .mission-dialog h2 { font-size: 20px; }
       .mission-question { font-size: 14px; }
@@ -787,6 +899,7 @@
       .drawer-body { padding: 18px 18px 100px; }
       .classroom-world { background-position: center center; }
       .cafeteria-world { background-size: auto 70%; background-position: 75% top; background-repeat: no-repeat; }
+      .garden-world { background-size: auto 69%; background-position: 44% top; background-repeat: no-repeat; }
       .classroom-back span { display: none; }
       .classroom-back { width: 44px; padding: 0; justify-content: center; }
       .wake-medal span:last-child { display: none; }
@@ -801,6 +914,26 @@
       .cafeteria-marker.cup { left: 8%; top: 20%; }
       .cafeteria-marker.overflow { right: 7%; top: 38%; }
       .cafeteria-marker.mixed { right: 9%; bottom: 42%; }
+      .solution-dialog { top: auto; bottom: 10px; width: calc(100vw - 20px); padding: 14px; border-radius: 20px; transform: translateX(-50%); }
+      .solution-dialog h2 { font-size: 18px; line-height: 1.25; text-align: left; }
+      .solution-lead { display: none; }
+      .solution-choices { gap: 6px; margin-top: 10px; }
+      .solution-choice { min-height: 54px; display: grid; grid-template-columns: 27px 1fr; gap: 5px; padding: 7px; border-radius: 12px; font-size: 9px; text-align: left; }
+      .solution-choice-icon { width: 27px; height: 27px; border-radius: 9px; }
+      .solution-choice svg { width: 17px; height: 17px; }
+      .solution-input-wrap { margin-top: 9px; }
+      .solution-textarea { min-height: 70px; max-height: 82px; padding: 9px 10px; font-size: 12px; }
+      .rubric-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 8px; }
+      .rubric-card { padding: 6px 8px; border-radius: 11px; }
+      .rubric-card-head { min-height: 26px; gap: 6px; }
+      .rubric-icon { width: 26px; height: 26px; border-radius: 8px; }
+      .rubric-icon svg { width: 16px; height: 16px; }
+      .rubric-card strong { font-size: 8px; }
+      .rubric-dots { gap: 3px; margin: 4px 0 0 32px; }
+      .rubric-dot { width: 5px; height: 5px; }
+      .solution-footer { margin-top: 8px; }
+      .solution-feedback { font-size: 9px; }
+      .solution-submit { min-height: 36px; padding: 0 12px; font-size: 11px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -819,6 +952,11 @@
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
     <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6M9 12h11"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
+    <symbol id="i-recycle" viewBox="0 0 24 24"><path d="m9 4 3-2 3 5M15 7h3.5l2 3.5M20.5 10.5l-1 3-5.5-.5M14 18l-2 3-4-1M8 20l-2-3 3-4M4 14l-1-3.5L5.5 7M5.5 7 9 8"/></symbol>
+    <symbol id="i-tree" viewBox="0 0 24 24"><path d="M12 22v-7M8 22h8M12 15C7 15 5 12.5 6.5 9.5c-2-3.5.8-6.5 4-5.7C12 1 16 2 16.2 5c3.3.2 4.2 4.7 1.3 6.1C17 13.5 15 15 12 15Z"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2S5.5 9.2 5.5 14.2a6.5 6.5 0 0 0 13 0C18.5 9.2 12 2 12 2Z"/><path d="M9 16.5c.8 1.2 1.8 1.8 3 1.8"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><circle cx="11" cy="13" r="3"/><path d="m13.5 10.5 6-6M16 4.5h3.5V8"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16.5 8"/></symbol>
   </svg>
 
   <main class="game-shell">
@@ -947,6 +1085,46 @@
     </article>
   </section>
 
+  <section class="garden-scene" id="gardenScene" aria-hidden="true" aria-labelledby="gardenMissionTitle">
+    <div class="garden-world" role="img" aria-label="สวนโรงเรียนมัธยมปลายแบบ isometric มีต้นไม้ใหญ่ แปลงผัก และระบบเก็บน้ำฝน"></div>
+    <button class="classroom-back" id="gardenBack" type="button">
+      <svg aria-hidden="true"><use href="#i-arrow-left"></use></svg><span>กลับสู่แผนที่โรงเรียน</span>
+    </button>
+
+    <section class="classroom-hud" aria-label="คะแนนและเหรียญนักออกแบบโลกใหม่">
+      <div class="classroom-score">Score: <b id="gardenScore">110</b></div>
+      <div class="wake-medal"><span class="wake-medal-icon"><svg aria-hidden="true" style="width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2"><use href="#i-leaf"></use></svg></span><span>นักออกแบบโลกใหม่</span></div>
+    </section>
+
+    <article class="solution-dialog" aria-live="polite">
+      <h2 id="gardenMissionTitle">Mission 3: Mission Possible - ทางออกของฉัน</h2>
+      <p class="solution-lead">เลือกแนวทางที่คุณอยากลงมือทำ แล้วอธิบายวิธีเปลี่ยนโรงเรียนให้ดูแลบ้านส่วนรวมได้ดียิ่งขึ้น</p>
+
+      <div class="solution-choices" aria-label="เลือกแนวทางแก้ไข">
+        <button class="solution-choice" type="button" data-garden-action="plastic" aria-pressed="false"><span class="solution-choice-icon"><svg aria-hidden="true"><use href="#i-recycle"></use></svg></span><span>ลดพลาสติก</span></button>
+        <button class="solution-choice" type="button" data-garden-action="trees" aria-pressed="false"><span class="solution-choice-icon"><svg aria-hidden="true"><use href="#i-tree"></use></svg></span><span>ปลูกต้นไม้</span></button>
+        <button class="solution-choice" type="button" data-garden-action="water" aria-pressed="false"><span class="solution-choice-icon"><svg aria-hidden="true"><use href="#i-drop"></use></svg></span><span>ประหยัดน้ำ</span></button>
+      </div>
+
+      <div class="solution-input-wrap">
+        <label class="solution-input-label" for="gardenIdea"><span>อธิบายแนวคิดหรือทางออกของคุณ</span><span id="gardenCharacterCount">0 / 500</span></label>
+        <textarea class="solution-textarea" id="gardenIdea" maxlength="500" placeholder="เช่น ตั้งจุดเติมน้ำดื่ม ลดแก้วพลาสติก และชวนเพื่อนดูแลต้นไม้ด้วยน้ำฝน..."></textarea>
+      </div>
+
+      <section class="rubric-grid" aria-label="เกณฑ์การให้คะแนนแนวทาง">
+        <div class="rubric-card" data-rubric="fit"><div class="rubric-card-head"><span class="rubric-icon"><svg aria-hidden="true"><use href="#i-target"></use></svg></span><strong>ความเหมาะสม</strong></div><div class="rubric-dots" aria-label="0 จาก 5"></div></div>
+        <div class="rubric-card" data-rubric="feasible"><div class="rubric-card-head"><span class="rubric-icon"><svg aria-hidden="true"><use href="#i-check-circle"></use></svg></span><strong>ความเป็นไปได้</strong></div><div class="rubric-dots" aria-label="0 จาก 5"></div></div>
+        <div class="rubric-card" data-rubric="creative"><div class="rubric-card-head"><span class="rubric-icon"><svg aria-hidden="true"><use href="#i-star"></use></svg></span><strong>ความคิดสร้างสรรค์</strong></div><div class="rubric-dots" aria-label="0 จาก 5"></div></div>
+        <div class="rubric-card" data-rubric="laudato"><div class="rubric-card-head"><span class="rubric-icon"><svg aria-hidden="true"><use href="#i-leaf"></use></svg></span><strong>ความเชื่อมโยงกับ Laudato Si'</strong></div><div class="rubric-dots" aria-label="0 จาก 5"></div></div>
+      </section>
+
+      <footer class="solution-footer">
+        <div class="solution-feedback" id="gardenFeedback" role="status">เลือกอย่างน้อย 1 แนวทาง และเขียนคำอธิบาย 20 ตัวอักษรขึ้นไป</div>
+        <button class="primary-button solution-submit" id="gardenSubmit" type="button" disabled>ส่งแนวคิดของฉัน</button>
+      </footer>
+    </article>
+  </section>
+
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
   <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
     <header class="drawer-head">
@@ -964,7 +1142,7 @@
     const zones = {
       school: { number: 1, title: "อาคารเรียน", subtitle: "Wake Up Call", points: 100, description: "สำรวจพฤติกรรมในห้องเรียนที่ช่วยประหยัดพลังงานและลดการใช้ทรัพยากรโดยไม่จำเป็น", action: "สำรวจห้องเรียน" },
       canteen: { number: 2, title: "โรงอาหาร", subtitle: "Eco Detective", points: 120, description: "สืบหาเบาะแสปัญหาขยะในโรงอาหาร เรียนรู้การลดพลาสติก ลดเศษอาหาร และคัดแยกให้ถูกประเภท", action: "เริ่มสืบหาเบาะแส" },
-      garden: { number: 3, title: "สวนสีเขียว", subtitle: "Plant for Tomorrow", points: 150, description: "ช่วยเพื่อนปลูกต้นไม้ วางแผนรดน้ำ และบันทึกการเติบโตเพื่อดูแลพื้นที่สีเขียวของโรงเรียน", action: "ปลูกต้นไม้เลย" },
+      garden: { number: 3, title: "สวนสีเขียว", subtitle: "Mission Possible", points: 150, description: "ออกแบบทางแก้ที่เหมาะสม เป็นไปได้ และเชื่อมโยงกับการดูแลบ้านส่วนรวมตาม Laudato Si'", action: "ออกแบบทางออกของฉัน" },
       court: { number: 4, title: "ลานกิจกรรม", subtitle: "Create & Share", points: 180, description: "ออกแบบกิจกรรมเล็ก ๆ เพื่อชวนเพื่อนทั้งโรงเรียนร่วมดูแลบ้านส่วนรวมของเรา", action: "สร้างกิจกรรม" },
       community: { number: 5, title: "ประตูสู่ชุมชน", subtitle: "Real Life Quest", points: 250, description: "นำสิ่งที่เรียนรู้จากโรงเรียนไปทำภารกิจจริงร่วมกับครอบครัวและชุมชนใกล้ตัว", action: "ออกสู่ชุมชน" }
     };
@@ -1041,10 +1219,14 @@
           classroomScore: Number(saved.classroomScore || 20),
           resolvedIssues: Array.isArray(saved.resolvedIssues) ? saved.resolvedIssues : [],
           cafeteriaScore: Number(saved.cafeteriaScore || 60),
-          resolvedCafeteriaIssues: Array.isArray(saved.resolvedCafeteriaIssues) ? saved.resolvedCafeteriaIssues : []
+          resolvedCafeteriaIssues: Array.isArray(saved.resolvedCafeteriaIssues) ? saved.resolvedCafeteriaIssues : [],
+          gardenScore: Number(saved.gardenScore || 110),
+          gardenIdea: typeof saved.gardenIdea === "string" ? saved.gardenIdea : "",
+          gardenActions: Array.isArray(saved.gardenActions) ? saved.gardenActions : [],
+          gardenSubmitted: Boolean(saved.gardenSubmitted)
         };
       } catch (error) {
-        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [] };
+        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [], gardenScore: 110, gardenIdea: "", gardenActions: [], gardenSubmitted: false };
       }
     }
 
@@ -1137,6 +1319,10 @@
         openCafeteria();
         return;
       }
+      if (id === "garden") {
+        openGarden();
+        return;
+      }
       openDrawer(zoneContent(id));
     }
 
@@ -1170,6 +1356,19 @@
     function closeCafeteria() {
       document.querySelector("#cafeteriaScene").classList.remove("show");
       document.querySelector("#cafeteriaScene").setAttribute("aria-hidden", "true");
+    }
+
+    function openGarden() {
+      closeDrawer();
+      renderGarden();
+      document.querySelector("#gardenScene").classList.add("show");
+      document.querySelector("#gardenScene").setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => (state.gardenSubmitted ? document.querySelector("#gardenBack") : document.querySelector("#gardenIdea")).focus());
+    }
+
+    function closeGarden() {
+      document.querySelector("#gardenScene").classList.remove("show");
+      document.querySelector("#gardenScene").setAttribute("aria-hidden", "true");
     }
 
     function selectCafeteriaIssue(id) {
@@ -1294,6 +1493,68 @@
       showToast("Eco Detective: +20 คะแนน");
     }
 
+    function gardenRubricValues() {
+      const length = state.gardenIdea.trim().length;
+      const actions = state.gardenActions.length;
+      return {
+        fit: actions ? Math.min(5, 2 + actions) : 0,
+        feasible: length >= 20 ? Math.min(5, 1 + Math.floor(length / 35)) : 0,
+        creative: actions >= 2 ? Math.min(5, 2 + actions) : (length >= 70 ? 3 : actions ? 2 : 0),
+        laudato: actions ? Math.min(5, actions + (length >= 40 ? 1 : 0) + (length >= 100 ? 1 : 0)) : 0
+      };
+    }
+
+    function renderGarden() {
+      const submitted = state.gardenSubmitted;
+      const textarea = document.querySelector("#gardenIdea");
+      if (textarea.value !== state.gardenIdea) textarea.value = state.gardenIdea;
+      textarea.disabled = submitted;
+      document.querySelector("#gardenScore").textContent = state.gardenScore;
+      document.querySelector("#gardenCharacterCount").textContent = `${state.gardenIdea.length} / 500`;
+      document.querySelectorAll("[data-garden-action]").forEach((button) => {
+        const selected = state.gardenActions.includes(button.dataset.gardenAction);
+        button.setAttribute("aria-pressed", String(selected));
+        button.disabled = submitted;
+      });
+      const rubric = gardenRubricValues();
+      Object.entries(rubric).forEach(([key, value]) => {
+        const dots = document.querySelector(`[data-rubric="${key}"] .rubric-dots`);
+        dots.setAttribute("aria-label", `${value} จาก 5`);
+        dots.innerHTML = Array.from({ length: 5 }, (_, index) => `<span class="rubric-dot ${index < value ? "on" : ""}"></span>`).join("");
+      });
+      const ready = state.gardenActions.length > 0 && state.gardenIdea.trim().length >= 20;
+      const submit = document.querySelector("#gardenSubmit");
+      submit.disabled = submitted || !ready;
+      submit.textContent = submitted ? "ส่งแนวคิดแล้ว ✓" : "ส่งแนวคิดของฉัน";
+      const feedback = document.querySelector("#gardenFeedback");
+      feedback.className = submitted ? "solution-feedback success" : "solution-feedback";
+      feedback.textContent = submitted
+        ? "แนวคิดของคุณพร้อมเปลี่ยนโรงเรียนให้ดีขึ้นแล้ว +40 คะแนน"
+        : ready
+          ? "แนวคิดพร้อมส่งแล้ว ตรวจทานอีกครั้งก่อนยืนยัน"
+          : "เลือกอย่างน้อย 1 แนวทาง และเขียนคำอธิบาย 20 ตัวอักษรขึ้นไป";
+    }
+
+    function toggleGardenAction(action) {
+      if (state.gardenSubmitted) return;
+      state.gardenActions = state.gardenActions.includes(action)
+        ? state.gardenActions.filter((item) => item !== action)
+        : [...state.gardenActions, action];
+      saveState();
+      renderGarden();
+    }
+
+    function submitGardenIdea() {
+      if (state.gardenSubmitted || state.gardenActions.length === 0 || state.gardenIdea.trim().length < 20) return;
+      state.gardenSubmitted = true;
+      state.gardenScore += 40;
+      state.points = Math.min(MAX_POINTS, state.points + 40);
+      saveState();
+      renderProgress();
+      renderGarden();
+      showToast("Mission Possible: +40 คะแนน");
+    }
+
     function completeZone(id) {
       if (state.completed.includes(id)) return;
       const zone = zones[id];
@@ -1337,6 +1598,9 @@
 
       const cafeteriaAnswer = event.target.closest("[data-cafeteria-answer]");
       if (cafeteriaAnswer) chooseCafeteriaAnswer(Number(cafeteriaAnswer.dataset.cafeteriaAnswer));
+
+      const gardenAction = event.target.closest("[data-garden-action]");
+      if (gardenAction) toggleGardenAction(gardenAction.dataset.gardenAction);
     });
 
     document.querySelector("#closeDrawer").addEventListener("click", closeDrawer);
@@ -1345,6 +1609,13 @@
     document.querySelector("#classroomSubmit").addEventListener("click", submitClassroomAnswer);
     document.querySelector("#cafeteriaBack").addEventListener("click", closeCafeteria);
     document.querySelector("#cafeteriaSubmit").addEventListener("click", submitCafeteriaAnswer);
+    document.querySelector("#gardenBack").addEventListener("click", closeGarden);
+    document.querySelector("#gardenSubmit").addEventListener("click", submitGardenIdea);
+    document.querySelector("#gardenIdea").addEventListener("input", (event) => {
+      state.gardenIdea = event.target.value;
+      saveState();
+      renderGarden();
+    });
     document.querySelector("#soundButton").addEventListener("click", (event) => {
       const pressed = event.currentTarget.getAttribute("aria-pressed") === "true";
       event.currentTarget.setAttribute("aria-pressed", String(!pressed));
@@ -1355,6 +1626,8 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && document.querySelector("#cafeteriaScene").classList.contains("show")) {
         closeCafeteria();
+      } else if (event.key === "Escape" && document.querySelector("#gardenScene").classList.contains("show")) {
+        closeGarden();
       } else if (event.key === "Escape" && document.querySelector("#classroomScene").classList.contains("show")) {
         closeClassroom();
       } else if (event.key === "Escape") {
@@ -1365,6 +1638,7 @@
     renderProgress();
     renderClassroom();
     renderCafeteria();
+    renderGarden();
   </script>
 </body>
 </html>
