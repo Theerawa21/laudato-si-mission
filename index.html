@@ -3,4527 +3,774 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f5a37">
+  <meta name="description" content="Laudato Si’ Mission เกมผจญภัยเพื่อการศึกษา สำรวจโรงเรียนและลงมือดูแลบ้านส่วนรวม">
+  <meta property="og:title" content="Laudato Si’ Mission">
+  <meta property="og:description" content="เรียนรู้ ดูแล และลงมือเปลี่ยนโลก เริ่มจากโรงเรียนของเรา">
+  <meta property="og:image" content="/assets/og.jpg">
+  <meta property="og:type" content="website">
   <title>Laudato Si' Mission</title>
   <style>
     :root {
-      --bg: #edf6ef;
-      --surface: #ffffff;
-      --panel: rgba(255, 255, 255, 0.94);
-      --line: #d8e7dc;
-      --text: #16241d;
-      --muted: #617067;
-      --green: #1e7a4a;
-      --green-dark: #105a34;
-      --sky: #2f86c4;
-      --amber: #e5a72f;
-      --coral: #e6654e;
-      --leaf: #81b866;
-      --earth: #b88455;
-      --shadow: 0 18px 48px rgba(22, 36, 29, 0.14);
-      --radius: 8px;
-      --hud-h: 72px;
-      --px: 240px;
-      --py: 220px;
+      --green-950: #073d27;
+      --green-900: #0b4c2e;
+      --green-800: #0f6339;
+      --green-700: #147a45;
+      --green-500: #4cae64;
+      --green-200: #cbe8ce;
+      --cream: #fbf8ec;
+      --white: #fff;
+      --sky: #dff3ff;
+      --ink: #153524;
+      --muted: #5f7166;
+      --gold: #f3bb34;
+      --gold-dark: #a76b04;
+      --shadow: 0 18px 46px rgba(5, 42, 24, .22);
+      --soft-shadow: 0 9px 25px rgba(9, 53, 31, .16);
+      --radius: 24px;
+      --rail: 176px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html,
-    body {
-      min-height: 100%;
-    }
+    html, body { min-height: 100%; }
 
     body {
       margin: 0;
       overflow: hidden;
-      background:
-        radial-gradient(circle at 18% 12%, rgba(47, 134, 196, 0.2), transparent 32%),
-        linear-gradient(180deg, #dff2ff 0%, #f3fbf4 42%, #edf6ef 100%);
-      color: var(--text);
-      font-family: "Sarabun", "TH Sarabun New", "TH SarabunPSK", "Noto Sans Thai", "Segoe UI", Tahoma, Arial, sans-serif;
-      letter-spacing: 0;
+      color: var(--ink);
+      background: #93c993;
+      font-family: "Noto Sans Thai", "Leelawadee UI", "Tahoma", sans-serif;
     }
 
-    button,
-    input,
-    textarea,
-    select {
-      font: inherit;
-    }
+    button { font: inherit; }
 
-    button {
-      border: 0;
-    }
-
-    .app {
-      height: 100vh;
-      min-height: 620px;
-      display: grid;
-      grid-template-rows: var(--hud-h) minmax(0, 1fr);
-    }
-
-    .hud {
-      position: relative;
-      z-index: 30;
-      display: grid;
-      grid-template-columns: minmax(250px, 1fr) auto minmax(260px, 420px);
-      gap: 14px;
-      align-items: center;
-      padding: 10px 18px;
-      border-bottom: 1px solid rgba(216, 231, 220, 0.86);
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(16px);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      min-width: 0;
-      gap: 12px;
-    }
-
-    .brand-mark {
-      width: 48px;
-      height: 48px;
-      display: grid;
-      place-items: center;
-      flex: 0 0 auto;
-      border-radius: var(--radius);
-      background: linear-gradient(135deg, var(--green), var(--sky));
-      color: #fff;
-      box-shadow: 0 10px 22px rgba(30, 122, 74, 0.22);
-    }
-
-    .brand h1 {
-      margin: 0;
-      color: var(--green-dark);
-      font-size: clamp(18px, 2vw, 27px);
-      line-height: 1.12;
-      font-weight: 900;
-    }
-
-    .brand p {
-      margin: 3px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .hud-center {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .score-pill,
-    .level-pill {
-      min-height: 40px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fff;
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 850;
-      white-space: nowrap;
-    }
-
-    .score-pill b {
-      color: var(--green-dark);
-      font-size: 20px;
-    }
-
-    .hud-actions {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .btn {
-      min-height: 40px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 9px 12px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fff;
-      color: var(--text);
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 850;
-      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      border-color: rgba(30, 122, 74, 0.42);
-      box-shadow: 0 10px 22px rgba(22, 36, 29, 0.09);
-    }
-
-    .btn:focus-visible,
-    .mission-chip:focus-visible,
-    .control-pad button:focus-visible,
-    .hotspot:focus-visible,
-    input:focus-visible,
-    textarea:focus-visible,
-    select:focus-visible {
-      outline: 3px solid rgba(47, 134, 196, 0.35);
-      outline-offset: 2px;
-    }
-
-    .btn-primary {
-      border-color: var(--green);
-      background: var(--green);
-      color: #fff;
-    }
-
-    .btn-danger {
-      border-color: rgba(230, 101, 78, 0.45);
-      color: #9d2f21;
+    button:focus-visible {
+      outline: 4px solid #fff;
+      outline-offset: 3px;
     }
 
     .game-shell {
       position: relative;
-      min-height: 0;
+      min-height: 100svh;
       overflow: hidden;
-    }
-
-    .skyline {
-      position: absolute;
-      inset: 0 0 auto;
-      height: 36%;
-      pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.24), transparent),
-        radial-gradient(circle at 72% 28%, rgba(255, 232, 138, 0.56), transparent 10%);
-    }
-
-    .cloud {
-      position: absolute;
-      width: 160px;
-      height: 44px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.72);
-      filter: blur(0.2px);
-      animation: drift 24s linear infinite;
-    }
-
-    .cloud::before,
-    .cloud::after {
-      content: "";
-      position: absolute;
-      border-radius: 999px;
-      background: inherit;
-    }
-
-    .cloud::before {
-      width: 70px;
-      height: 70px;
-      left: 22px;
-      top: -32px;
-    }
-
-    .cloud::after {
-      width: 92px;
-      height: 72px;
-      right: 24px;
-      top: -38px;
-    }
-
-    .cloud.one {
-      left: 9%;
-      top: 42px;
-    }
-
-    .cloud.two {
-      left: 58%;
-      top: 70px;
-      width: 132px;
-      animation-duration: 31s;
-    }
-
-    @keyframes drift {
-      from { transform: translateX(-24px); }
-      to { transform: translateX(42px); }
-    }
-
-    .scene-wrap {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      padding-top: 18px;
-      perspective: none;
-      perspective-origin: center;
+      isolation: isolate;
+      background: #b8dba9;
     }
 
     .world {
-      position: relative;
-      width: min(1040px, 94vw);
-      height: min(720px, calc(100vh - 116px));
-      min-height: 560px;
-      transform-style: flat;
-      transform: none;
-      transition: transform 0.25s ease;
-    }
-
-    .ground {
       position: absolute;
       inset: 0;
-      border: 1px solid rgba(30, 122, 74, 0.18);
-      border-radius: 18px;
+      background: url("/assets/campus.webp") center center / cover no-repeat;
+      transform: scale(1.015);
+    }
+
+    .world::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
       background:
-        linear-gradient(90deg, rgba(255,255,255,0.24) 1px, transparent 1px) 0 0 / 56px 56px,
-        linear-gradient(0deg, rgba(255,255,255,0.22) 1px, transparent 1px) 0 0 / 56px 56px,
-        linear-gradient(135deg, #bfe1b7, #e9f5d9 52%, #b9dba8);
-      box-shadow:
-        0 44px 70px rgba(53, 73, 55, 0.2),
-        inset 0 0 0 8px rgba(255, 255, 255, 0.28);
+        linear-gradient(90deg, rgba(6, 48, 27, .2), transparent 28%),
+        linear-gradient(180deg, rgba(7, 55, 31, .05), transparent 30%, rgba(7, 41, 25, .16));
     }
 
-    .path {
-      position: absolute;
-      background: rgba(222, 190, 130, 0.76);
-      border: 1px solid rgba(139, 101, 54, 0.18);
-      border-radius: 999px;
-      transform: none;
-      box-shadow: inset 0 0 0 5px rgba(255,255,255,0.18);
-    }
-
-    .path.main {
-      left: 132px;
-      top: 324px;
-      width: 780px;
-      height: 54px;
-    }
-
-    .path.vertical {
-      left: 496px;
-      top: 104px;
-      width: 54px;
-      height: 492px;
-    }
-
-    .path.diagonal {
-      left: 290px;
-      top: 215px;
-      width: 430px;
-      height: 44px;
-      transform: rotateZ(-28deg);
-    }
-
-    .zone {
-      position: absolute;
-      width: 190px;
-      height: 134px;
-      border: 1px solid rgba(22, 36, 29, 0.1);
-      border-radius: 12px;
-      transform-style: flat;
-      transform: none;
-      box-shadow: 0 18px 28px rgba(58, 81, 61, 0.18);
-    }
-
-    .zone::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.2));
-      transform: none;
-      pointer-events: none;
-    }
-
-    .zone::after {
-      content: attr(data-label);
-      position: absolute;
-      left: 12px;
-      bottom: 10px;
-      z-index: 3;
-      max-width: 160px;
-      padding: 5px 8px;
-      border-radius: 7px;
-      background: rgba(255, 255, 255, 0.9);
-      color: var(--green-dark);
-      font-size: 14px;
-      font-weight: 900;
-      transform: none;
-      transform-origin: left bottom;
-      box-shadow: 0 8px 18px rgba(22,36,29,0.12);
-    }
-
-    .zone.classroom {
-      left: 96px;
-      top: 112px;
-      background: linear-gradient(135deg, #ffffff, #dff0fa);
-    }
-
-    .zone.cafeteria {
-      left: 426px;
-      top: 70px;
-      background: linear-gradient(135deg, #fff4ce, #f6d98b);
-    }
-
-    .zone.waste {
-      left: 742px;
-      top: 188px;
-      background: linear-gradient(135deg, #e8edf0, #bad2c7);
-    }
-
-    .zone.garden {
-      left: 112px;
-      top: 476px;
-      background: linear-gradient(135deg, #9bd47c, #5fae60);
-    }
-
-    .zone.stage {
-      left: 430px;
-      top: 514px;
-      background: linear-gradient(135deg, #dce8ff, #91bde3);
-    }
-
-    .zone.gate {
-      left: 750px;
-      top: 454px;
-      background: linear-gradient(135deg, #d4c1aa, #ad8664);
-    }
-
-    .building-wall {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -28px;
-      height: 30px;
-      border-radius: 0 0 12px 12px;
-      background: rgba(102, 122, 98, 0.28);
-      transform-origin: top;
-      display: none;
-      transform: none;
-    }
-
-    .tree,
-    .bin,
-    .lamp,
-    .poster-board {
-      position: absolute;
-      transform-style: flat;
-      transform: none;
-    }
-
-    .tree {
-      width: 42px;
-      height: 68px;
-    }
-
-    .tree::before {
-      content: "";
-      position: absolute;
-      left: 16px;
-      bottom: 0;
-      width: 9px;
-      height: 40px;
-      border-radius: 4px;
-      background: #8a5a2b;
-      transform: none;
-    }
-
-    .tree::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 42px;
-      height: 46px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #9be37e, #2f8d48);
-      box-shadow: 0 0 0 6px rgba(47, 141, 72, 0.12);
-      transform: none;
-    }
-
-    .tree.t1 { left: 52px; top: 388px; }
-    .tree.t2 { left: 286px; top: 448px; }
-    .tree.t3 { left: 875px; top: 340px; }
-    .tree.t4 { left: 650px; top: 612px; }
-
-    .bin {
-      width: 36px;
-      height: 42px;
-      border-radius: 7px 7px 4px 4px;
-      background: linear-gradient(90deg, #2377b8 33%, #f2c044 33% 66%, #2f9d58 66%);
-      border: 1px solid rgba(0,0,0,0.15);
-      box-shadow: 0 12px 18px rgba(22,36,29,0.14);
-    }
-
-    .bin.b1 { left: 812px; top: 340px; }
-    .bin.b2 { left: 692px; top: 256px; }
-
-    .lamp {
-      width: 14px;
-      height: 78px;
-      border-radius: 6px;
-      background: #5f7280;
-      box-shadow: 0 0 18px rgba(255, 218, 93, 0.5);
-    }
-
-    .lamp::before {
-      content: "";
-      position: absolute;
-      left: -12px;
-      top: -18px;
-      width: 38px;
-      height: 22px;
-      border-radius: 18px 18px 6px 6px;
-      background: #ffe287;
-    }
-
-    .lamp.l1 { left: 304px; top: 170px; }
-    .lamp.l2 { left: 545px; top: 340px; }
-
-    .poster-board {
-      width: 92px;
-      height: 64px;
-      border: 5px solid #6e8e62;
-      border-radius: 8px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.86), rgba(232,245,235,0.9)),
-        repeating-linear-gradient(0deg, transparent 0 12px, rgba(30,122,74,0.18) 12px 14px);
-      transform: none;
-    }
-
-    .poster-board.pb1 { left: 484px; top: 450px; }
-
-    .hotspot {
-      position: absolute;
-      width: 46px;
-      height: 46px;
-      z-index: 8;
-      border: 2px solid rgba(255, 255, 255, 0.86);
-      border-radius: 50%;
-      background: var(--coral);
-      color: #fff;
-      cursor: pointer;
-      transform: none;
-      box-shadow: 0 0 0 0 rgba(230, 101, 78, 0.45), 0 10px 20px rgba(22,36,29,0.24);
-      animation: pulse 1.8s ease-in-out infinite;
-      font-weight: 900;
-      font-size: 18px;
-    }
-
-    .hotspot.is-locked {
-      background: #93a49a;
-      animation: none;
-      opacity: 0.72;
-    }
-
-    .hotspot.is-complete {
-      background: var(--green);
-      animation: none;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(230, 101, 78, 0.45), 0 10px 20px rgba(22,36,29,0.24); }
-      70% { box-shadow: 0 0 0 13px rgba(230, 101, 78, 0), 0 10px 20px rgba(22,36,29,0.24); }
-      100% { box-shadow: 0 0 0 0 rgba(230, 101, 78, 0), 0 10px 20px rgba(22,36,29,0.24); }
-    }
-
-    .player {
-      position: absolute;
-      left: var(--px);
-      top: var(--py);
-      width: 54px;
-      height: 78px;
-      z-index: 10;
-      transform-style: flat;
-      transform: translate(-50%, -50%);
-      transition: left 0.12s linear, top 0.12s linear;
-      pointer-events: none;
-    }
-
-    .player-shadow {
-      position: absolute;
-      left: 8px;
-      bottom: 0;
-      width: 40px;
-      height: 12px;
-      border-radius: 50%;
-      background: rgba(22, 36, 29, 0.18);
-      transform: translateY(8px);
-    }
-
-    .head {
-      position: absolute;
-      left: 14px;
-      top: 0;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: #f1c7a3;
-      border: 2px solid #5b3d31;
-    }
-
-    .body {
-      position: absolute;
-      left: 10px;
-      top: 29px;
-      width: 36px;
-      height: 34px;
-      border-radius: 12px 12px 8px 8px;
-      background: linear-gradient(135deg, #ffffff, #2f86c4);
-      border: 2px solid rgba(16, 90, 52, 0.28);
-    }
-
-    .legs {
-      position: absolute;
-      left: 13px;
-      top: 61px;
-      width: 30px;
-      height: 16px;
-      border-radius: 5px;
-      background: linear-gradient(90deg, #23485f 48%, transparent 48% 52%, #23485f 52%);
-    }
-
-    .left-panel,
-    .right-panel {
-      position: absolute;
-      z-index: 22;
-      top: 16px;
-      display: grid;
-      gap: 12px;
-      width: min(340px, calc(100vw - 34px));
-      pointer-events: none;
-    }
-
-    .left-panel {
-      left: 16px;
-    }
-
-    .right-panel {
-      right: 16px;
-    }
-
-    .card,
-    .mission-card,
-    .teacher-panel {
-      border: 1px solid rgba(216, 231, 220, 0.9);
-      border-radius: var(--radius);
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      pointer-events: auto;
-    }
-
-    .card {
-      padding: 14px;
-    }
-
-    .card h2,
-    .teacher-panel h2,
-    .mission-card h2 {
-      margin: 0;
-      color: var(--green-dark);
-      font-size: 18px;
-      line-height: 1.25;
-      font-weight: 900;
-    }
-
-    .card p {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .mission-list {
-      display: grid;
-      gap: 8px;
-      padding: 12px;
-    }
-
-    .mission-chip {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 34px minmax(0, 1fr) auto;
-      align-items: center;
-      gap: 9px;
-      padding: 9px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fff;
-      color: var(--text);
-      cursor: pointer;
-      text-align: left;
-    }
-
-    .mission-chip.is-active {
-      border-color: var(--green);
-      background: #eef8f0;
-    }
-
-    .mission-chip.is-locked {
-      color: #76827b;
-      background: #f6f8f6;
-    }
-
-    .mission-chip b {
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      border-radius: 7px;
-      background: #e4efe6;
-      color: var(--green-dark);
-      font-size: 13px;
-    }
-
-    .mission-chip.is-complete b {
-      background: var(--green);
-      color: #fff;
-    }
-
-    .mission-chip span {
-      min-width: 0;
-      font-weight: 850;
-      font-size: 13px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .mission-chip small {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 750;
-      white-space: nowrap;
-    }
-
-    .progress-bar {
-      height: 9px;
-      margin-top: 10px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: #dbe8df;
-    }
-
-    .progress-bar i {
-      display: block;
-      width: var(--value);
-      height: 100%;
-      background: linear-gradient(90deg, var(--green), var(--sky));
-    }
-
-    .medal-strip {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 10px;
-    }
-
-    .medal {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      min-height: 28px;
-      padding: 5px 8px;
-      border: 1px solid rgba(229, 167, 47, 0.42);
-      border-radius: 7px;
-      background: rgba(229, 167, 47, 0.14);
-      color: #7b5207;
-      font-size: 12px;
-      font-weight: 850;
-    }
-
-    .control-pad {
-      position: absolute;
-      left: 22px;
-      bottom: 22px;
-      z-index: 24;
-      display: grid;
-      grid-template-columns: 48px 48px 48px;
-      grid-template-rows: 48px 48px 48px;
-      gap: 6px;
-      pointer-events: auto;
-    }
-
-    .control-pad button {
-      border: 1px solid rgba(216, 231, 220, 0.95);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.92);
-      color: var(--green-dark);
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(22,36,29,0.12);
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .control-pad .up { grid-column: 2; grid-row: 1; }
-    .control-pad .left { grid-column: 1; grid-row: 2; }
-    .control-pad .center { grid-column: 2; grid-row: 2; background: var(--green); color: #fff; }
-    .control-pad .right { grid-column: 3; grid-row: 2; }
-    .control-pad .down { grid-column: 2; grid-row: 3; }
-
-    .toast {
+    .brand-card {
       position: fixed;
-      left: 50%;
-      bottom: 24px;
-      z-index: 80;
-      width: min(420px, calc(100vw - 32px));
-      padding: 12px 14px;
-      border-radius: var(--radius);
-      background: var(--green-dark);
-      color: #fff;
+      z-index: 20;
+      top: 22px;
+      left: 20px;
+      width: calc(var(--rail) - 8px);
+      padding: 18px 16px 16px;
+      border: 1px solid rgba(255,255,255,.88);
+      border-radius: 28px 28px 18px 18px;
+      color: var(--green-950);
+      background: rgba(255, 252, 239, .96);
       box-shadow: var(--shadow);
-      text-align: center;
-      opacity: 0;
-      transform: translate(-50%, 12px);
-      pointer-events: none;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      font-weight: 800;
+      backdrop-filter: blur(15px);
     }
 
-    .toast.show {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 70;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      background: rgba(13, 30, 20, 0.42);
-      backdrop-filter: blur(8px);
-    }
-
-    .overlay.show {
-      display: flex;
-    }
-
-    .modal {
-      width: min(820px, 96vw);
-      max-height: min(86vh, 760px);
-      overflow: auto;
-      border: 1px solid rgba(216, 231, 220, 0.94);
-      border-radius: var(--radius);
-      background: #fff;
-      box-shadow: 0 28px 70px rgba(13, 30, 20, 0.28);
-    }
-
-    .modal-head {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      display: flex;
-      align-items: start;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 18px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255,255,255,0.96);
-    }
-
-    .modal-head h2 {
-      margin: 0;
-      color: var(--green-dark);
-      font-size: 24px;
-      line-height: 1.2;
-      font-weight: 950;
-    }
-
-    .modal-head p {
-      margin: 5px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .modal-body {
-      padding: 18px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .field {
-      display: grid;
-      gap: 6px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    .field label {
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    .field input,
-    .field textarea,
-    .field select {
-      width: 100%;
-      min-height: 44px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fff;
-      color: var(--text);
-      padding: 10px 11px;
-      font-size: 15px;
-    }
-
-    .field textarea {
-      min-height: 92px;
-      resize: vertical;
-    }
-
-    .question {
-      padding: 12px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fbfdfb;
-    }
-
-    .question label {
-      display: block;
-      margin-bottom: 7px;
-      color: var(--green-dark);
-      font-size: 15px;
-      font-weight: 900;
-    }
-
-    .quiz-game {
-      grid-column: 1 / -1;
-      display: grid;
-      gap: 12px;
-      padding: 14px;
-      border: 2px solid rgba(47, 134, 196, 0.22);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(231, 247, 255, 0.92), rgba(247, 253, 248, 0.96));
-    }
-
-    .quiz-head {
+    .brand-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .quiz-head h3 {
-      margin: 0;
-      color: var(--green-dark);
-      font-size: 19px;
-      line-height: 1.2;
-      font-weight: 950;
-    }
-
-    .quiz-badge {
-      display: inline-flex;
-      align-items: center;
-      min-height: 30px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: var(--green-dark);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .quiz-card {
-      display: grid;
-      gap: 9px;
-      padding: 12px;
-      border: 1px solid rgba(216, 231, 220, 0.95);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.88);
-    }
-
-    .quiz-question {
-      color: var(--text);
-      font-size: 15px;
-      font-weight: 950;
-    }
-
-    .quiz-options {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .quiz-option {
-      min-height: 48px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 10px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fff;
-      color: var(--text);
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 800;
-      transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
-    }
-
-    .quiz-option:hover {
-      transform: translateY(-1px);
-      border-color: rgba(47, 134, 196, 0.45);
-    }
-
-    .quiz-option input {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--green);
-      flex: 0 0 auto;
-    }
-
-    .quiz-option.is-selected {
-      border-color: rgba(47, 134, 196, 0.65);
-      background: #eef8ff;
-    }
-
-    .quiz-option.is-correct {
-      border-color: rgba(30, 122, 74, 0.65);
-      background: #e9f8ec;
-    }
-
-    .quiz-option.is-wrong {
-      border-color: rgba(230, 101, 78, 0.62);
-      background: #fff0ed;
-    }
-
-    .quiz-feedback {
-      min-height: 22px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .quiz-feedback.is-correct {
-      color: var(--green-dark);
-    }
-
-    .quiz-feedback.is-wrong {
-      color: #9d2f21;
-    }
-
-    .modal-actions {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
       gap: 10px;
-      padding: 16px 18px;
-      border-top: 1px solid var(--line);
-      background: #f7faf7;
-    }
-
-    .score-preview {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .score-preview b {
-      color: var(--green-dark);
-      font-size: 22px;
-    }
-
-    .teacher-panel {
-      overflow: hidden;
-    }
-
-    .teacher-panel header {
-      padding: 14px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .teacher-panel header p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .teacher-body {
-      display: grid;
-      gap: 10px;
-      padding: 14px;
-    }
-
-    .mini-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 96px;
-      align-items: center;
-      gap: 8px;
-      padding: 9px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fff;
-    }
-
-    .mini-row span {
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    .mini-score {
-      display: grid;
-      grid-template-columns: 28px 1fr 28px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-    }
-
-    .mini-score button {
-      background: #f2f7f3;
-      color: var(--green-dark);
-      cursor: pointer;
-      font-weight: 900;
-    }
-
-    .mini-score input {
-      width: 100%;
-      border: 0;
-      border-inline: 1px solid var(--line);
-      text-align: center;
-      font-weight: 900;
-    }
-
-    .summary-lines {
-      display: grid;
-      gap: 7px;
-      color: #43534a;
-      font-size: 13px;
-    }
-
-    .summary-lines b {
-      color: var(--green-dark);
-    }
-
-    .start-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 90;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      background:
-        linear-gradient(135deg, rgba(230, 246, 237, 0.94), rgba(220, 242, 255, 0.94)),
-        var(--bg);
-    }
-
-    .start-screen.show {
-      display: flex;
-    }
-
-    .start-card {
-      width: min(920px, 96vw);
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 20px;
-      align-items: center;
-      padding: 22px;
-      border: 1px solid rgba(216, 231, 220, 0.94);
-      border-radius: var(--radius);
-      background: #fff;
-      box-shadow: var(--shadow);
-    }
-
-    .start-copy h2 {
-      margin: 0;
-      color: var(--green-dark);
-      font-size: clamp(34px, 5vw, 58px);
-      line-height: 1.02;
-      font-weight: 950;
-    }
-
-    .start-copy p {
-      margin: 12px 0 0;
-      color: #46564d;
-      font-size: 16px;
-      line-height: 1.65;
-    }
-
-    .start-visual {
-      min-height: 360px;
-      position: relative;
-      overflow: hidden;
-      border-radius: var(--radius);
-      background:
-        linear-gradient(180deg, #dff4ff 0%, #eff8e8 72%),
-        #edf6ef;
-    }
-
-    .start-visual .mini-school {
-      position: absolute;
-      left: 50%;
-      top: 56%;
-      width: 330px;
-      height: 210px;
-      border-radius: 16px;
-      background:
-        linear-gradient(90deg, rgba(255,255,255,0.45) 1px, transparent 1px) 0 0 / 42px 42px,
-        linear-gradient(135deg, #c4e0b6, #f7e6b6);
-      transform: translate(-50%, -50%);
-      box-shadow: 0 30px 48px rgba(22,36,29,0.18);
-    }
-
-    .start-visual .mini-school::before,
-    .start-visual .mini-school::after {
-      content: "";
-      position: absolute;
-      width: 96px;
-      height: 72px;
-      border-radius: 10px;
-      background: #fff;
-      box-shadow: 0 12px 18px rgba(22,36,29,0.12);
-    }
-
-    .start-visual .mini-school::before {
-      left: 42px;
-      top: 38px;
-    }
-
-    .start-visual .mini-school::after {
-      right: 42px;
-      bottom: 34px;
-      background: #8fd47a;
-    }
-
-    .start-form {
-      display: grid;
-      gap: 12px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    @media (max-width: 1180px) {
-      .hud {
-        grid-template-columns: minmax(260px, 1fr) auto;
-      }
-
-      .hud-actions {
-        grid-column: 1 / -1;
-        justify-content: flex-start;
-      }
-
-      .right-panel {
-        top: auto;
-        right: 16px;
-        bottom: 16px;
-      }
-    }
-
-    @media (max-width: 860px) {
-      body {
-        overflow: auto;
-      }
-
-      .app {
-        height: auto;
-        min-height: 100vh;
-        grid-template-rows: auto minmax(760px, 1fr);
-      }
-
-      .hud {
-        grid-template-columns: 1fr;
-        align-items: stretch;
-        padding: 12px;
-      }
-
-      .brand p {
-        white-space: normal;
-      }
-
-      .hud-center,
-      .hud-actions {
-        justify-content: flex-start;
-        flex-wrap: wrap;
-      }
-
-      .left-panel,
-      .right-panel {
-        position: relative;
-        top: auto;
-        left: auto;
-        right: auto;
-        bottom: auto;
-        width: auto;
-        margin: 12px;
-      }
-
-      .game-shell {
-        display: flex;
-        flex-direction: column;
-        min-height: 760px;
-        overflow: visible;
-      }
-
-      .scene-wrap {
-        position: relative;
-        order: 2;
-        min-height: 560px;
-        overflow: hidden;
-      }
-
-      .world {
-        width: 860px;
-        height: 620px;
-        transform: translateX(-8%) scale(0.72);
-      }
-
-      .control-pad {
-        position: fixed;
-        left: 14px;
-        bottom: 14px;
-      }
-
-      .teacher-panel {
-        display: none;
-      }
-
-      .start-card {
-        grid-template-columns: 1fr;
-      }
-
-      .start-visual {
-        min-height: 220px;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 520px) {
-      .score-pill,
-      .level-pill,
-      .btn {
-        width: 100%;
-      }
-
-      .hud-actions .btn {
-        width: calc(50% - 4px);
-      }
-
-      .world {
-        transform: translateX(-20%) scale(0.62);
-      }
-
-      .control-pad {
-        grid-template-columns: 44px 44px 44px;
-        grid-template-rows: 44px 44px 44px;
-      }
-
-      .modal {
-        width: 100%;
-        max-height: 92vh;
-      }
-
-      .modal-head,
-      .modal-actions,
-      .modal-body {
-        padding: 14px;
-      }
-
-      .quiz-options {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Reference-game skin inspired by the requested screenshot. */
-    :root {
-      --game-blue: #0a93d6;
-      --hud-blue: rgba(5, 54, 91, 0.9);
-      --hud-blue-2: rgba(0, 88, 141, 0.86);
-      --cream: rgba(255, 250, 236, 0.94);
-      --soft-shadow: 0 18px 42px rgba(11, 49, 28, 0.26);
-    }
-
-    body {
-      background:
-        linear-gradient(180deg, #22b5f0 0%, #42c2f5 26%, #b9ecff 43%, #96d879 44%, #4da94d 100%);
-    }
-
-    .app {
-      grid-template-rows: minmax(0, 1fr);
-      min-height: 100vh;
-    }
-
-    .hud {
-      position: fixed;
-      inset: 24px 24px auto 24px;
-      z-index: 50;
-      display: grid;
-      grid-template-columns: minmax(330px, 440px) minmax(0, 1fr);
-      gap: 18px;
-      padding: 0;
-      border: 0;
-      background: transparent;
-      backdrop-filter: none;
-      pointer-events: none;
-    }
-
-    .brand {
-      width: min(410px, 32vw);
-      min-width: 300px;
-      gap: 0;
-      pointer-events: auto;
-      transform: rotate(-2deg);
     }
 
     .brand-mark {
-      display: none;
-    }
-
-    .brand h1 {
-      position: relative;
-      display: inline-grid;
-      gap: 0;
-      margin: 0;
-      padding: 8px 26px 58px 24px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.96);
-      color: #248f2c;
-      font-family: "Trebuchet MS", "Noto Sans Thai", sans-serif;
-      font-size: clamp(34px, 4.3vw, 62px);
-      line-height: 0.9;
-      font-weight: 950;
-      letter-spacing: 0;
-      text-shadow:
-        0 4px 0 #fff,
-        0 7px 12px rgba(0, 69, 28, 0.22);
-      box-shadow: 0 8px 0 rgba(22, 116, 42, 0.18);
-    }
-
-    .brand h1::first-line {
-      color: #218c2c;
-    }
-
-    .brand h1::after {
-      content: "ภารกิจพิทักษ์บ้านส่วนรวม";
-      position: absolute;
-      left: 26px;
-      right: 26px;
-      bottom: 12px;
-      display: block;
-      padding: 7px 12px 8px;
-      border-radius: 6px 6px 18px 18px;
-      background: linear-gradient(180deg, #4fb439, #1f8737);
-      color: #fff;
-      font-size: clamp(18px, 1.8vw, 27px);
-      line-height: 1.1;
-      text-align: center;
-      text-shadow: none;
-      transform: rotate(-1deg);
-    }
-
-    .brand h1::before {
-      content: "";
-      position: absolute;
-      right: 9px;
-      top: 18px;
-      width: 42px;
-      height: 30px;
-      border-radius: 80% 0 80% 0;
-      background: linear-gradient(135deg, #76c94f, #1e8d32);
-      transform: rotate(-18deg);
-      box-shadow: -310px 34px 0 -4px #74c84d, -326px 48px 0 -8px #218c33;
-    }
-
-    .brand p {
-      display: none;
-    }
-
-    .hud-center {
-      justify-self: end;
-      min-height: 76px;
-      display: flex;
-      gap: 0;
-      pointer-events: auto;
-      overflow: hidden;
-      border-radius: 16px;
-      background: var(--hud-blue);
-      color: #fff;
-      box-shadow: var(--soft-shadow);
-    }
-
-    .player-status,
-    .score-pill,
-    .level-pill,
-    .medal-pill {
-      min-height: 76px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 20px;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      color: #fff;
-      font-weight: 900;
-    }
-
-    .player-status,
-    .score-pill,
-    .medal-pill {
-      border-right: 1px solid rgba(255, 255, 255, 0.18);
-    }
-
-    .player-avatar {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      background:
-        radial-gradient(circle at 50% 34%, #ffd3a3 0 20%, transparent 21%),
-        radial-gradient(circle at 50% 23%, #3a2118 0 24%, transparent 25%),
-        linear-gradient(#58aee3 0 100%);
-      box-shadow: inset 0 -5px 0 rgba(0,0,0,0.12);
-    }
-
-    .player-status strong,
-    .score-pill b,
-    .medal-pill b {
-      display: block;
-      color: #fff;
-      font-size: 22px;
-      line-height: 1.1;
-    }
-
-    .player-status small,
-    .score-pill span,
-    .medal-pill span {
-      display: block;
-      color: rgba(255,255,255,0.83);
-      font-size: 15px;
-      line-height: 1.1;
-      white-space: nowrap;
-    }
-
-    .score-pill::before,
-    .medal-pill::before {
-      content: "";
-      width: 48px;
-      height: 48px;
+      width: 39px;
+      height: 39px;
+      display: grid;
+      place-items: center;
       flex: 0 0 auto;
-      clip-path: polygon(50% 0, 62% 34%, 98% 35%, 69% 56%, 80% 91%, 50% 70%, 20% 91%, 31% 56%, 2% 35%, 38% 34%);
-      background: linear-gradient(135deg, #ffe780, #f4ab20 65%, #c57505);
-      box-shadow: inset 0 -4px 0 rgba(141, 82, 0, 0.22);
-    }
-
-    .medal-pill::before {
-      border-radius: 50%;
-      clip-path: none;
-      background:
-        radial-gradient(circle, #ffe28a 0 36%, #d38a16 37% 64%, #b65a19 65%),
-        linear-gradient(135deg, #f4b02c, #b85617);
-    }
-
-    .level-pill {
-      min-width: 180px;
-      justify-content: center;
-      background: linear-gradient(180deg, #60c24a, #2f9638);
-      font-size: 18px;
-      border-radius: 0 16px 16px 0;
-    }
-
-    .hud-actions {
-      position: fixed;
-      right: 34px;
-      bottom: 24px;
-      z-index: 56;
-      display: none;
-    }
-
-    .game-shell {
-      min-height: 100vh;
-      background:
-        radial-gradient(ellipse at 12% 12%, rgba(255,255,255,0.9) 0 6%, transparent 7%),
-        radial-gradient(ellipse at 82% 16%, rgba(255,255,255,0.85) 0 8%, transparent 9%),
-        linear-gradient(180deg, #18aeea 0 36%, transparent 36%),
-        linear-gradient(180deg, transparent 0 42%, #6fc15e 42% 100%);
-    }
-
-    .skyline {
-      height: 100%;
-      background: transparent;
-    }
-
-    .school-view {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .school-building {
-      position: absolute;
-      left: 50%;
-      top: 180px;
-      width: min(760px, 58vw);
-      height: 270px;
-      transform: translateX(-50%);
-      border-radius: 14px 14px 4px 4px;
-      background:
-        linear-gradient(90deg, transparent 0 8%, rgba(255,255,255,0.7) 8% 9%, transparent 9% 91%, rgba(255,255,255,0.7) 91% 92%, transparent 92%),
-        repeating-linear-gradient(90deg, transparent 0 74px, rgba(34, 130, 168, 0.62) 74px 122px, transparent 122px 158px),
-        linear-gradient(180deg, #fff7df 0 55%, #f2ead2 56% 100%);
-      border: 4px solid rgba(255,255,255,0.85);
-      box-shadow: 0 26px 60px rgba(21, 75, 38, 0.28);
-    }
-
-    .school-building::before {
-      content: "";
-      position: absolute;
-      left: -28px;
-      right: -28px;
-      top: -42px;
-      height: 56px;
-      clip-path: polygon(0 100%, 50% 0, 100% 100%);
-      background: linear-gradient(180deg, #ce6f48, #a94a32);
-      box-shadow: 0 9px 0 rgba(104, 45, 25, 0.18);
-    }
-
-    .school-building::after {
-      content: "GREEN SCHOOL";
-      position: absolute;
-      left: 50%;
-      bottom: 38px;
-      transform: translateX(-50%);
-      padding: 8px 22px;
-      border-radius: 4px;
-      border: 3px solid #e0d5b8;
-      background: #fff8df;
-      color: #2a8642;
-      font-family: "Trebuchet MS", sans-serif;
-      font-size: clamp(18px, 2vw, 28px);
-      font-weight: 950;
-      letter-spacing: 1px;
-      white-space: nowrap;
-    }
-
-    .school-clock {
-      position: absolute;
-      left: 50%;
-      top: -34px;
-      width: 46px;
-      height: 46px;
-      transform: translateX(-50%);
-      border: 5px solid #dccca1;
-      border-radius: 50%;
-      background: radial-gradient(circle, #fff 0 56%, #e7e1cf 57%);
-      z-index: 2;
-    }
-
-    .school-clock::before,
-    .school-clock::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 3px;
-      height: 15px;
-      background: #4b5149;
-      transform-origin: 50% 0;
-    }
-
-    .school-clock::before { transform: rotate(180deg); }
-    .school-clock::after { height: 12px; transform: rotate(250deg); }
-
-    .courtyard-path {
-      position: absolute;
-      left: 50%;
-      bottom: -120px;
-      width: 360px;
-      height: 620px;
-      transform: translateX(-50%);
-      clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
-      background:
-        repeating-linear-gradient(0deg, rgba(255,255,255,0.22) 0 2px, transparent 2px 92px),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.22) 0 2px, transparent 2px 92px),
-        linear-gradient(180deg, #dedbd2, #bbb6aa);
-      box-shadow: inset 0 0 0 4px rgba(255,255,255,0.22);
-    }
-
-    .hero-tree,
-    .hero-bin,
-    .hero-fountain {
-      position: absolute;
-      pointer-events: none;
-    }
-
-    .hero-tree {
-      width: 250px;
-      height: 260px;
-      border-radius: 52% 48% 44% 56%;
-      background:
-        radial-gradient(circle at 36% 36%, #9ee36d 0 22%, transparent 23%),
-        radial-gradient(circle at 60% 36%, #83cf55 0 25%, transparent 26%),
-        radial-gradient(circle at 48% 58%, #61b641 0 32%, transparent 33%);
-      filter: drop-shadow(0 16px 18px rgba(28, 75, 28, 0.22));
-    }
-
-    .hero-tree::after {
-      content: "";
-      position: absolute;
-      left: 108px;
-      bottom: -16px;
-      width: 34px;
-      height: 130px;
       border-radius: 14px;
-      background: linear-gradient(90deg, #986433, #6a421f);
-      z-index: -1;
-    }
-
-    .hero-tree.left { left: 250px; top: 150px; }
-    .hero-tree.right { right: 90px; top: 115px; transform: scale(1.1); }
-
-    .hero-bin {
-      bottom: 158px;
-      width: 68px;
-      height: 120px;
-      border-radius: 9px 9px 5px 5px;
-      box-shadow: 0 14px 18px rgba(0,0,0,0.18);
-    }
-
-    .hero-bin::before {
-      content: "";
-      position: absolute;
-      left: -8px;
-      right: -8px;
-      top: -14px;
-      height: 22px;
-      border-radius: 7px;
-      background: inherit;
-      filter: brightness(0.88);
-    }
-
-    .hero-bin::after {
-      content: "รีไซเคิล";
-      position: absolute;
-      left: 50%;
-      bottom: 12px;
-      transform: translateX(-50%) rotate(-90deg);
-      color: rgba(255,255,255,0.9);
-      font-size: 12px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .hero-bin.green { right: 288px; background: linear-gradient(180deg, #298c4e, #12653a); }
-    .hero-bin.yellow { right: 208px; background: linear-gradient(180deg, #e0b331, #c38610); }
-
-    .hero-fountain {
-      right: 370px;
-      bottom: 250px;
-      width: 130px;
-      height: 90px;
-      border-radius: 50% 50% 45% 45%;
-      background:
-        radial-gradient(ellipse at 50% 82%, rgba(87, 177, 218, 0.9) 0 42%, transparent 43%),
-        radial-gradient(ellipse at 50% 72%, #cdd8dc 0 56%, transparent 57%);
-      opacity: 0.92;
-    }
-
-    .hero-fountain::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      bottom: 38px;
-      width: 14px;
-      height: 74px;
-      transform: translateX(-50%);
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(84,166,209,0.6));
-    }
-
-    .hero-avatar {
-      position: absolute;
-      left: 50%;
-      bottom: 92px;
-      width: 190px;
-      height: 390px;
-      transform: translateX(-50%);
-      filter: drop-shadow(0 20px 18px rgba(18, 60, 35, 0.25));
-    }
-
-    .hero-avatar .hair {
-      position: absolute;
-      left: 47px;
-      top: 0;
-      width: 100px;
-      height: 82px;
-      border-radius: 48% 52% 45% 55%;
-      background:
-        radial-gradient(circle at 34% 28%, #5b3929 0 16%, transparent 17%),
-        radial-gradient(circle at 60% 26%, #372015 0 26%, transparent 27%),
-        linear-gradient(135deg, #513425, #22130e);
-    }
-
-    .hero-avatar .shirt {
-      position: absolute;
-      left: 35px;
-      top: 70px;
-      width: 122px;
-      height: 150px;
-      border-radius: 36px 36px 20px 20px;
-      background: linear-gradient(180deg, #fff, #e7edf0);
-      box-shadow: inset 0 -12px 0 rgba(36,79,58,0.09);
-    }
-
-    .hero-avatar .bag {
-      position: absolute;
-      left: 46px;
-      top: 98px;
-      width: 98px;
-      height: 142px;
-      border-radius: 32px 32px 24px 24px;
-      background:
-        radial-gradient(circle at 50% 46%, transparent 0 20px, rgba(255,255,255,0.86) 21px 23px, transparent 24px),
-        linear-gradient(180deg, #2c7740, #185d35);
-      border: 6px solid #164d2e;
-    }
-
-    .hero-avatar .bag::after {
-      content: "CARE OUR\aCOMMON HOME";
-      white-space: pre;
-      position: absolute;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,0.92);
-      font-size: 9px;
-      line-height: 1.1;
-      text-align: center;
-      font-weight: 900;
-    }
-
-    .hero-avatar .arms {
-      position: absolute;
-      left: 18px;
-      top: 95px;
-      width: 154px;
-      height: 138px;
-      border-left: 20px solid #f0bd86;
-      border-right: 20px solid #f0bd86;
-      border-radius: 36px;
-    }
-
-    .hero-avatar .shorts {
-      position: absolute;
-      left: 51px;
-      top: 218px;
-      width: 88px;
-      height: 72px;
-      border-radius: 0 0 18px 18px;
-      background: linear-gradient(180deg, #364856, #1f303d);
-    }
-
-    .hero-avatar .legs {
-      position: absolute;
-      left: 58px;
-      top: 288px;
-      width: 74px;
-      height: 92px;
-      border-left: 24px solid #f1bf88;
-      border-right: 24px solid #f1bf88;
-    }
-
-    .hero-avatar .shoes {
-      position: absolute;
-      left: 48px;
-      bottom: 0;
-      width: 96px;
-      height: 18px;
-      border-radius: 999px;
-      background: #20252a;
-    }
-
-    .left-panel {
-      top: 236px;
-      left: 16px;
-      width: 330px;
-      z-index: 35;
-      gap: 12px;
-    }
-
-    .mission-card,
-    .card {
-      border: 2px solid rgba(255,255,255,0.66);
-      border-radius: 16px;
-      background: rgba(245, 249, 238, 0.76);
-      box-shadow: 0 14px 34px rgba(10, 52, 24, 0.2);
-      backdrop-filter: blur(10px);
-    }
-
-    .mission-card > .card {
-      border: 0;
-      border-radius: 14px 14px 0 0;
-      background: transparent;
-      box-shadow: none;
-      padding-bottom: 6px;
-    }
-
-    .mission-card h2 {
-      text-align: center;
-      color: #183d21;
-      font-size: 24px;
-    }
-
-    .mission-card p {
-      display: none;
-    }
-
-    .mission-list {
-      gap: 9px;
-      padding: 0 10px 12px;
-    }
-
-    .mission-chip {
-      min-height: 64px;
-      grid-template-columns: 54px minmax(0, 1fr) 36px;
-      gap: 9px;
-      padding: 8px 10px;
-      border: 1px solid rgba(28, 83, 35, 0.28);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.82);
-      color: #192d21;
-      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.06), 0 8px 14px rgba(0,0,0,0.08);
-    }
-
-    .mission-chip b {
-      width: 45px;
-      height: 45px;
-      display: grid;
-      place-items: center;
-      border-radius: 14px;
-      background: linear-gradient(180deg, #f9ffdd, #98d86c);
-      color: #0d5b27;
-      font-size: 20px;
-      box-shadow: inset 0 -3px 0 rgba(0,0,0,0.12);
-    }
-
-    .mission-chip span {
-      color: #18321f;
-      font-size: 17px;
-      font-weight: 950;
-    }
-
-    .mission-chip small {
-      align-self: center;
-      justify-self: end;
-      width: 26px;
-      height: 26px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      overflow: hidden;
-      color: transparent;
-      background: rgba(66, 78, 67, 0.82);
-    }
-
-    .mission-chip small::after {
-      content: "";
-      width: 10px;
-      height: 9px;
-      border: 3px solid #fff;
-      border-top: 0;
-      border-radius: 0 0 4px 4px;
-      box-shadow: 0 -8px 0 -4px #fff;
-    }
-
-    .mission-chip:not(.is-locked) small,
-    .mission-chip.is-complete small {
-      color: transparent;
-      background: linear-gradient(180deg, #ffd95c, #e29a14);
-      clip-path: polygon(50% 0, 62% 34%, 98% 35%, 69% 56%, 80% 91%, 50% 70%, 20% 91%, 31% 56%, 2% 35%, 38% 34%);
-    }
-
-    .mission-chip:not(.is-locked) small::after,
-    .mission-chip.is-complete small::after {
-      content: none;
-    }
-
-    .mission-chip.is-active {
-      border-color: #58aa39;
-      background: rgba(232, 255, 216, 0.94);
-      box-shadow: 0 0 0 4px rgba(88,170,57,0.18), inset 0 -4px 0 rgba(0,0,0,0.05);
-    }
-
-    .left-panel > .card:not(.mission-card) {
-      display: none;
-    }
-
-    .scene-wrap {
-      display: none;
-    }
-
-    .walk-cta {
-      position: absolute;
-      left: 50%;
-      bottom: 132px;
-      z-index: 36;
-      transform: translateX(-50%);
-      min-width: 330px;
-      min-height: 62px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      border: 0;
-      border-radius: 12px;
-      background: rgba(34, 38, 36, 0.88);
       color: #fff;
-      box-shadow: 0 16px 30px rgba(0,0,0,0.28);
-      cursor: pointer;
-      font-size: 24px;
-      font-weight: 950;
+      background: linear-gradient(145deg, #1b8b4d, #0d5a35);
+      box-shadow: 0 8px 18px rgba(15, 99, 57, .3);
     }
 
-    .walk-cta .alert-dot {
-      width: 46px;
-      height: 46px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: linear-gradient(180deg, #ffd94e, #e4a61a);
-      color: #fff;
-      font-size: 34px;
-      line-height: 1;
-      box-shadow: inset 0 -5px 0 rgba(129, 75, 0, 0.18);
-    }
-
-    .right-panel {
-      top: 280px;
-      right: 28px;
-      bottom: auto;
-      width: 320px;
-      z-index: 38;
-      gap: 18px;
-      pointer-events: none;
-    }
-
-    .control-guide,
-    .mini-map {
-      pointer-events: auto;
-      border: 3px solid rgba(255,255,255,0.68);
-      border-radius: 18px;
-      background: rgba(10, 76, 45, 0.78);
-      color: #fff;
-      box-shadow: 0 14px 30px rgba(10, 52, 24, 0.25);
-      backdrop-filter: blur(8px);
-    }
-
-    .control-guide {
-      padding: 16px 18px;
-    }
-
-    .control-guide h2,
-    .mini-map h2 {
-      margin: 0 0 12px;
-      color: #fff;
-      font-size: 22px;
-      font-weight: 950;
-    }
-
-    .key-row {
-      display: grid;
-      grid-template-columns: 84px 1fr;
-      align-items: center;
-      gap: 12px;
-      margin: 10px 0;
-      color: rgba(255,255,255,0.92);
-      font-size: 15px;
-      font-weight: 800;
-    }
-
-    .keys {
-      display: grid;
-      grid-template-columns: repeat(3, 24px);
-      gap: 3px;
-      justify-content: start;
-    }
-
-    .keys span,
-    .single-key {
-      width: 24px;
-      height: 24px;
-      display: grid;
-      place-items: center;
-      border: 2px solid rgba(255,255,255,0.8);
-      border-radius: 4px;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 950;
-    }
-
-    .keys span:first-child {
-      grid-column: 2;
-    }
-
-    .mouse-icon {
-      width: 34px;
-      height: 50px;
-      border: 3px solid #fff;
-      border-radius: 18px;
-      position: relative;
-      justify-self: center;
-    }
-
-    .mouse-icon::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 6px;
-      width: 3px;
-      height: 12px;
-      transform: translateX(-50%);
-      background: #fff;
-      border-radius: 999px;
-    }
-
-    .mini-map {
-      overflow: hidden;
-      background: rgba(255,255,255,0.9);
-      color: #17381f;
-    }
-
-    .mini-map h2 {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .brand-card h1 {
       margin: 0;
-      padding: 12px 14px 8px;
-      color: #17381f;
-      font-size: 22px;
+      font-size: 21px;
+      line-height: 1.08;
+      letter-spacing: -.5px;
     }
 
-    .map-canvas {
-      position: relative;
-      height: 235px;
-      margin: 0 10px 12px;
-      border-radius: 12px;
-      overflow: hidden;
-      background:
-        linear-gradient(90deg, rgba(255,255,255,0.18) 48%, transparent 49% 51%, rgba(255,255,255,0.18) 52%),
-        linear-gradient(0deg, rgba(255,255,255,0.18) 48%, transparent 49% 51%, rgba(255,255,255,0.18) 52%),
-        repeating-linear-gradient(90deg, #87bd69 0 52px, #b2d88e 52px 72px),
-        repeating-linear-gradient(0deg, rgba(81,142,66,0.16) 0 38px, transparent 38px 76px);
-      box-shadow: inset 0 0 0 2px rgba(43, 114, 55, 0.2);
+    .brand-card p {
+      margin: 8px 0 0;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #54705d;
     }
 
-    .map-building {
-      position: absolute;
-      background: #c98162;
-      border: 4px solid rgba(255,255,255,0.55);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.18);
-    }
-
-    .map-building.a { left: 95px; top: 36px; width: 118px; height: 72px; }
-    .map-building.b { left: 42px; top: 132px; width: 88px; height: 58px; background: #a7b87e; }
-    .map-building.c { right: 24px; bottom: 28px; width: 86px; height: 60px; background: #78a5c4; }
-
-    .map-point {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      display: grid;
-      place-items: center;
-      border: 3px solid #fff;
-      border-radius: 50%;
-      background: #f2a51f;
-      color: #fff;
-      font-weight: 950;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.22);
-    }
-
-    .map-point.p1 { left: 58px; top: 58px; }
-    .map-point.p2 { left: 34px; top: 112px; background: #3aa4ce; }
-    .map-point.p3 { right: 34px; top: 70px; background: #5ab43f; }
-    .map-point.p4 { left: 98px; bottom: 24px; background: #f36e38; }
-    .map-point.p5 { right: 64px; bottom: 80px; background: #7654c9; }
-    .map-point.p6 { right: 8px; bottom: 14px; background: #e27644; }
-
-    .map-arrow {
-      position: absolute;
-      left: 50%;
-      top: 58%;
-      width: 46px;
-      height: 56px;
-      transform: translate(-50%, -50%);
-      clip-path: polygon(50% 0, 100% 100%, 50% 78%, 0 100%);
-      background: linear-gradient(180deg, #33d6ff, #1089c7);
-      border: 3px solid #fff;
-      filter: drop-shadow(0 5px 5px rgba(0,0,0,0.22));
-    }
-
-    .teacher-panel {
+    .side-nav {
       position: fixed;
-      right: 28px;
-      top: 160px;
-      z-index: 70;
-      width: 380px;
-      display: none;
-      pointer-events: auto;
-    }
-
-    .teacher-panel.show {
-      display: block;
-    }
-
-    .bottom-nav {
-      position: absolute;
-      left: 50%;
-      right: auto;
-      bottom: 22px;
-      z-index: 55;
-      width: min(92vw, 1420px);
-      min-height: 86px;
-      transform: translateX(-50%);
+      z-index: 19;
+      top: 150px;
+      bottom: 126px;
+      left: 20px;
+      width: calc(var(--rail) - 8px);
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-      gap: 14px;
-      padding: 12px;
-      border: 2px solid rgba(255,255,255,0.68);
-      border-radius: 22px;
-      background: rgba(255, 248, 232, 0.92);
-      box-shadow: var(--soft-shadow);
-      backdrop-filter: blur(8px);
-    }
-
-    .bottom-nav button {
-      min-height: 62px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      border: 1px solid rgba(105, 96, 76, 0.18);
+      align-content: center;
+      gap: 8px;
+      padding: 11px;
+      border: 1px solid rgba(255,255,255,.86);
       border-radius: 20px;
-      background: rgba(255,255,255,0.78);
-      color: #4b463c;
-      font-size: 20px;
-      font-weight: 950;
+      background: rgba(255,252,239,.94);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(15px);
+    }
+
+    .nav-button {
+      min-height: 70px;
+      display: grid;
+      grid-template-columns: 46px 1fr;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 11px;
+      border: 0;
+      border-radius: 15px;
+      color: var(--green-900);
+      background: transparent;
       cursor: pointer;
-      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.06);
+      transition: transform .18s ease, color .18s ease, background .18s ease, box-shadow .18s ease;
     }
 
-    .bottom-nav button:first-child {
-      background: linear-gradient(180deg, #73cf58, #31a63d);
-      color: #fff;
-    }
+    .nav-button:hover { transform: translateX(3px); background: #eef7e9; }
 
-    .bottom-nav button:last-child {
-      background: linear-gradient(180deg, #2ab6ea, #168fd2);
+    .nav-button[aria-pressed="true"] {
       color: #fff;
+      background: linear-gradient(135deg, var(--green-800), var(--green-950));
+      box-shadow: 0 9px 19px rgba(9, 72, 40, .26);
     }
 
     .nav-icon {
-      width: 34px;
-      height: 34px;
-      display: inline-grid;
-      place-items: center;
-      border-radius: 10px;
-      color: currentColor;
-    }
-
-    .control-pad {
-      display: none;
-    }
-
-    @media (max-width: 1180px) {
-      .hud {
-        grid-template-columns: 1fr;
-      }
-
-      .brand {
-        width: 300px;
-      }
-
-      .hud-center {
-        justify-self: end;
-        transform: scale(0.85);
-        transform-origin: top right;
-      }
-
-      .left-panel {
-        top: 210px;
-        width: 300px;
-      }
-
-      .right-panel {
-        top: auto;
-        right: 18px;
-        bottom: 120px;
-        width: 290px;
-      }
-
-      .control-guide {
-        display: none;
-      }
-
-      .bottom-nav {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 860px) {
-      body {
-        overflow: auto;
-      }
-
-      .app,
-      .game-shell {
-        min-height: 100vh;
-      }
-
-      .hud {
-        position: relative;
-        inset: auto;
-        padding: 12px;
-      }
-
-      .brand {
-        width: 100%;
-        min-width: 0;
-        transform: none;
-      }
-
-      .brand h1 {
-        width: 100%;
-        font-size: 38px;
-      }
-
-      .hud-center {
-        width: 100%;
-        transform: none;
-        overflow-x: auto;
-        justify-self: stretch;
-      }
-
-      .player-status,
-      .score-pill,
-      .medal-pill,
-      .level-pill {
-        min-width: max-content;
-      }
-
-      .left-panel,
-      .right-panel {
-        position: relative;
-        top: auto;
-        left: auto;
-        right: auto;
-        bottom: auto;
-        width: auto;
-        margin: 12px;
-      }
-
-      .school-view {
-        position: relative;
-        min-height: 620px;
-      }
-
-      .school-building {
-        top: 110px;
-        width: 78vw;
-        height: 210px;
-      }
-
-      .hero-tree.left {
-        left: -40px;
-        top: 130px;
-      }
-
-      .hero-tree.right {
-        right: -60px;
-        top: 120px;
-      }
-
-      .hero-avatar {
-        bottom: 22px;
-        transform: translateX(-50%) scale(0.82);
-        transform-origin: bottom center;
-      }
-
-      .walk-cta {
-        position: relative;
-        left: auto;
-        bottom: auto;
-        width: calc(100% - 24px);
-        min-width: 0;
-        margin: 12px;
-        transform: none;
-      }
-
-      .bottom-nav {
-        position: relative;
-        left: auto;
-        bottom: auto;
-        width: calc(100% - 24px);
-        margin: 12px;
-        transform: none;
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .teacher-panel {
-        right: 12px;
-        left: 12px;
-        top: 90px;
-        width: auto;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .brand h1 {
-        font-size: 30px;
-      }
-
-      .hud-center {
-        border-radius: 14px;
-      }
-
-      .player-status,
-      .score-pill,
-      .medal-pill,
-      .level-pill {
-        padding: 10px 12px;
-      }
-
-      .left-panel {
-        margin-top: 4px;
-      }
-
-      .bottom-nav button {
-        font-size: 16px;
-      }
-    }
-
-    @media (min-width: 861px) and (max-height: 780px) {
-      .brand {
-        width: 340px;
-        min-width: 300px;
-      }
-
-      .brand h1 {
-        padding: 8px 22px 62px;
-        font-size: 42px;
-        line-height: 0.94;
-      }
-
-      .brand h1::after {
-        left: 22px;
-        right: 22px;
-        bottom: 12px;
-        font-size: 20px;
-      }
-
-      .left-panel {
-        top: 198px;
-        width: 320px;
-      }
-
-      .mission-card h2 {
-        font-size: 21px;
-      }
-
-      .mission-list {
-        max-height: calc(100vh - 314px);
-        overflow: auto;
-        gap: 7px;
-        padding-bottom: 10px;
-      }
-
-      .mission-chip {
-        min-height: 54px;
-      }
-
-      .mission-chip b {
-        width: 38px;
-        height: 38px;
-      }
-
-      .bottom-nav {
-        bottom: 12px;
-        min-height: 70px;
-        padding: 8px;
-      }
-
-      .bottom-nav button {
-        min-height: 52px;
-        font-size: 18px;
-      }
-
-      .nav-icon {
-        width: 28px;
-        height: 28px;
-      }
-
-      .walk-cta {
-        bottom: 98px;
-        min-height: 54px;
-        font-size: 22px;
-      }
-
-      .right-panel {
-        top: 254px;
-        width: 292px;
-        gap: 10px;
-      }
-
-      .control-guide {
-        padding: 10px 14px;
-      }
-
-      .control-guide h2,
-      .mini-map h2 {
-        margin-bottom: 6px;
-        font-size: 18px;
-      }
-
-      .key-row {
-        grid-template-columns: 58px 1fr;
-        gap: 8px;
-        margin: 4px 0;
-        font-size: 12px;
-      }
-
-      .keys {
-        grid-template-columns: repeat(3, 20px);
-      }
-
-      .keys span,
-      .single-key {
-        width: 20px;
-        height: 20px;
-        font-size: 12px;
-      }
-
-      .mouse-icon {
-        width: 26px;
-        height: 34px;
-      }
-
-      .mini-map h2 {
-        padding: 8px 10px 4px;
-      }
-
-      .map-canvas {
-        height: 126px;
-        margin: 0 8px 8px;
-      }
-
-      .map-point {
-        width: 28px;
-        height: 28px;
-        font-size: 12px;
-      }
-
-      .map-arrow {
-        width: 30px;
-        height: 38px;
-      }
-    }
-
-    @media (min-width: 900px) and (max-width: 1180px) {
-      body {
-        overflow: hidden;
-      }
-
-      .app,
-      .game-shell {
-        min-height: 100vh;
-      }
-
-      .hud {
-        position: fixed;
-        inset: 18px 18px auto 18px;
-        grid-template-columns: 300px minmax(0, 1fr);
-      }
-
-      .brand {
-        width: 300px;
-        min-width: 280px;
-      }
-
-      .brand h1 {
-        padding: 8px 18px 58px;
-        font-size: 38px;
-      }
-
-      .brand h1::after {
-        left: 18px;
-        right: 18px;
-        font-size: 18px;
-      }
-
-      .hud-center {
-        justify-self: end;
-        transform: scale(0.72);
-        transform-origin: top right;
-      }
-
-      .left-panel {
-        position: absolute;
-        top: 190px;
-        left: 14px;
-        width: 282px;
-        margin: 0;
-      }
-
-      .mission-list {
-        max-height: calc(100vh - 300px);
-        overflow: auto;
-      }
-
-      .mission-chip {
-        min-height: 52px;
-        grid-template-columns: 42px minmax(0, 1fr) 28px;
-      }
-
-      .mission-chip b {
-        width: 36px;
-        height: 36px;
-        font-size: 17px;
-      }
-
-      .mission-chip span {
-        font-size: 15px;
-      }
-
-      .right-panel {
-        position: absolute;
-        top: 280px;
-        right: 16px;
-        bottom: auto;
-        width: 268px;
-        margin: 0;
-      }
-
-      .control-guide {
-        display: block;
-        padding: 12px;
-      }
-
-      .control-guide h2,
-      .mini-map h2 {
-        font-size: 18px;
-      }
-
-      .key-row {
-        grid-template-columns: 72px 1fr;
-        margin: 7px 0;
-        font-size: 13px;
-      }
-
-      .mini-map {
-        display: none;
-      }
-
-      .school-building {
-        top: 154px;
-        width: 560px;
-        height: 235px;
-      }
-
-      .hero-avatar {
-        bottom: 52px;
-        transform: translateX(-50%) scale(0.86);
-        transform-origin: bottom center;
-      }
-
-      .hero-tree.left {
-        left: 150px;
-      }
-
-      .hero-tree.right {
-        right: 0;
-      }
-
-      .walk-cta {
-        bottom: 90px;
-        min-width: 300px;
-        min-height: 52px;
-        font-size: 19px;
-      }
-
-      .walk-cta .alert-dot {
-        width: 40px;
-        height: 40px;
-        font-size: 29px;
-      }
-
-      .bottom-nav {
-        position: absolute;
-        left: 50%;
-        bottom: 10px;
-        width: calc(100vw - 28px);
-        min-height: 64px;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 7px;
-        padding: 8px;
-        transform: translateX(-50%);
-      }
-
-      .bottom-nav button {
-        min-height: 48px;
-        gap: 6px;
-        font-size: 14px;
-        border-radius: 14px;
-      }
-
-      .nav-icon {
-        width: 22px;
-        height: 22px;
-      }
-    }
-
-    /* Professional release polish */
-    :root {
-      --bg: #f3f7f2;
-      --surface: #ffffff;
-      --panel: rgba(255, 255, 255, 0.92);
-      --line: #d7e4da;
-      --text: #17221c;
-      --muted: #617066;
-      --green: #177245;
-      --green-dark: #0f4f31;
-      --sky: #1f83b6;
-      --amber: #d99a18;
-      --coral: #d95c45;
-      --radius: 8px;
-      --shadow: 0 18px 44px rgba(18, 45, 30, 0.14);
-      --soft-shadow: 0 18px 44px rgba(18, 45, 30, 0.14);
-    }
-
-    body {
-      background:
-        linear-gradient(180deg, rgba(220, 238, 231, 0.9), rgba(244, 249, 245, 0.96) 42%, rgba(234, 244, 236, 0.98)),
-        radial-gradient(circle at 70% 8%, rgba(31, 131, 182, 0.22), transparent 30%),
-        #f3f7f2;
-      color: var(--text);
-      font-family: "Noto Sans Thai", "Sarabun", "Segoe UI", Tahoma, Arial, sans-serif;
-    }
-
-    .hud {
-      position: fixed;
-      inset: 16px 18px auto 18px;
-      display: grid;
-      grid-template-columns: minmax(220px, 330px) minmax(0, 1fr) auto;
-      gap: 12px;
-      align-items: center;
-      padding: 10px;
-      border: 1px solid rgba(215, 228, 218, 0.92);
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 16px 34px rgba(26, 51, 35, 0.12);
-      backdrop-filter: blur(16px);
-      pointer-events: auto;
-    }
-
-    .brand {
-      width: auto;
-      min-width: 0;
-      display: grid;
-      grid-template-columns: 46px minmax(0, 1fr);
-      gap: 11px;
-      align-items: center;
-      transform: none;
-    }
-
-    .brand-mark {
       width: 46px;
       height: 46px;
       display: grid;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #125f3c, #1f83b6);
-      box-shadow: none;
+      place-items: center;
+      border-radius: 14px;
+      color: currentColor;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(15,99,57,.14);
     }
 
-    .brand h1 {
-      display: block;
-      margin: 0;
-      padding: 0;
-      border-radius: 0;
-      background: transparent;
-      color: var(--green-dark);
-      font-family: inherit;
-      font-size: clamp(19px, 2.1vw, 28px);
-      font-weight: 900;
-      line-height: 1.04;
-      text-shadow: none;
-      box-shadow: none;
-      transform: none;
+    .nav-button[aria-pressed="true"] .nav-icon {
+      color: var(--green-900);
+      border-color: transparent;
     }
 
-    .brand h1::before,
-    .brand h1::after,
-    .brand h1::first-line {
-      content: none;
-      color: inherit;
+    .nav-icon svg, .icon svg, .brand-mark svg, .coin svg {
+      width: 25px;
+      height: 25px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    .brand p {
-      display: block;
-      margin: 3px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 1.35;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .nav-copy { text-align: left; min-width: 0; }
+    .nav-copy strong { display: block; font-size: 14px; line-height: 1.25; }
+    .nav-copy small { display: block; margin-top: 2px; font-size: 10px; color: #718077; }
+    .nav-button[aria-pressed="true"] small { color: rgba(255,255,255,.7); }
 
-    .hud-center {
-      justify-self: stretch;
-      min-height: 58px;
+    .player-card {
+      position: fixed;
+      z-index: 18;
+      top: 24px;
+      right: 24px;
       display: flex;
-      justify-content: center;
-      gap: 8px;
-      overflow: visible;
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
-      transform: none;
+      align-items: center;
+      gap: 11px;
+      padding: 9px 13px 9px 9px;
+      border: 1px solid rgba(255,255,255,.82);
+      border-radius: 18px;
+      background: rgba(255,255,255,.91);
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(12px);
     }
 
-    .player-status,
-    .score-pill,
-    .medal-pill,
-    .level-pill {
-      min-height: 54px;
-      padding: 8px 13px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      background: rgba(250, 253, 250, 0.9);
-      color: var(--text);
-      box-shadow: none;
-    }
-
-    .player-status {
-      min-width: min(220px, 26vw);
-    }
-
-    .player-status strong,
-    .score-pill b,
-    .medal-pill b {
-      color: var(--green-dark);
-    }
-
-    .score-pill span,
-    .medal-pill span,
-    .level-pill,
-    .player-status small {
-      color: var(--muted);
-    }
-
-    .level-pill {
-      color: var(--green-dark);
-      font-weight: 900;
-    }
-
-    .hud-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn,
-    .bottom-nav button,
-    .mission-chip,
-    .quiz-option,
-    .control-pad button {
-      border-radius: 8px;
-      letter-spacing: 0;
-    }
-
-    .btn {
-      min-height: 42px;
-      padding: 9px 14px;
-      border-color: rgba(215, 228, 218, 0.95);
-      background: #fff;
-      color: #1d2b23;
-      font-size: 14px;
-      font-weight: 800;
-      box-shadow: none;
-    }
-
-    .btn-primary {
-      border-color: #146b41;
-      background: linear-gradient(180deg, #1e7d4d, #12633c);
+    .avatar {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
       color: #fff;
+      font-weight: 900;
+      background: linear-gradient(145deg, #68b8d7, #277da1);
     }
 
-    .btn-danger {
-      border-color: rgba(217, 92, 69, 0.25);
-      background: #fff7f5;
-      color: #a23c2d;
-    }
+    .player-copy strong, .player-copy small { display: block; }
+    .player-copy strong { font-size: 13px; }
+    .player-copy small { margin-top: 2px; font-size: 10px; color: var(--muted); }
 
-    .game-shell {
-      min-height: 100vh;
-      padding: 98px 18px 104px;
-    }
-
-    .school-view {
-      filter: saturate(0.92) contrast(0.98);
-    }
-
-    .left-panel {
-      top: 118px;
-      left: 22px;
-      width: 324px;
-      gap: 12px;
-    }
-
-    .right-panel {
-      top: 170px;
-      right: 22px;
-      width: 292px;
-      gap: 12px;
-    }
-
-    .mission-card,
-    .card,
-    .teacher-panel,
-    .control-guide,
-    .mini-map {
-      border: 1px solid rgba(215, 228, 218, 0.95);
+    .sound-button {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 0;
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.88);
-      box-shadow: 0 16px 34px rgba(20, 52, 31, 0.12);
+      color: var(--green-800);
+      background: #edf7ee;
+      cursor: pointer;
+    }
+
+    .hotspot-layer {
+      position: fixed;
+      z-index: 8;
+      inset: 0;
+      left: var(--rail);
+      pointer-events: none;
+    }
+
+    .hotspot {
+      --pin: var(--green-700);
+      position: absolute;
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border: 4px solid rgba(255,255,255,.96);
+      border-radius: 50% 50% 50% 11px;
+      color: #fff;
+      background: var(--pin);
+      box-shadow: 0 10px 25px rgba(6,44,25,.34), 0 0 0 6px rgba(255,255,255,.23);
+      transform: rotate(-45deg);
+      cursor: pointer;
+      pointer-events: auto;
+      animation: float 2.8s ease-in-out infinite;
+      transition: filter .16s ease;
+    }
+
+    .hotspot:hover { filter: brightness(1.12); }
+    .hotspot > span { transform: rotate(45deg); font-size: 22px; font-weight: 900; }
+    .hotspot::after {
+      content: "";
+      position: absolute;
+      width: 32px;
+      height: 11px;
+      left: 23px;
+      top: 54px;
+      border-radius: 50%;
+      background: rgba(4,38,22,.25);
+      filter: blur(2px);
+      transform: rotate(45deg);
+    }
+
+    .hotspot.completed::before {
+      content: "✓";
+      position: absolute;
+      z-index: 2;
+      right: -8px;
+      top: -8px;
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      color: #fff;
+      background: #e3a612;
+      font-size: 12px;
+      transform: rotate(45deg);
+    }
+
+    .hotspot.school { left: 22%; top: 35%; --pin: #168b4c; }
+    .hotspot.canteen { left: 75%; top: 41%; --pin: #e69b19; animation-delay: -.4s; }
+    .hotspot.garden { left: 72%; top: 73%; --pin: #2d9d68; animation-delay: -.8s; }
+    .hotspot.court { left: 49%; top: 56%; --pin: #347ec2; animation-delay: -1.2s; }
+    .hotspot.community { left: 55%; top: 26%; --pin: #8b5bc5; animation-delay: -1.6s; }
+
+    .mission-teaser {
+      position: fixed;
+      z-index: 17;
+      top: 92px;
+      right: 24px;
+      width: min(306px, calc(100vw - 230px));
+      padding: 17px;
+      border: 1px solid rgba(255,255,255,.85);
+      border-radius: 20px;
+      background: rgba(255,255,255,.93);
+      box-shadow: var(--soft-shadow);
       backdrop-filter: blur(14px);
     }
 
-    .mission-card > .card {
-      padding: 16px 16px 7px;
+    .mission-teaser .eyeline { margin: 0 0 7px; color: var(--green-700); font-size: 11px; font-weight: 800; }
+    .mission-teaser h2 { margin: 0; font-size: 18px; line-height: 1.3; }
+    .mission-teaser p { margin: 7px 0 13px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+
+    .primary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 16px;
       border: 0;
-      border-radius: 0;
-      background: transparent;
-    }
-
-    .mission-card h2,
-    .card h2,
-    .teacher-panel h2,
-    .control-guide h2,
-    .mini-map h2 {
-      color: #173522;
-      font-size: 19px;
-      font-weight: 900;
-      letter-spacing: 0;
-    }
-
-    .mission-list {
-      gap: 8px;
-      padding: 10px 12px 14px;
-    }
-
-    .mission-chip {
-      min-height: 58px;
-      grid-template-columns: 42px minmax(0, 1fr) 38px;
-      padding: 8px 10px;
-      border-color: rgba(215, 228, 218, 0.95);
-      background: rgba(255, 255, 255, 0.92);
-      box-shadow: none;
-    }
-
-    .mission-chip:hover {
-      border-color: rgba(23, 114, 69, 0.35);
-      background: #f7fbf8;
-    }
-
-    .mission-chip.is-active {
-      border-color: rgba(23, 114, 69, 0.54);
-      background: #edf8f0;
-      box-shadow: inset 4px 0 0 #177245;
-    }
-
-    .mission-chip b {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      background: #e6f1e9;
-      color: var(--green-dark);
-      box-shadow: none;
-    }
-
-    .mission-chip span {
-      font-size: 15px;
-      font-weight: 850;
-    }
-
-    .mission-chip small {
-      width: auto;
-      height: auto;
-      color: var(--muted);
-      background: transparent;
-      clip-path: none;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--green-800);
+      box-shadow: 0 7px 15px rgba(15,99,57,.24);
+      font-weight: 800;
       font-size: 12px;
+      cursor: pointer;
     }
 
-    .mission-chip small::after,
-    .mission-chip:not(.is-locked) small::after,
-    .mission-chip.is-complete small::after {
-      content: none;
+    .primary-button:hover { background: var(--green-900); }
+
+    .progress-hud {
+      position: fixed;
+      z-index: 21;
+      left: calc(var(--rail) + 44px);
+      right: 28px;
+      bottom: 24px;
+      min-height: 88px;
+      display: grid;
+      grid-template-columns: 68px minmax(145px, 240px) 1fr auto;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 22px 12px 12px;
+      border: 3px solid rgba(255,255,255,.92);
+      border-radius: 26px;
+      color: var(--ink);
+      background: rgba(255, 252, 238, .96);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
     }
 
-    .walk-cta {
-      bottom: 112px;
-      min-height: 58px;
-      min-width: min(430px, calc(100vw - 32px));
-      border-radius: 12px;
-      background: rgba(18, 34, 26, 0.88);
-      box-shadow: 0 18px 40px rgba(12, 24, 18, 0.18);
-      font-size: 18px;
-      font-weight: 850;
+    .coin {
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      border: 4px solid #ffd975;
+      border-radius: 50%;
+      color: #7b4c00;
+      background: radial-gradient(circle at 35% 27%, #ffe88c, #f3b726 52%, #c17a07 100%);
+      box-shadow: inset 0 0 0 3px rgba(138,83,0,.37), 0 8px 16px rgba(139,85,0,.2);
     }
 
-    .walk-cta .alert-dot {
-      width: 38px;
-      height: 38px;
-      background: #f2b632;
-      color: #3c2a0a;
-      font-size: 27px;
+    .coin svg { width: 33px; height: 33px; stroke-width: 2.4; }
+    .progress-title strong { display: block; color: var(--green-900); font-size: 18px; }
+    .progress-title small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+
+    .bar-wrap { min-width: 0; }
+    .bar-labels { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: 11px; color: var(--muted); }
+    .bar-labels strong { color: var(--green-900); }
+    .progress-track { height: 16px; overflow: hidden; border: 1px solid #c8c4b6; border-radius: 999px; background: #e7e4d8; box-shadow: inset 0 2px 5px rgba(41,43,30,.12); }
+    .progress-fill { height: 100%; width: 50%; border-radius: inherit; background: linear-gradient(90deg, #207641, #69b946); box-shadow: inset 0 0 0 1px rgba(255,255,255,.24); transition: width .55s cubic-bezier(.22,.8,.25,1); }
+    .points-value { white-space: nowrap; color: var(--green-900); font-size: 21px; font-weight: 900; }
+    .points-value span { color: #6a746c; font-size: 14px; font-weight: 700; }
+
+    .drawer-backdrop {
+      position: fixed;
+      z-index: 28;
+      inset: 0;
+      display: none;
+      background: rgba(5,31,19,.27);
+      backdrop-filter: blur(2px);
     }
 
-    .bottom-nav {
-      width: min(92vw, 1180px);
-      min-height: 74px;
+    .drawer-backdrop.show { display: block; }
+
+    .drawer {
+      position: fixed;
+      z-index: 29;
+      top: 18px;
+      right: 18px;
       bottom: 18px;
-      gap: 8px;
-      padding: 9px;
-      border-radius: 14px;
-      border-color: rgba(215, 228, 218, 0.95);
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 18px 42px rgba(22, 36, 29, 0.14);
-    }
-
-    .bottom-nav button {
-      min-height: 54px;
-      border: 1px solid rgba(215, 228, 218, 0.9);
-      background: #fff;
-      color: #314139;
-      font-size: 16px;
-      font-weight: 850;
-      box-shadow: none;
-    }
-
-    .bottom-nav button:first-child,
-    .bottom-nav button:last-child {
-      background: #eef7f1;
-      color: var(--green-dark);
-    }
-
-    .nav-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: rgba(23, 114, 69, 0.08);
-    }
-
-    .start-screen {
-      padding: 24px;
-      background:
-        linear-gradient(120deg, rgba(235, 245, 238, 0.96), rgba(244, 249, 245, 0.96)),
-        radial-gradient(circle at 18% 18%, rgba(31, 131, 182, 0.18), transparent 34%),
-        #f4f8f4;
-    }
-
-    .start-card {
-      width: min(980px, 96vw);
-      min-height: 0;
-      grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1fr);
-      gap: 0;
+      width: min(420px, calc(100vw - 36px));
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
-      border: 1px solid rgba(215, 228, 218, 0.95);
-      border-radius: 14px;
-      background: #fff;
-      box-shadow: 0 30px 80px rgba(20, 52, 31, 0.16);
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: 27px;
+      background: rgba(255,255,255,.97);
+      box-shadow: 0 30px 80px rgba(4,35,19,.34);
+      transform: translateX(calc(100% + 40px));
+      transition: transform .28s cubic-bezier(.2,.75,.28,1);
     }
 
-    .start-copy {
-      align-content: center;
-      padding: 36px;
-      background: linear-gradient(180deg, #124e31, #176c42);
+    .drawer.show { transform: translateX(0); }
+    .drawer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 24px 24px 18px; border-bottom: 1px solid #e2ebe4; background: linear-gradient(140deg, #f8fbf4, #e7f4e6); }
+    .drawer-head small { display: block; margin-bottom: 4px; color: var(--green-700); font-weight: 800; }
+    .drawer-head h2 { margin: 0; font-size: 25px; letter-spacing: -.4px; }
+    .close-button { width: 40px; height: 40px; display: grid; place-items: center; flex: 0 0 auto; border: 0; border-radius: 13px; color: var(--green-900); background: #fff; box-shadow: var(--soft-shadow); cursor: pointer; }
+    .drawer-body { padding: 22px 24px 110px; overflow: auto; }
+    .drawer-body > p { margin-top: 0; color: var(--muted); line-height: 1.7; }
+
+    .mission-list { display: grid; gap: 10px; }
+    .mission-row { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; width: 100%; padding: 12px; border: 1px solid #dae7dc; border-radius: 16px; color: var(--ink); background: #fff; text-align: left; cursor: pointer; }
+    .mission-row:hover { border-color: #8bc397; background: #f8fcf5; }
+    .mission-row.is-done { background: #eff8ed; }
+    .mission-number { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; color: #fff; background: var(--green-700); font-weight: 900; }
+    .mission-row strong, .mission-row small { display: block; }
+    .mission-row strong { font-size: 13px; }
+    .mission-row small { margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .mission-points { color: var(--gold-dark); font-size: 12px; font-weight: 900; }
+
+    .zone-card { padding: 18px; border: 1px solid #dce8de; border-radius: 18px; background: #f9fcf7; }
+    .zone-card h3 { margin: 0 0 6px; font-size: 20px; }
+    .zone-card p { color: var(--muted); line-height: 1.65; }
+    .zone-meta { display: flex; gap: 8px; margin: 15px 0 20px; }
+    .zone-meta span { padding: 7px 10px; border-radius: 10px; color: var(--green-900); background: #e6f4e4; font-size: 11px; font-weight: 800; }
+
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat { min-height: 120px; padding: 18px; border-radius: 18px; background: #eef7ea; }
+    .stat.gold { background: #fff5d4; }
+    .stat small, .stat strong { display: block; }
+    .stat small { color: var(--muted); }
+    .stat strong { margin-top: 12px; color: var(--green-900); font-size: 28px; }
+    .medal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .medal-card { padding: 18px; border: 1px solid #ead7a4; border-radius: 18px; background: #fffae9; text-align: center; }
+    .medal-card .medal-symbol { width: 62px; height: 62px; display: grid; place-items: center; margin: 0 auto 9px; border-radius: 50%; background: linear-gradient(145deg, #ffe587, #e6a719); font-size: 28px; box-shadow: inset 0 0 0 4px rgba(159,95,0,.18); }
+    .medal-card.locked { filter: grayscale(1); opacity: .5; }
+    .medal-card strong { font-size: 12px; }
+
+    .toast {
+      position: fixed;
+      z-index: 40;
+      left: 50%;
+      bottom: 130px;
+      padding: 12px 18px;
+      border-radius: 13px;
       color: #fff;
+      background: var(--green-950);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 16px);
+      transition: opacity .2s ease, transform .2s ease;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @keyframes float {
+      0%, 100% { transform: rotate(-45deg) translate(0,0); }
+      50% { transform: rotate(-45deg) translate(-5px,-5px); }
     }
 
-    .start-copy h2 {
-      color: #fff;
-      font-size: clamp(29px, 4vw, 45px);
-      line-height: 1.08;
-      letter-spacing: 0;
+    @media (max-width: 900px) {
+      :root { --rail: 0px; }
+      .world { inset: 0 0 80px; background-position: 48% center; }
+      .brand-card { top: 12px; left: 12px; width: 166px; padding: 12px; border-radius: 18px; }
+      .brand-card h1 { font-size: 17px; }
+      .brand-card p { display: none; }
+      .brand-mark { width: 34px; height: 34px; }
+      .side-nav { top: auto; left: 10px; right: 10px; bottom: 9px; width: auto; height: 70px; display: grid; grid-template-columns: repeat(4, 1fr); padding: 7px; border-radius: 20px; }
+      .nav-button { min-height: 54px; grid-template-columns: 1fr; place-items: center; gap: 0; padding: 4px; }
+      .nav-button:hover { transform: none; }
+      .nav-icon { width: 31px; height: 31px; border: 0; background: transparent; }
+      .nav-icon svg { width: 22px; height: 22px; }
+      .nav-copy strong { font-size: 9px; text-align: center; }
+      .nav-copy small { display: none; }
+      .player-card { top: 12px; right: 12px; padding: 6px; }
+      .player-copy, .sound-button { display: none; }
+      .avatar { width: 38px; height: 38px; }
+      .mission-teaser { top: 82px; right: 12px; width: 240px; padding: 13px; }
+      .mission-teaser h2 { font-size: 14px; }
+      .mission-teaser p { display: none; }
+      .primary-button { min-height: 35px; }
+      .progress-hud { left: 12px; right: 12px; bottom: 88px; min-height: 68px; grid-template-columns: 49px 1fr auto; gap: 10px; padding: 8px 12px 8px 8px; border-radius: 20px; }
+      .coin { width: 47px; height: 47px; border-width: 3px; }
+      .coin svg { width: 24px; height: 24px; }
+      .progress-title { display: none; }
+      .bar-labels { display: none; }
+      .progress-track { height: 12px; }
+      .points-value { font-size: 16px; }
+      .points-value span { font-size: 11px; }
+      .hotspot { width: 45px; height: 45px; }
+      .hotspot::after { top: 47px; left: 18px; }
+      .hotspot.school { left: 18%; }
+      .hotspot.canteen { left: 76%; }
+      .toast { bottom: 170px; }
     }
 
-    .start-copy p {
-      max-width: 54ch;
-      color: rgba(255, 255, 255, 0.86);
-      font-size: 16px;
-      line-height: 1.7;
+    @media (max-width: 560px) {
+      .world { background-position: 51% center; }
+      .mission-teaser { top: 72px; left: 12px; right: 12px; width: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .mission-teaser .eyeline { margin: 0 0 2px; }
+      .mission-teaser h2 { font-size: 13px; }
+      .hotspot.school { left: 7%; top: 34%; }
+      .hotspot.canteen { left: 73%; top: 41%; }
+      .hotspot.garden { left: 68%; top: 68%; }
+      .hotspot.court { left: 43%; top: 55%; }
+      .hotspot.community { left: 50%; top: 27%; }
+      .drawer-head { padding: 20px; }
+      .drawer-body { padding: 18px 18px 100px; }
     }
 
-    .start-copy .medal-strip {
-      margin-top: 20px;
-    }
-
-    .start-copy .medal {
-      border-color: rgba(255, 255, 255, 0.28);
-      background: rgba(255, 255, 255, 0.13);
-      color: #fff;
-    }
-
-    .start-card > div:last-child {
-      padding: 30px;
-      background: #fff;
-    }
-
-    .start-visual {
-      height: 150px;
-      margin-bottom: 18px;
-      border: 1px solid rgba(215, 228, 218, 0.95);
-      border-radius: 12px;
-      background:
-        linear-gradient(180deg, rgba(232, 246, 255, 0.88), rgba(236, 247, 236, 0.92)),
-        #f5faf6;
-      box-shadow: none;
-    }
-
-    .start-form {
-      gap: 14px;
-    }
-
-    .field label,
-    .question label,
-    .quiz-question {
-      color: #173522;
-      font-weight: 850;
-    }
-
-    .field input,
-    .field textarea,
-    .field select {
-      border-radius: 8px;
-      border-color: #d7e4da;
-      background: #fbfdfb;
-      font-size: 15px;
-    }
-
-    .modal {
-      border-radius: 14px;
-      border-color: rgba(215, 228, 218, 0.95);
-      box-shadow: 0 28px 70px rgba(13, 30, 20, 0.24);
-    }
-
-    .modal-head {
-      padding: 20px 22px;
-    }
-
-    .modal-body {
-      padding: 20px 22px;
-    }
-
-    .question,
-    .quiz-game,
-    .quiz-card {
-      border-radius: 10px;
-    }
-
-    .quiz-game {
-      border-color: rgba(31, 131, 182, 0.22);
-      background: #f5fbff;
-    }
-
-    @media (max-width: 1180px) {
-      .hud {
-        grid-template-columns: minmax(220px, 1fr) auto;
-      }
-
-      .hud-center {
-        grid-column: 1 / -1;
-        justify-content: flex-start;
-        overflow-x: auto;
-        padding-bottom: 2px;
-      }
-
-      .hud-actions {
-        justify-self: end;
-      }
-
-      .left-panel {
-        top: 150px;
-      }
-    }
-
-    @media (max-width: 760px) {
-      html,
-      body {
-        max-width: 100%;
-        overflow-x: hidden;
-      }
-
-      body {
-        overflow: auto;
-      }
-
-      .app,
-      .game-shell {
-        min-height: 100svh;
-        width: 100%;
-        overflow-x: hidden;
-      }
-
-      .hud {
-        inset: 10px 10px auto 10px;
-        grid-template-columns: 1fr;
-        padding: 8px;
-        gap: 6px;
-      }
-
-      .brand {
-        grid-template-columns: 34px minmax(0, 1fr);
-        gap: 8px;
-      }
-
-      .brand-mark {
-        width: 34px;
-        height: 34px;
-      }
-
-      .brand h1 {
-        font-size: 18px;
-      }
-
-      .brand p {
-        display: none;
-      }
-
-      .hud-center {
-        display: grid;
-        grid-template-columns: minmax(128px, 1.4fr) minmax(82px, 0.9fr) minmax(58px, 0.7fr);
-        gap: 6px;
-        width: 100%;
-        overflow: visible;
-      }
-
-      .player-status,
-      .score-pill,
-      .medal-pill,
-      .level-pill {
-        min-height: 46px;
-        min-width: 0;
-        width: 100%;
-        padding: 6px 8px;
-        font-size: 12px;
-      }
-
-      .player-status {
-        grid-column: auto;
-        gap: 7px;
-      }
-
-      .score-pill,
-      .medal-pill {
-        justify-content: center;
-      }
-
-      .player-status small,
-      .score-pill span,
-      .medal-pill span {
-        display: none;
-      }
-
-      .score-pill b,
-      .medal-pill b {
-        font-size: 16px;
-      }
-
-      .level-pill {
-        display: none;
-      }
-
-      .hud-actions {
-        display: none;
-      }
-
-      .game-shell {
-        padding: 128px 12px 92px;
-      }
-
-      .left-panel {
-        position: relative;
-        top: auto;
-        left: auto;
-        right: auto;
-        width: min(100%, calc(100vw - 24px));
-        max-width: none;
-        margin: 0;
-      }
-
-      .right-panel {
-        display: none;
-      }
-
-      .school-view {
-        display: none;
-      }
-
-      .scene-wrap {
-        display: none;
-      }
-
-      .walk-cta {
-        position: fixed;
-        left: 16px;
-        right: 16px;
-        bottom: 138px;
-        width: auto;
-        min-height: 50px;
-        transform: none;
-        font-size: 15px;
-      }
-
-      .bottom-nav {
-        position: fixed;
-        left: 8px;
-        right: 8px;
-        bottom: 8px;
-        width: auto;
-        transform: none;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        min-height: 0;
-        padding: 7px;
-      }
-
-      .bottom-nav button {
-        min-height: 46px;
-        gap: 5px;
-        font-size: 13px;
-      }
-
-      .nav-icon {
-        width: 22px;
-        height: 22px;
-      }
-
-      .start-screen {
-        align-items: flex-start;
-        overflow: auto;
-        padding: 12px;
-      }
-
-      .start-card {
-        width: 100%;
-        grid-template-columns: 1fr;
-      }
-
-      .start-copy,
-      .start-card > div:last-child {
-        padding: 22px;
-      }
-
-      .start-copy h2 {
-        font-size: 30px;
-      }
-
-      .start-copy p {
-        font-size: 15px;
-      }
-
-      .start-visual {
-        display: none;
-      }
-
-      .form-grid,
-      .quiz-options {
-        grid-template-columns: 1fr;
-      }
-
-      .modal {
-        width: min(100%, 96vw);
-        max-height: 88svh;
-      }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
 <body>
-  <div class="app" id="app">
-    <header class="hud">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <path d="M12 21c4.6-2.4 7.3-6.1 7.3-10.4A7.3 7.3 0 0 0 4.7 10.6C4.7 14.9 7.4 18.6 12 21Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M8.7 12.1c2.6-.4 4.4-1.8 5.6-4.2 1.5 2 1.8 4.5.8 6.4-1 1.9-3.3 2.7-5.3 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div>
-          <h1>Laudato Si'<br>Mission</h1>
-          <p>ภารกิจพิทักษ์บ้านส่วนรวม สำหรับนักเรียนชั้นมัธยมศึกษาปีที่ 6</p>
-        </div>
+  <svg aria-hidden="true" width="0" height="0" style="position:absolute">
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M20 4C12 4 6 8.5 6 15c0 2.8 2.2 5 5 5 6.5 0 9-8 9-16Z"/><path d="M4 21c3.5-6.5 7.5-9.5 13-12"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 6 5-2 8 3 5-2v13l-5 2-8-3-5 2V6Z"/><path d="M8 4v13M16 7v13"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16ZM20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2.7 2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.7Z"/></symbol>
+    <symbol id="i-medal" viewBox="0 0 24 24"><circle cx="12" cy="15" r="5"/><path d="m8.5 3 3.5 7 3.5-7M5.5 3l4 8M18.5 3l-4 8"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M5 9v6h4l5 4V5L9 9H5Z"/><path d="M17 9a4 4 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  </svg>
+
+  <main class="game-shell">
+    <div class="world" aria-label="แผนที่โรงเรียนในมุมมองแบบ isometric"></div>
+
+    <header class="brand-card">
+      <div class="brand-row">
+        <span class="brand-mark"><svg><use href="#i-leaf"></use></svg></span>
+        <h1>Laudato Si’<br>Mission</h1>
       </div>
-      <div class="hud-center">
-        <div class="player-status">
-          <span class="player-avatar" aria-hidden="true"></span>
-          <span><strong id="topPlayerName">Player001</strong><small id="topPlayerMeta">ม.6/1 เลขที่ 12</small></span>
-        </div>
-        <div class="score-pill"><span>คะแนนรวม</span><b><span id="scoreText">0</span> / 250</b></div>
-        <div class="medal-pill"><span>เหรียญ</span><b id="medalCount">0</b></div>
-        <div class="level-pill" id="levelText">Eco Starter</div>
-      </div>
-      <div class="hud-actions">
-        <button class="btn btn-primary" id="openMissionBtn" type="button">เริ่มภารกิจใกล้ตัว</button>
-        <button class="btn" id="openNotebookBtn" type="button">สมุดภารกิจ</button>
-        <button class="btn" id="openTeacherBtn" type="button">ครูดูผล</button>
-        <button class="btn btn-danger" id="resetBtn" type="button">เริ่มใหม่</button>
-      </div>
+      <p>เรียนรู้ • ดูแล • ลงมือเปลี่ยน<br>เริ่มจากโรงเรียนของเรา</p>
     </header>
 
-    <main class="game-shell">
-      <div class="skyline">
-        <span class="cloud one"></span>
-        <span class="cloud two"></span>
-      </div>
-
-      <div class="school-view" aria-hidden="true">
-        <div class="hero-tree left"></div>
-        <div class="hero-tree right"></div>
-        <div class="school-building"><span class="school-clock"></span></div>
-        <div class="courtyard-path"></div>
-        <div class="hero-fountain"></div>
-        <div class="hero-bin green"></div>
-        <div class="hero-bin yellow"></div>
-        <div class="hero-avatar">
-          <span class="hair"></span>
-          <span class="shirt"></span>
-          <span class="arms"></span>
-          <span class="bag"></span>
-          <span class="shorts"></span>
-          <span class="legs"></span>
-          <span class="shoes"></span>
-        </div>
-      </div>
-
-      <aside class="left-panel">
-        <section class="mission-card">
-          <div class="card">
-            <h2>แผนที่ภารกิจ</h2>
-            <p>เดินไปยังจุดภารกิจบนแผนที่ แล้วคลิกจุดภารกิจเพื่อทำด่านตามลำดับ</p>
-          </div>
-          <div class="mission-list" id="missionList"></div>
-        </section>
-        <section class="card">
-          <h2>สมุดภารกิจรายบุคคล</h2>
-          <p id="playerLine">ยังไม่ได้ลงทะเบียนผู้เล่น</p>
-          <div class="progress-bar" style="--value:0%" aria-label="ความคืบหน้า"><i id="progressFill"></i></div>
-          <div class="medal-strip" id="medalStrip"></div>
-        </section>
-      </aside>
-
-      <div class="scene-wrap" aria-label="โรงเรียนจำลองแบบแผนที่">
-        <div class="world" id="world">
-          <div class="ground"></div>
-          <div class="path main"></div>
-          <div class="path vertical"></div>
-          <div class="path diagonal"></div>
-
-          <div class="zone classroom" data-label="ห้องเรียน"><span class="building-wall"></span></div>
-          <div class="zone cafeteria" data-label="โรงอาหาร"><span class="building-wall"></span></div>
-          <div class="zone waste" data-label="จุดทิ้งขยะ"><span class="building-wall"></span></div>
-          <div class="zone garden" data-label="สวนโรงเรียน"><span class="building-wall"></span></div>
-          <div class="zone stage" data-label="ลานกิจกรรม"><span class="building-wall"></span></div>
-          <div class="zone gate" data-label="ประตูสู่ชุมชน"><span class="building-wall"></span></div>
-
-          <span class="tree t1"></span>
-          <span class="tree t2"></span>
-          <span class="tree t3"></span>
-          <span class="tree t4"></span>
-          <span class="bin b1"></span>
-          <span class="bin b2"></span>
-          <span class="lamp l1"></span>
-          <span class="lamp l2"></span>
-          <span class="poster-board pb1"></span>
-
-          <button class="hotspot" style="left:205px;top:185px" data-mission="0" type="button" title="Wake Up Call">1</button>
-          <button class="hotspot" style="left:510px;top:158px" data-mission="1" type="button" title="Eco Detective">2</button>
-          <button class="hotspot" style="left:785px;top:288px" data-mission="2" type="button" title="Mission Possible">3</button>
-          <button class="hotspot" style="left:203px;top:546px" data-mission="3" type="button" title="Create & Launch">4</button>
-          <button class="hotspot" style="left:510px;top:586px" data-mission="4" type="button" title="Pitch for the Planet">5</button>
-          <button class="hotspot" style="left:816px;top:526px" data-mission="5" type="button" title="Real Life Quest">6</button>
-
-          <div class="player" id="player" aria-hidden="true">
-            <span class="player-shadow"></span>
-            <span class="head"></span>
-            <span class="body"></span>
-            <span class="legs"></span>
-          </div>
-        </div>
-      </div>
-
-      <aside class="right-panel">
-        <section class="control-guide">
-          <h2>การควบคุม</h2>
-          <div class="key-row">
-            <div class="keys"><span>W</span><span>A</span><span>S</span><span>D</span></div>
-            <span>เดิน</span>
-          </div>
-          <div class="key-row">
-            <span class="mouse-icon"></span>
-            <span>มองรอบๆ</span>
-          </div>
-          <div class="key-row">
-            <span class="single-key">E</span>
-            <span>โต้ตอบ / คลิก</span>
-          </div>
-          <div class="key-row">
-            <span class="single-key">M</span>
-            <span>เปิดแผนที่</span>
-          </div>
-        </section>
-
-        <section class="mini-map">
-          <h2>แผนที่โรงเรียน</h2>
-          <div class="map-canvas">
-            <span class="map-building a"></span>
-            <span class="map-building b"></span>
-            <span class="map-building c"></span>
-            <span class="map-point p1">1</span>
-            <span class="map-point p2">2</span>
-            <span class="map-point p3">3</span>
-            <span class="map-point p4">4</span>
-            <span class="map-point p5">5</span>
-            <span class="map-point p6">6</span>
-            <span class="map-arrow"></span>
-          </div>
-        </section>
-
-        <section class="teacher-panel" id="teacherPanel">
-          <header>
-            <h2>ครูดูผลคะแนน</h2>
-            <p>ติดตามความก้าวหน้า คะแนน เหรียญ และส่งออกรายงานรายบุคคล</p>
-          </header>
-          <div class="teacher-body">
-            <div class="mini-row">
-              <span>ความรับผิดชอบ</span>
-              <div class="mini-score">
-                <button type="button" data-extra="responsibility" data-delta="-1">-</button>
-                <input id="responsibilityInput" type="number" min="0" max="10" value="0">
-                <button type="button" data-extra="responsibility" data-delta="1">+</button>
-              </div>
-            </div>
-            <div class="mini-row">
-              <span>ความคิดสร้างสรรค์พิเศษ</span>
-              <div class="mini-score">
-                <button type="button" data-extra="creativity" data-delta="-1">-</button>
-                <input id="creativityInput" type="number" min="0" max="10" value="0">
-                <button type="button" data-extra="creativity" data-delta="1">+</button>
-              </div>
-            </div>
-            <div class="summary-lines" id="teacherSummary"></div>
-            <button class="btn btn-primary" id="downloadReportBtn" type="button">ดาวน์โหลดรายงาน</button>
-            <button class="btn" id="submitSheetBtn" type="button">ส่งคะแนนไปฐานข้อมูล</button>
-            <button class="btn" id="openResultsBtn" type="button">ดูฐานข้อมูล</button>
-          </div>
-        </section>
-      </aside>
-
-      <nav class="control-pad" aria-label="ปุ่มเดินสำรวจ">
-        <button class="up" type="button" data-move="0,-32" aria-label="เดินขึ้น">↑</button>
-        <button class="left" type="button" data-move="-32,0" aria-label="เดินซ้าย">←</button>
-        <button class="center" type="button" id="centerActionBtn" aria-label="ทำภารกิจ">●</button>
-        <button class="right" type="button" data-move="32,0" aria-label="เดินขวา">→</button>
-        <button class="down" type="button" data-move="0,32" aria-label="เดินลง">↓</button>
-      </nav>
-
-      <button class="walk-cta" id="walkMissionBtn" type="button">
-        <span>เดินไปยังจุด</span>
-        <span class="alert-dot">!</span>
-        <span>เพื่อเริ่มภารกิจ</span>
+    <nav class="side-nav" aria-label="เมนูเกม">
+      <button class="nav-button" type="button" data-panel="map" aria-pressed="true">
+        <span class="nav-icon"><svg><use href="#i-map"></use></svg></span>
+        <span class="nav-copy"><strong>แผนที่</strong><small>สำรวจโรงเรียน</small></span>
       </button>
+      <button class="nav-button" type="button" data-panel="missions" aria-pressed="false">
+        <span class="nav-icon"><svg><use href="#i-book"></use></svg></span>
+        <span class="nav-copy"><strong>สมุดภารกิจ</strong><small>5 พื้นที่เรียนรู้</small></span>
+      </button>
+      <button class="nav-button" type="button" data-panel="score" aria-pressed="false">
+        <span class="nav-icon"><svg><use href="#i-star"></use></svg></span>
+        <span class="nav-copy"><strong>ดาวคะแนน</strong><small id="menuPointText">1,250 คะแนน</small></span>
+      </button>
+      <button class="nav-button" type="button" data-panel="medals" aria-pressed="false">
+        <span class="nav-icon"><svg><use href="#i-medal"></use></svg></span>
+        <span class="nav-copy"><strong>เหรียญรางวัล</strong><small id="menuMedalText">2 เหรียญ</small></span>
+      </button>
+    </nav>
 
-      <nav class="bottom-nav" aria-label="เมนูหลัก">
-        <button type="button" data-bottom-action="home"><span class="nav-icon">⌂</span>หน้าแรก</button>
-        <button type="button" data-bottom-action="mission"><span class="nav-icon">◎</span>ภารกิจ</button>
-        <button type="button" data-bottom-action="score"><span class="nav-icon">▰</span>คะแนน</button>
-        <button type="button" data-bottom-action="medal"><span class="nav-icon">◉</span>เหรียญ</button>
-        <button type="button" data-bottom-action="promise"><span class="nav-icon">♧</span>คำมั่นสัญญา</button>
-        <button type="button" data-bottom-action="teacher"><span class="nav-icon">▣</span>สำหรับครู</button>
-      </nav>
-    </main>
-  </div>
+    <section class="player-card" aria-label="ข้อมูลผู้เล่น">
+      <span class="avatar">ST</span>
+      <span class="player-copy"><strong>ผู้พิทักษ์รุ่นใหม่</strong><small>ระดับ Green Explorer</small></span>
+      <button class="sound-button" type="button" id="soundButton" aria-label="เปิดหรือปิดเสียง" aria-pressed="false"><span class="icon"><svg><use href="#i-volume"></use></svg></span></button>
+    </section>
 
-  <section class="start-screen show" id="startScreen">
-    <div class="start-card">
-      <div class="start-copy">
-        <h2>ภารกิจพิทักษ์บ้านส่วนรวม</h2>
-        <p>รับบทเป็นผู้พิทักษ์บ้านส่วนรวม เดินสำรวจโรงเรียนจำลองแบบแผนที่ ค้นหาปัญหา วิเคราะห์สาเหตุ ออกแบบทางออก สร้างผลงาน นำเสนอ และเลือกพฤติกรรมที่จะทำจริงในชีวิตประจำวัน</p>
-        <div class="medal-strip">
-          <span class="medal">6 ภารกิจ</span>
-          <span class="medal">250 คะแนน</span>
-          <span class="medal">เหรียญรายบุคคล</span>
-        </div>
-      </div>
+    <section class="mission-teaser" aria-labelledby="dailyMissionTitle">
       <div>
-        <div class="start-visual" aria-hidden="true"><div class="mini-school"></div></div>
-        <form class="start-form" id="playerForm" novalidate>
-          <div class="form-grid">
-            <div class="field">
-              <label for="playerName">ชื่อ - นามสกุล</label>
-              <input id="playerName" type="text" placeholder="ชื่อนักเรียน" required>
-            </div>
-            <div class="field">
-              <label for="playerRoom">ห้อง</label>
-              <input id="playerRoom" type="text" placeholder="เช่น ม.6/1" required>
-            </div>
-            <div class="field">
-              <label for="playerNo">เลขที่</label>
-              <input id="playerNo" type="text" inputmode="numeric" placeholder="เลขที่" required>
-            </div>
-            <div class="field">
-              <label for="playerAlias">ฉายาผู้พิทักษ์</label>
-              <input id="playerAlias" type="text" placeholder="เช่น ผู้พิทักษ์ใบไม้">
-            </div>
-          </div>
-          <button class="btn btn-primary" type="submit">เข้าสู่โรงเรียน</button>
-        </form>
+        <p class="eyeline">ภารกิจวันนี้ • 150 POINTS</p>
+        <h2 id="dailyMissionTitle">ปลูกต้นไม้ให้บ้านส่วนรวม</h2>
+        <p>ไปที่สวนโรงเรียน ช่วยกันปลูกและวางแผนดูแลต้นไม้ให้เติบโต</p>
       </div>
+      <button class="primary-button" type="button" data-open-zone="garden">เริ่มภารกิจ</button>
+    </section>
+
+    <div class="hotspot-layer" aria-label="จุดภารกิจบนแผนที่">
+      <button class="hotspot school completed" type="button" data-open-zone="school" aria-label="อาคารเรียน"><span>1</span></button>
+      <button class="hotspot canteen completed" type="button" data-open-zone="canteen" aria-label="โรงอาหาร"><span>2</span></button>
+      <button class="hotspot garden" type="button" data-open-zone="garden" aria-label="สวนสีเขียว"><span>3</span></button>
+      <button class="hotspot court" type="button" data-open-zone="court" aria-label="ลานกิจกรรม"><span>4</span></button>
+      <button class="hotspot community" type="button" data-open-zone="community" aria-label="ประตูสู่ชุมชน"><span>5</span></button>
     </div>
-  </section>
 
-  <section class="overlay" id="missionOverlay" aria-modal="true" role="dialog">
-    <article class="modal">
-      <div class="modal-head">
-        <div>
-          <h2 id="missionTitle">ภารกิจ</h2>
-          <p id="missionIntro">รายละเอียดภารกิจ</p>
-        </div>
-        <button class="btn" id="closeMissionBtn" type="button">ปิด</button>
+    <section class="progress-hud" aria-label="ความคืบหน้า Laudato Si' points">
+      <div class="coin"><svg><use href="#i-leaf"></use></svg></div>
+      <div class="progress-title"><strong>Laudato Si' points</strong><small>พลังเล็ก ๆ ของเรารวมกันเปลี่ยนโลกได้</small></div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span>ความคืบหน้า</span><strong id="progressPercent">50%</strong></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       </div>
-      <div class="modal-body" id="missionBody"></div>
-      <div class="modal-actions">
-        <div class="score-preview">คะแนนภารกิจ <b id="missionScorePreview">0</b></div>
-        <button class="btn btn-primary" id="completeMissionBtn" type="button">ส่งภารกิจและรับเหรียญ</button>
-      </div>
-    </article>
-  </section>
+      <div class="points-value"><b id="pointText">1,250</b> <span>/ 2,500</span></div>
+    </section>
+  </main>
 
-  <section class="overlay" id="notebookOverlay" aria-modal="true" role="dialog">
-    <article class="modal">
-      <div class="modal-head">
-        <div>
-          <h2>สมุดภารกิจรายบุคคล</h2>
-          <p>สรุปคำตอบ คะแนน เหรียญ และคำมั่นสัญญาดูแลบ้านส่วนรวม</p>
-        </div>
-        <button class="btn" id="closeNotebookBtn" type="button">ปิด</button>
-      </div>
-      <div class="modal-body" id="notebookBody"></div>
-      <div class="modal-actions">
-        <span class="score-preview">คะแนนรวม <b id="notebookScore">0</b> / 250</span>
-        <button class="btn btn-primary" id="copySummaryBtn" type="button">คัดลอกสรุป</button>
-      </div>
-    </article>
-  </section>
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
+    <header class="drawer-head">
+      <div><small id="drawerKicker">แผนที่โรงเรียน</small><h2 id="drawerTitle">เลือกพื้นที่เพื่อเริ่มเรียนรู้</h2></div>
+      <button class="close-button" id="closeDrawer" type="button" aria-label="ปิดหน้าต่าง"><span class="icon"><svg><use href="#i-close"></use></svg></span></button>
+    </header>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
-    const STORAGE_KEY = "laudato-si-mission-v1";
-    const MAX_SCORE = 250;
-    const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1QhY6qeVED7hSs99vVfg-ABin3Az9RWDW6ua3EJbcj58/edit?usp=sharing";
-    const APPS_SCRIPT_WEB_APP_URL = location.href.startsWith("https://script.google.com/")
-      ? location.href
-      : "";
-    const LOCAL_DATABASE_URL = location.protocol.startsWith("http") && !location.href.startsWith("https://script.google.com/")
-      ? `${location.origin}/api/submissions`
-      : "";
-
-    const missions = [
-      {
-        id: "wake",
-        stage: 1,
-        name: "Wake Up Call",
-        thai: "ฟังสัญญาณบ้านส่วนรวม",
-        location: "ห้องเรียน",
-        max: 20,
-        medal: "ผู้ตื่นรู้บ้านส่วนรวม",
-        intro: "สำรวจห้องเรียน แล้วระบุปัญหาสิ่งแวดล้อมที่พบ เช่น ไฟเปิดทิ้งไว้ พัดลมเปิดทิ้งไว้ ขยะตกพื้น หรือการใช้กระดาษสิ้นเปลือง",
-        questions: [
-          "ปัญหานี้ส่งผลต่อบ้านส่วนรวมอย่างไร",
-          "พฤติกรรมใดของมนุษย์ทำให้เกิดปัญหานี้",
-          "ถ้าโรงเรียนคือบ้านส่วนรวม ฉันควรรู้สึกและรับผิดชอบอย่างไร"
-        ]
-      },
-      {
-        id: "detective",
-        stage: 2,
-        name: "Eco Detective",
-        thai: "นักสืบสิ่งแวดล้อมส่วนตัว",
-        location: "โรงอาหาร / จุดทิ้งขยะ",
-        max: 40,
-        medal: "นักสืบบ้านส่วนรวม",
-        intro: "เลือกปัญหาสิ่งแวดล้อมใกล้ตัว 1 เรื่อง แล้ววิเคราะห์สาเหตุ ผลกระทบ และความเชื่อมโยงกับ Laudato Si'",
-        questions: [
-          "ปัญหาคืออะไร",
-          "สาเหตุของปัญหาคืออะไร",
-          "ใครได้รับผลกระทบ",
-          "ปัญหานี้เชื่อมโยงกับแนวคิด Laudato Si' อย่างไร"
-        ]
-      },
-      {
-        id: "solution",
-        stage: 3,
-        name: "Mission Possible",
-        thai: "ทางออกของฉัน",
-        location: "จุดทิ้งขยะ",
-        max: 50,
-        medal: "นักออกแบบโลกใหม่",
-        intro: "ออกแบบแนวทางแก้ไขปัญหาสิ่งแวดล้อมที่สร้างสรรค์ ทำได้จริง และช่วยดูแลบ้านส่วนรวม",
-        questions: [
-          "ฉันจะแก้ปัญหานี้อย่างไร",
-          "แนวทางนี้ทำได้จริงหรือไม่ เพราะอะไร",
-          "แนวทางนี้สร้างสรรค์อย่างไร",
-          "แนวทางนี้เชื่อมโยงกับแนวคิดบ้านส่วนรวมอย่างไร"
-        ]
-      },
-      {
-        id: "create",
-        stage: 4,
-        name: "Create & Launch",
-        thai: "ผลงานรักษ์โลกของฉัน",
-        location: "สวนโรงเรียน",
-        max: 50,
-        medal: "Creator บ้านส่วนรวม",
-        intro: "สร้างผลงานจำลอง เช่น ป้ายรณรงค์ โปสเตอร์ อินโฟกราฟิก แผนปฏิบัติส่วนตัว หรือคำมั่นรักษ์โลก",
-        fields: [
-          ["title", "ชื่อผลงาน"],
-          ["problem", "ปัญหาที่ต้องการแก้ไข"],
-          ["solution", "แนวทางแก้ไข"],
-          ["campaign", "ข้อความรณรงค์"],
-          ["laudato", "แนวคิด Laudato Si' ที่เกี่ยวข้อง"]
-        ]
-      },
-      {
-        id: "pitch",
-        stage: 5,
-        name: "Pitch for the Planet",
-        thai: "พูดเพื่อบ้านส่วนรวม",
-        location: "ลานกิจกรรม",
-        max: 40,
-        medal: "Voice of Our Common Home",
-        intro: "นำเสนอแนวคิดของตนเองแบบสั้น 1 นาที หรือเขียนสรุปสำหรับ Gallery Walk",
-        questions: [
-          "ปัญหาที่เลือกคืออะไร",
-          "สาเหตุของปัญหาคืออะไร",
-          "แนวทางแก้ไขคืออะไร",
-          "ผลงานของฉันช่วยแก้ปัญหาอย่างไร",
-          "ฉันจะนำไปปฏิบัติจริงอย่างไร"
-        ]
-      },
-      {
-        id: "real",
-        stage: 6,
-        name: "Real Life Quest",
-        thai: "ภารกิจจริงของฉัน",
-        location: "ประตูสู่ชุมชน",
-        max: 30,
-        medal: "ผู้พิทักษ์ Laudato Si'",
-        intro: "เลือกภารกิจจริงที่จะนำไปปฏิบัติในชีวิตประจำวัน และเขียนคำมั่นสัญญาสั้น ๆ",
-        fields: [
-          ["quest", "ภารกิจจริงที่เลือก"],
-          ["duration", "ระยะเวลาที่จะทำ"],
-          ["proof", "หลักฐานที่จะแสดง"],
-          ["promise", "ฉันจะดูแลบ้านส่วนรวมโดย..."]
-        ]
-      }
-    ];
-
-    const missionQuizzes = {
-      wake: [
-        {
-          question: "ข้อใดเป็นพฤติกรรมที่ช่วยดูแลบ้านส่วนรวมในห้องเรียนได้ทันที",
-          options: ["ปิดไฟและพัดลมเมื่อไม่ใช้", "เปิดไฟไว้เพื่อให้ห้องดูสว่าง", "ทิ้งกระดาษไว้ให้แม่บ้านเก็บ"],
-          answer: 0,
-          hint: "เริ่มจากพฤติกรรมเล็ก ๆ ที่ลดการใช้พลังงานและรับผิดชอบพื้นที่ร่วมกัน"
-        },
-        {
-          question: "ถ้านักเรียนเห็นขยะตกพื้น สิ่งแรกที่เหมาะสมคืออะไร",
-          options: ["เดินผ่านไปเพราะไม่ใช่ของเรา", "เก็บหรือชวนเพื่อนช่วยแยกทิ้งให้ถูกถัง", "ถ่ายรูปลงกลุ่มแล้วรอคนอื่นจัดการ"],
-          answer: 1,
-          hint: "Laudato Si' เน้นความรับผิดชอบร่วมต่อบ้านส่วนรวม ไม่รอให้เป็นหน้าที่ของคนอื่น"
-        }
-      ],
-      detective: [
-        {
-          question: "นักสืบสิ่งแวดล้อมควรเริ่มจากข้อมูลใดก่อน",
-          options: ["เดาว่าใครผิด", "สังเกตจุดเกิดปัญหาและเก็บหลักฐาน", "รอให้ครูบอกคำตอบ"],
-          answer: 1,
-          hint: "การวิเคราะห์ปัญหาต้องเริ่มจากหลักฐานจริง ไม่ใช่การกล่าวโทษ"
-        },
-        {
-          question: "คำถามใดช่วยหาสาเหตุของขยะล้นได้ดีที่สุด",
-          options: ["ใครทิ้งขยะมากที่สุด", "ขยะล้นช่วงเวลาไหนและถังพอหรือไม่", "ทำไมไม่มีใครสวยงาม"],
-          answer: 1,
-          hint: "คำถามที่ดีต้องช่วยเห็นระบบ เวลา พื้นที่ และพฤติกรรมที่เกี่ยวข้อง"
-        }
-      ],
-      solution: [
-        {
-          question: "ทางออกที่ดีควรมีลักษณะอย่างไร",
-          options: ["ทำได้จริง มีคนรับผิดชอบ และวัดผลได้", "สวยงามแต่ไม่มีใครทำต่อ", "ใช้เงินมากที่สุดเสมอ"],
-          answer: 0,
-          hint: "ทางออกที่ดีต้องปฏิบัติได้จริงและติดตามผลได้"
-        },
-        {
-          question: "ถ้าต้องลดขยะพลาสติกในโรงเรียน แนวทางใดเหมาะที่สุด",
-          options: ["ห้ามทุกอย่างทันทีโดยไม่เตรียมทางเลือก", "จัดจุดเติมน้ำและรณรงค์ใช้แก้วส่วนตัว", "ซ่อนถังขยะไม่ให้เห็น"],
-          answer: 1,
-          hint: "การเปลี่ยนพฤติกรรมต้องมีทางเลือกที่นักเรียนใช้ได้จริง"
-        }
-      ],
-      create: [
-        {
-          question: "ผลงานรณรงค์ที่ดีควรมีอะไรครบที่สุด",
-          options: ["ปัญหา ข้อเสนอ และการชวนลงมือทำ", "รูปสวยอย่างเดียว", "ข้อความยาวที่สุด"],
-          answer: 0,
-          hint: "ผลงานควรทำให้ผู้ชมเข้าใจปัญหาและรู้ว่าต้องทำอะไรต่อ"
-        },
-        {
-          question: "ข้อความใดเหมาะกับแคมเปญ Laudato Si' มากที่สุด",
-          options: ["ใครไม่ทำคือผิด", "เริ่มดูแลบ้านส่วนรวมจากการกระทำเล็ก ๆ วันนี้", "เรื่องสิ่งแวดล้อมไม่เกี่ยวกับเรา"],
-          answer: 1,
-          hint: "ข้อความที่ดีสร้างแรงจูงใจและชวนรับผิดชอบร่วมกัน"
-        }
-      ],
-      pitch: [
-        {
-          question: "การนำเสนอ 1 นาทีควรเริ่มอย่างไรให้ชัดเจน",
-          options: ["บอกปัญหาใกล้ตัวและเหตุผลที่สำคัญ", "อ่านทุกอย่างจากกระดาษให้ครบ", "พูดเรื่องอื่นก่อนให้ยาว"],
-          answer: 0,
-          hint: "เริ่มจากปัญหาและความสำคัญเพื่อให้ผู้ฟังเข้าใจทันที"
-        },
-        {
-          question: "ส่วนปิดท้ายของ pitch ควรมีอะไร",
-          options: ["คำชวนให้ลงมือทำ", "คำขอโทษที่พูดไม่เก่ง", "ปล่อยให้ผู้ฟังเดาเอง"],
-          answer: 0,
-          hint: "การสื่อสารเพื่อบ้านส่วนรวมควรจบด้วยการชวนลงมือทำ"
-        }
-      ],
-      real: [
-        {
-          question: "ภารกิจจริงที่ดีควรเป็นแบบใด",
-          options: ["ทำได้ในชีวิตประจำวันและมีหลักฐานติดตาม", "ยิ่งใหญ่แต่ไม่เริ่มทำ", "ทำแทนเพื่อนทุกคน"],
-          answer: 0,
-          hint: "เป้าหมายจริงต้องเหมาะกับชีวิตนักเรียนและติดตามได้"
-        },
-        {
-          question: "หลักฐานใดเหมาะกับการติดตามภารกิจจริง",
-          options: ["ภาพก่อน-หลัง บันทึกสั้น ๆ หรือจำนวนครั้งที่ทำ", "ความรู้สึกอย่างเดียวโดยไม่มีรายละเอียด", "ไม่ต้องมีหลักฐาน"],
-          answer: 0,
-          hint: "หลักฐานช่วยให้เห็นการเปลี่ยนแปลงและสะท้อนผลการลงมือทำ"
-        }
-      ]
+    const MAX_POINTS = 2500;
+    const STORAGE_KEY = "laudato-si-mission-concept-v2";
+    const zones = {
+      school: { number: 1, title: "อาคารเรียน", subtitle: "Wake Up Call", points: 100, description: "สำรวจพฤติกรรมในห้องเรียนที่ช่วยประหยัดพลังงานและลดการใช้ทรัพยากรโดยไม่จำเป็น", action: "สำรวจห้องเรียน" },
+      canteen: { number: 2, title: "โรงอาหาร", subtitle: "Food with Care", points: 120, description: "เรียนรู้การเลือกอาหารอย่างพอดี ลดเศษอาหาร และคัดแยกขยะหลังมื้อกลางวัน", action: "เริ่มภารกิจอาหาร" },
+      garden: { number: 3, title: "สวนสีเขียว", subtitle: "Plant for Tomorrow", points: 150, description: "ช่วยเพื่อนปลูกต้นไม้ วางแผนรดน้ำ และบันทึกการเติบโตเพื่อดูแลพื้นที่สีเขียวของโรงเรียน", action: "ปลูกต้นไม้เลย" },
+      court: { number: 4, title: "ลานกิจกรรม", subtitle: "Create & Share", points: 180, description: "ออกแบบกิจกรรมเล็ก ๆ เพื่อชวนเพื่อนทั้งโรงเรียนร่วมดูแลบ้านส่วนรวมของเรา", action: "สร้างกิจกรรม" },
+      community: { number: 5, title: "ประตูสู่ชุมชน", subtitle: "Real Life Quest", points: 250, description: "นำสิ่งที่เรียนรู้จากโรงเรียนไปทำภารกิจจริงร่วมกับครอบครัวและชุมชนใกล้ตัว", action: "ออกสู่ชุมชน" }
     };
 
-    const missionPositions = [
-      { x: 205, y: 185 },
-      { x: 510, y: 158 },
-      { x: 785, y: 288 },
-      { x: 203, y: 546 },
-      { x: 510, y: 586 },
-      { x: 816, y: 526 }
-    ];
-
-    const defaultState = () => ({
-      player: { name: "", room: "", number: "", alias: "" },
-      pos: { x: 240, y: 220 },
-      activeMission: 0,
-      answers: {},
-      scores: Object.fromEntries(missions.map((mission) => [mission.id, 0])),
-      completed: [],
-      medals: [],
-      responsibility: 0,
-      creativity: 0,
-      lastSaved: ""
-    });
-
     let state = loadState();
-    let keyState = { up: false, down: false, left: false, right: false };
-    let currentMissionIndex = 0;
-
-    const qs = (selector) => document.querySelector(selector);
-    const qsa = (selector) => [...document.querySelectorAll(selector)];
+    let activePanel = "map";
+    let activeZone = "garden";
+    let toastTimer;
 
     function loadState() {
       try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        if (!saved || typeof saved !== "object") return defaultState();
-        return {
-          ...defaultState(),
-          ...saved,
-          player: { ...defaultState().player, ...(saved.player || {}) },
-          pos: { ...defaultState().pos, ...(saved.pos || {}) },
-          scores: { ...defaultState().scores, ...(saved.scores || {}) },
-          completed: Array.isArray(saved.completed) ? saved.completed : [],
-          medals: Array.isArray(saved.medals) ? saved.medals : []
-        };
-      } catch {
-        return defaultState();
+        return { points: Number(saved.points || 1250), completed: Array.isArray(saved.completed) ? saved.completed : ["school", "canteen"] };
+      } catch (error) {
+        return { points: 1250, completed: ["school", "canteen"] };
       }
     }
 
     function saveState() {
-      state.lastSaved = new Date().toLocaleString("th-TH");
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
-    function totalScore() {
-      const missionScore = missions.reduce((sum, mission) => sum + Number(state.scores[mission.id] || 0), 0);
-      return Math.min(MAX_SCORE, missionScore + Number(state.responsibility || 0) + Number(state.creativity || 0));
+    function formatNumber(number) {
+      return new Intl.NumberFormat("th-TH").format(number);
     }
 
-    function levelFor(score) {
-      if (score >= 220) return "Guardian of Our Common Home";
-      if (score >= 190) return "Eco Creator";
-      if (score >= 150) return "Green Challenger";
-      return "Eco Starter";
-    }
-
-    function isUnlocked(index) {
-      if (index === 0) return true;
-      return state.completed.includes(missions[index - 1].id);
-    }
-
-    function nearestMission() {
-      let nearest = 0;
-      let distance = Infinity;
-      missionPositions.forEach((point, index) => {
-        const dx = state.pos.x - point.x;
-        const dy = state.pos.y - point.y;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        if (d < distance) {
-          distance = d;
-          nearest = index;
-        }
-      });
-      return { index: nearest, distance };
-    }
-
-    function clamp(value, min, max) {
-      return Math.min(max, Math.max(min, value));
-    }
-
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function render() {
-      document.documentElement.style.setProperty("--px", `${state.pos.x}px`);
-      document.documentElement.style.setProperty("--py", `${state.pos.y}px`);
-      renderHud();
-      renderMissions();
-      renderHotspots();
-      renderTeacher();
-      saveState();
-    }
-
-    function renderHud() {
-      const score = totalScore();
-      qs("#scoreText").textContent = score;
-      qs("#levelText").textContent = levelFor(score);
-      qs("#medalCount").textContent = state.medals.length;
-      qs("#topPlayerName").textContent = state.player.name || "Player001";
-      qs("#topPlayerMeta").textContent = state.player.name
-        ? `${state.player.room || "ม.6"} เลขที่ ${state.player.number || "-"}`
-        : "ม.6/1 เลขที่ 12";
-      const playerLabel = state.player.name
-        ? `${state.player.alias || "ผู้พิทักษ์บ้านส่วนรวม"} · ${state.player.name} ${state.player.room ? `(${state.player.room})` : ""}`
-        : "ยังไม่ได้ลงทะเบียนผู้เล่น";
-      qs("#playerLine").textContent = playerLabel;
-      const progress = Math.round((state.completed.length / missions.length) * 100);
-      qs("#progressFill").parentElement.style.setProperty("--value", `${progress}%`);
-      qs("#medalStrip").innerHTML = state.medals.length
-        ? state.medals.map((medal) => `<span class="medal">เหรียญ ${escapeHtml(medal)}</span>`).join("")
-        : `<span class="medal">ยังไม่มีเหรียญ</span>`;
-    }
-
-    function renderMissions() {
-      qs("#missionList").innerHTML = missions.map((mission, index) => {
-        const locked = !isUnlocked(index);
-        const complete = state.completed.includes(mission.id);
-        const active = nearestMission().index === index;
-        return `
-          <button class="mission-chip ${active ? "is-active" : ""} ${locked ? "is-locked" : ""} ${complete ? "is-complete" : ""}" type="button" data-open-mission="${index}">
-            <b>${mission.stage}</b>
-            <span>${escapeHtml(mission.name)}</span>
-            <small>${locked ? "ล็อก" : complete ? `${state.scores[mission.id]}/${mission.max}` : "พร้อม"}</small>
-          </button>
-        `;
-      }).join("");
-    }
-
-    function renderHotspots() {
-      qsa(".hotspot").forEach((button) => {
-        const index = Number(button.dataset.mission);
-        const mission = missions[index];
-        button.classList.toggle("is-locked", !isUnlocked(index));
-        button.classList.toggle("is-complete", state.completed.includes(mission.id));
-        button.textContent = state.completed.includes(mission.id) ? "✓" : mission.stage;
+    function renderProgress() {
+      const percent = Math.min(100, Math.round((state.points / MAX_POINTS) * 100));
+      document.querySelector("#pointText").textContent = formatNumber(state.points);
+      document.querySelector("#progressPercent").textContent = `${percent}%`;
+      document.querySelector("#progressFill").style.width = `${percent}%`;
+      document.querySelector("#menuPointText").textContent = `${formatNumber(state.points)} คะแนน`;
+      document.querySelector("#menuMedalText").textContent = `${state.completed.length} เหรียญ`;
+      document.querySelectorAll("[data-open-zone]").forEach((button) => {
+        button.classList.toggle("completed", state.completed.includes(button.dataset.openZone));
       });
     }
 
-    function renderTeacher() {
-      qs("#responsibilityInput").value = state.responsibility;
-      qs("#creativityInput").value = state.creativity;
-      qs("#teacherSummary").innerHTML = `
-        <div><b>ผู้เล่น:</b> ${escapeHtml(state.player.name || "-")}</div>
-        <div><b>ห้อง/เลขที่:</b> ${escapeHtml(state.player.room || "-")} / ${escapeHtml(state.player.number || "-")}</div>
-        <div><b>ความคืบหน้า:</b> ${state.completed.length}/${missions.length} ภารกิจ</div>
-        <div><b>คะแนนรวม:</b> ${totalScore()}/${MAX_SCORE}</div>
-        <div><b>ระดับ:</b> ${escapeHtml(levelFor(totalScore()))}</div>
-      `;
+    function missionRows() {
+      return Object.entries(zones).map(([id, zone]) => `
+        <button class="mission-row ${state.completed.includes(id) ? "is-done" : ""}" type="button" data-mission-row="${id}">
+          <span class="mission-number">${state.completed.includes(id) ? "✓" : zone.number}</span>
+          <span><strong>${zone.title}</strong><small>${zone.subtitle}</small></span>
+          <span class="mission-points">+${zone.points}</span>
+        </button>
+      `).join("");
     }
 
-    function movePlayer(dx, dy) {
-      state.pos.x = clamp(state.pos.x + dx, 55, 910);
-      state.pos.y = clamp(state.pos.y + dy, 80, 625);
-      render();
-    }
-
-    function openMission(index, force = false) {
-      if (!isUnlocked(index)) {
-        showToast("ต้องทำภารกิจก่อนหน้าให้สำเร็จก่อน");
-        return;
+    function panelContent(panel) {
+      if (panel === "missions") {
+        return { kicker: "สมุดภารกิจ", title: "5 พื้นที่เรียนรู้", body: `<p>เลือกภารกิจ แล้วลงมือทำทีละขั้นเพื่อสะสม Laudato Si' points</p><div class="mission-list">${missionRows()}</div>` };
       }
-      const nearest = nearestMission();
-      if (!force && nearest.index !== index && nearest.distance > 130) {
-        showToast("เดินเข้าใกล้พื้นที่ภารกิจก่อน");
-        return;
+      if (panel === "score") {
+        return { kicker: "ดาวคะแนน", title: "พลังการเปลี่ยนแปลงของฉัน", body: `<p>ทุกการตัดสินใจที่ดีจะเพิ่มพลังให้บ้านส่วนรวม</p><div class="stat-grid"><div class="stat"><small>Laudato Si' points</small><strong>${formatNumber(state.points)}</strong></div><div class="stat gold"><small>ภารกิจสำเร็จ</small><strong>${state.completed.length}/5</strong></div><div class="stat"><small>ระดับปัจจุบัน</small><strong style="font-size:18px">Green Explorer</strong></div><div class="stat gold"><small>เป้าหมายถัดไป</small><strong style="font-size:18px">Eco Leader</strong></div></div>` };
       }
-      currentMissionIndex = index;
-      const mission = missions[index];
-      qs("#missionTitle").textContent = `${mission.stage}. ${mission.name} — ${mission.thai}`;
-      qs("#missionIntro").textContent = `${mission.location}: ${mission.intro}`;
-      qs("#missionBody").innerHTML = buildMissionForm(mission);
-      updateMissionScorePreview();
-      qs("#missionOverlay").classList.add("show");
-    }
-
-    function buildMissionForm(mission) {
-      const existing = state.answers[mission.id] || {};
-      const quiz = buildQuizGame(mission);
-      if (mission.fields) {
-        return `
-          <div class="form-grid">
-            ${mission.fields.map(([id, label]) => `
-              <div class="field ${id === "promise" || id === "campaign" || id === "laudato" ? "full" : ""}">
-                <label for="${mission.id}-${id}">${escapeHtml(label)}</label>
-                <textarea id="${mission.id}-${id}" data-answer="${id}" placeholder="พิมพ์คำตอบของฉัน">${escapeHtml(existing[id] || "")}</textarea>
-              </div>
-            `).join("")}
-            ${quiz}
-          </div>
-        `;
+      if (panel === "medals") {
+        return { kicker: "เหรียญรางวัล", title: "รางวัลจากการลงมือทำ", body: `<p>แต่ละเหรียญคือหลักฐานของสิ่งดี ๆ ที่เราได้ทำร่วมกัน</p><div class="medal-grid">${Object.entries(zones).map(([id, zone]) => `<div class="medal-card ${state.completed.includes(id) ? "" : "locked"}"><div class="medal-symbol">${state.completed.includes(id) ? "✦" : "?"}</div><strong>${zone.title}</strong></div>`).join("")}</div>` };
       }
-      return `
-        <div class="form-grid">
-          ${mission.questions.map((question, index) => `
-            <div class="question ${index === mission.questions.length - 1 ? "field full" : ""}">
-              <label for="${mission.id}-q${index}">${index + 1}. ${escapeHtml(question)}</label>
-              <textarea id="${mission.id}-q${index}" data-answer="q${index}" placeholder="พิมพ์คำตอบของฉัน">${escapeHtml(existing[`q${index}`] || "")}</textarea>
-            </div>
-          `).join("")}
-          ${quiz}
-        </div>
-      `;
+      return { kicker: "แผนที่โรงเรียน", title: "เลือกพื้นที่เพื่อเริ่มเรียนรู้", body: `<p>จุดสีบนแผนที่คือพื้นที่ภารกิจ ลองเริ่มจากสวนสีเขียว หรือเลือกสำรวจทุกพื้นที่ตามลำดับ</p><div class="mission-list">${missionRows()}</div>` };
     }
 
-    function quizItems(mission) {
-      return missionQuizzes[mission.id] || [];
-    }
-
-    function quizKey(index) {
-      return `quiz${index}`;
-    }
-
-    function buildQuizGame(mission) {
-      const quiz = quizItems(mission);
-      if (!quiz.length) return "";
-      const existing = state.answers[mission.id] || {};
-      const correct = quizCorrectCount(mission);
-      return `
-        <section class="quiz-game" aria-label="เกมตอบคำถาม">
-          <div class="quiz-head">
-            <h3>เกมตอบคำถาม: เลือกคำตอบที่เหมาะสม</h3>
-            <span class="quiz-badge" data-quiz-score>${correct}/${quiz.length} ข้อถูก</span>
-          </div>
-          ${quiz.map((item, quizIndex) => {
-            const selected = Number(existing[quizKey(quizIndex)]);
-            const hasSelected = Number.isInteger(selected);
-            return `
-              <div class="quiz-card" data-quiz-card="${quizIndex}">
-                <div class="quiz-question">${quizIndex + 1}. ${escapeHtml(item.question)}</div>
-                <div class="quiz-options">
-                  ${item.options.map((option, optionIndex) => {
-                    const checked = hasSelected && selected === optionIndex;
-                    const isCorrect = checked && optionIndex === item.answer;
-                    const isWrong = checked && optionIndex !== item.answer;
-                    return `
-                      <label class="quiz-option ${checked ? "is-selected" : ""} ${isCorrect ? "is-correct" : ""} ${isWrong ? "is-wrong" : ""}">
-                        <input type="radio" name="${mission.id}-quiz-${quizIndex}" value="${optionIndex}" data-quiz="${quizIndex}" ${checked ? "checked" : ""}>
-                        <span>${escapeHtml(option)}</span>
-                      </label>
-                    `;
-                  }).join("")}
-                </div>
-                <div class="quiz-feedback ${hasSelected ? (selected === item.answer ? "is-correct" : "is-wrong") : ""}" data-quiz-feedback="${quizIndex}">
-                  ${hasSelected ? (selected === item.answer ? "ถูกต้อง: " : "ลองคิดอีกครั้ง: ") + escapeHtml(item.hint) : "เลือกคำตอบเพื่อรับคะแนนเกม"}
-                </div>
-              </div>
-            `;
-          }).join("")}
-        </section>
-      `;
-    }
-
-    function missionRequiredKeys(mission) {
-      if (mission.fields) return mission.fields.map(([id]) => id);
-      return mission.questions.map((_, index) => `q${index}`);
-    }
-
-    function calculateMissionScore(mission) {
-      const answer = state.answers[mission.id] || {};
-      const keys = missionRequiredKeys(mission);
-      const answered = keys.filter((key) => String(answer[key] || "").trim().length >= 8).length;
-      const quiz = quizItems(mission);
-      if (!quiz.length) {
-        if (answered === 0) return 0;
-        return Math.round((answered / keys.length) * mission.max);
-      }
-      const writtenMax = Math.round(mission.max * 0.65);
-      const quizMax = mission.max - writtenMax;
-      const writtenScore = Math.round((answered / keys.length) * writtenMax);
-      const quizScore = Math.round((quizCorrectCount(mission) / quiz.length) * quizMax);
-      return Math.min(mission.max, writtenScore + quizScore);
-    }
-
-    function quizCorrectCount(mission) {
-      const answer = state.answers[mission.id] || {};
-      return quizItems(mission).filter((item, index) => Number(answer[quizKey(index)]) === item.answer).length;
-    }
-
-    function updateMissionScorePreview() {
-      const mission = missions[currentMissionIndex];
-      collectMissionAnswers(mission);
-      qs("#missionScorePreview").textContent = `${calculateMissionScore(mission)} / ${mission.max}`;
-    }
-
-    function collectMissionAnswers(mission) {
-      const answer = state.answers[mission.id] || {};
-      qsa("#missionBody [data-answer]").forEach((field) => {
-        answer[field.dataset.answer] = field.value;
-      });
-      qsa("#missionBody [data-quiz]:checked").forEach((field) => {
-        answer[quizKey(Number(field.dataset.quiz))] = Number(field.value);
-      });
-      state.answers[mission.id] = answer;
-      renderQuizFeedback(mission);
-    }
-
-    function renderQuizFeedback(mission) {
-      const quiz = quizItems(mission);
-      if (!quiz.length) return;
-      const answer = state.answers[mission.id] || {};
-      const scoreBadge = qs("#missionBody [data-quiz-score]");
-      if (scoreBadge) scoreBadge.textContent = `${quizCorrectCount(mission)}/${quiz.length} ข้อถูก`;
-      quiz.forEach((item, quizIndex) => {
-        const selected = Number(answer[quizKey(quizIndex)]);
-        const hasSelected = Number.isInteger(selected);
-        const card = qs(`#missionBody [data-quiz-card="${quizIndex}"]`);
-        const feedback = qs(`#missionBody [data-quiz-feedback="${quizIndex}"]`);
-        if (!card || !feedback) return;
-        card.querySelectorAll(".quiz-option").forEach((option, optionIndex) => {
-          const isSelected = hasSelected && optionIndex === selected;
-          option.classList.toggle("is-selected", isSelected);
-          option.classList.toggle("is-correct", isSelected && optionIndex === item.answer);
-          option.classList.toggle("is-wrong", isSelected && optionIndex !== item.answer);
-        });
-        feedback.classList.toggle("is-correct", hasSelected && selected === item.answer);
-        feedback.classList.toggle("is-wrong", hasSelected && selected !== item.answer);
-        feedback.textContent = hasSelected
-          ? `${selected === item.answer ? "ถูกต้อง" : "ลองคิดอีกครั้ง"}: ${item.hint}`
-          : "เลือกคำตอบเพื่อรับคะแนนเกม";
-      });
-    }
-
-    function completeMission() {
-      const mission = missions[currentMissionIndex];
-      collectMissionAnswers(mission);
-      const score = calculateMissionScore(mission);
-      if (score < Math.ceil(mission.max * 0.6)) {
-        showToast("ตอบคำถามให้ครบและชัดเจนก่อนส่งภารกิจ");
-        updateMissionScorePreview();
-        return;
-      }
-      state.scores[mission.id] = score;
-      if (!state.completed.includes(mission.id)) state.completed.push(mission.id);
-      if (!state.medals.includes(mission.medal)) state.medals.push(mission.medal);
-      qs("#missionOverlay").classList.remove("show");
-      showToast(`สำเร็จ: ได้เหรียญ ${mission.medal}`);
-      render();
-      if (currentMissionIndex < missions.length - 1) {
-        state.pos = { ...missionPositions[currentMissionIndex + 1] };
-        setTimeout(render, 150);
-      }
-    }
-
-    function openNearestMission() {
-      const nearest = nearestMission();
-      if (nearest.distance > 170) {
-        showToast("เดินเข้าใกล้จุดภารกิจบนแผนที่ก่อน");
-        return;
-      }
-      openMission(nearest.index, true);
-    }
-
-    function firstPlayableMissionIndex() {
-      const index = missions.findIndex((mission, missionIndex) => isUnlocked(missionIndex) && !state.completed.includes(mission.id));
-      return index === -1 ? missions.length - 1 : index;
-    }
-
-    function openFirstMissionAfterEntry() {
-      const index = firstPlayableMissionIndex();
-      state.pos = { ...missionPositions[index] };
-      render();
-      setTimeout(() => openMission(index, true), 220);
-    }
-
-    function focusMissingPlayerField() {
-      const missing = [qs("#playerName"), qs("#playerRoom"), qs("#playerNo")].find((field) => !field.value.trim());
-      if (missing) missing.focus();
-    }
-
-    function renderNotebook() {
-      const score = totalScore();
-      qs("#notebookScore").textContent = score;
-      qs("#notebookBody").innerHTML = `
-        <div class="summary-lines">
-          <div><b>ผู้เล่น:</b> ${escapeHtml(state.player.name || "-")}</div>
-          <div><b>ห้อง/เลขที่:</b> ${escapeHtml(state.player.room || "-")} / ${escapeHtml(state.player.number || "-")}</div>
-          <div><b>ฉายา:</b> ${escapeHtml(state.player.alias || "ผู้พิทักษ์บ้านส่วนรวม")}</div>
-          <div><b>ระดับ:</b> ${escapeHtml(levelFor(score))}</div>
-        </div>
-        <div class="medal-strip">${state.medals.map((medal) => `<span class="medal">เหรียญ ${escapeHtml(medal)}</span>`).join("") || `<span class="medal">ยังไม่มีเหรียญ</span>`}</div>
-        <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
-        ${missions.map((mission) => {
-          const answer = state.answers[mission.id] || {};
-          const keys = missionRequiredKeys(mission);
-          const quiz = quizItems(mission);
-          return `
-            <section class="question" style="margin-bottom:10px">
-              <label>${mission.stage}. ${escapeHtml(mission.name)} — ${escapeHtml(mission.thai)} (${state.scores[mission.id] || 0}/${mission.max})</label>
-              <div class="summary-lines">
-                ${keys.map((key) => `<div>${escapeHtml(answer[key] || "-")}</div>`).join("")}
-                ${quiz.length ? `<div><b>เกมตอบคำถาม:</b> ถูก ${quizCorrectCount(mission)}/${quiz.length} ข้อ</div>` : ""}
-                ${quiz.map((item, index) => {
-                  const selected = Number(answer[quizKey(index)]);
-                  const selectedText = Number.isInteger(selected) ? item.options[selected] : "-";
-                  return `<div>${index + 1}. ${escapeHtml(item.question)} → ${escapeHtml(selectedText)}</div>`;
-                }).join("")}
-              </div>
-            </section>
-          `;
-        }).join("")}
-      `;
-      qs("#notebookOverlay").classList.add("show");
-    }
-
-    function buildReportText() {
-      const score = totalScore();
-      const lines = [
-        "รายงานสรุปผลเกม Laudato Si' Mission",
-        "",
-        `ชื่อผู้เล่น: ${state.player.name || "-"}`,
-        `ห้อง: ${state.player.room || "-"}`,
-        `เลขที่: ${state.player.number || "-"}`,
-        `ฉายาผู้พิทักษ์: ${state.player.alias || "-"}`,
-        `คะแนนรวม: ${score}/${MAX_SCORE}`,
-        `ระดับ: ${levelFor(score)}`,
-        `เหรียญ: ${state.medals.join(", ") || "-"}`,
-        "",
-        "ผลภารกิจ:"
-      ];
-      missions.forEach((mission) => {
-        lines.push(`- ${mission.stage}. ${mission.name}: ${state.scores[mission.id] || 0}/${mission.max}`);
-        const quiz = quizItems(mission);
-        if (quiz.length) lines.push(`  เกมตอบคำถาม: ถูก ${quizCorrectCount(mission)}/${quiz.length} ข้อ`);
-      });
-      lines.push("", `ความรับผิดชอบ: ${state.responsibility}/10`);
-      lines.push(`ความคิดสร้างสรรค์พิเศษ: ${state.creativity}/10`);
-      lines.push("", "คำมั่นสัญญา:");
-      lines.push(state.answers.real?.promise || "-");
-      return lines.join("\n");
-    }
-
-    function buildSubmissionPayload() {
-      const score = totalScore();
+    function zoneContent(id) {
+      const zone = zones[id];
+      const done = state.completed.includes(id);
       return {
-        submittedAt: new Date().toISOString(),
-        player: state.player,
-        score,
-        maxScore: MAX_SCORE,
-        level: levelFor(score),
-        completed: state.completed,
-        medals: state.medals,
-        responsibility: Number(state.responsibility || 0),
-        creativity: Number(state.creativity || 0),
-        missionScores: state.scores,
-        answers: state.answers,
-        reportText: buildReportText()
+        kicker: `พื้นที่ ${zone.number} • ${zone.subtitle}`,
+        title: zone.title,
+        body: `<div class="zone-card"><h3>${zone.title}</h3><p>${zone.description}</p><div class="zone-meta"><span>+${zone.points} points</span><span>${done ? "ทำสำเร็จแล้ว" : "ใช้เวลา 5–10 นาที"}</span></div><button class="primary-button" type="button" data-complete-zone="${id}" ${done ? "disabled" : ""}>${done ? "รับรางวัลแล้ว ✓" : zone.action}</button></div>`
       };
     }
 
-    async function submitToSheet() {
-      const endpoint = APPS_SCRIPT_WEB_APP_URL || LOCAL_DATABASE_URL;
-      const isAppsScript = endpoint === APPS_SCRIPT_WEB_APP_URL;
-
-      if (!endpoint) {
-        showToast("กรุณาเปิดผ่าน server หรือใส่ URL Web App ของ Apps Script");
-        window.open(GOOGLE_SHEET_URL, "_blank", "noopener");
-        return;
-      }
-
-      const button = qs("#submitSheetBtn");
-      button.disabled = true;
-      button.textContent = "กำลังส่ง...";
-      try {
-        const response = await fetch(endpoint, {
-          method: "POST",
-          mode: isAppsScript ? "no-cors" : "same-origin",
-          headers: { "Content-Type": isAppsScript ? "text/plain;charset=utf-8" : "application/json" },
-          body: JSON.stringify(buildSubmissionPayload())
-        });
-        if (!isAppsScript && !response.ok) throw new Error(`HTTP ${response.status}`);
-        showToast(isAppsScript ? "ส่งข้อมูลไป Google Sheet แล้ว" : "บันทึกลงฐานข้อมูลแล้ว");
-      } catch (error) {
-        console.error(error);
-        showToast("ส่งไม่สำเร็จ กรุณาดาวน์โหลดรายงานแทน");
-      } finally {
-        button.disabled = false;
-        button.textContent = "ส่งคะแนนไปฐานข้อมูล";
-      }
+    function setDrawerContent(content) {
+      document.querySelector("#drawerKicker").textContent = content.kicker;
+      document.querySelector("#drawerTitle").textContent = content.title;
+      document.querySelector("#drawerBody").innerHTML = content.body;
     }
 
-    function openResultsPage() {
-      if (LOCAL_DATABASE_URL) {
-        window.open(`${location.origin}/teacher-results.html`, "_blank", "noopener");
-        return;
-      }
-      window.open(GOOGLE_SHEET_URL, "_blank", "noopener");
+    function openDrawer(content) {
+      setDrawerContent(content);
+      document.querySelector("#drawerBackdrop").classList.add("show");
+      document.querySelector("#drawer").classList.add("show");
+      document.querySelector("#drawer").setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => document.querySelector("#closeDrawer").focus());
     }
 
-    async function copySummary() {
-      const text = buildReportText();
-      try {
-        await navigator.clipboard.writeText(text);
-        showToast("คัดลอกสรุปแล้ว");
-      } catch {
-        showToast("คัดลอกไม่สำเร็จ ให้ดาวน์โหลดรายงานแทน");
-      }
+    function closeDrawer() {
+      document.querySelector("#drawerBackdrop").classList.remove("show");
+      document.querySelector("#drawer").classList.remove("show");
+      document.querySelector("#drawer").setAttribute("aria-hidden", "true");
     }
 
-    function downloadReport() {
-      const blob = new Blob([buildReportText()], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `laudato-si-report-${(state.player.name || "player").replace(/\s+/g, "-")}.txt`;
-      document.body.append(anchor);
-      anchor.click();
-      anchor.remove();
-      URL.revokeObjectURL(url);
-      showToast("ดาวน์โหลดรายงานแล้ว");
+    function selectPanel(panel, open = true) {
+      activePanel = panel;
+      document.querySelectorAll("[data-panel]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.panel === panel)));
+      if (open) openDrawer(panelContent(panel));
+    }
+
+    function openZone(id) {
+      activeZone = id;
+      openDrawer(zoneContent(id));
+    }
+
+    function completeZone(id) {
+      if (state.completed.includes(id)) return;
+      const zone = zones[id];
+      state.completed.push(id);
+      state.points = Math.min(MAX_POINTS, state.points + zone.points);
+      saveState();
+      renderProgress();
+      setDrawerContent(zoneContent(id));
+      showToast(`ภารกิจสำเร็จ! +${zone.points} Laudato Si' points`);
     }
 
     function showToast(message) {
-      const toast = qs("#toast");
+      const toast = document.querySelector("#toast");
       toast.textContent = message;
       toast.classList.add("show");
-      clearTimeout(showToast.timer);
-      showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200);
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
     }
-
-    function resetGame() {
-      if (!confirm("ต้องการเริ่มเกมใหม่และลบข้อมูลเดิมหรือไม่")) return;
-      localStorage.removeItem(STORAGE_KEY);
-      state = defaultState();
-      qs("#startScreen").classList.add("show");
-      render();
-    }
-
-    qs("#playerForm").addEventListener("submit", (event) => {
-      event.preventDefault();
-      state.player.name = qs("#playerName").value.trim();
-      state.player.room = qs("#playerRoom").value.trim();
-      state.player.number = qs("#playerNo").value.trim();
-      state.player.alias = qs("#playerAlias").value.trim() || "ผู้พิทักษ์บ้านส่วนรวม";
-      if (!state.player.name || !state.player.room || !state.player.number) {
-        showToast("กรอกชื่อ ห้อง และเลขที่ให้ครบ");
-        focusMissingPlayerField();
-        return;
-      }
-      qs("#startScreen").classList.remove("show");
-      showToast("เข้าสู่โรงเรียนแล้ว เปิดภารกิจแรกได้เลย");
-      openFirstMissionAfterEntry();
-    });
-
-    qs("#openMissionBtn").addEventListener("click", openNearestMission);
-    qs("#walkMissionBtn").addEventListener("click", openNearestMission);
-    qs("#centerActionBtn").addEventListener("click", openNearestMission);
-    qs("#closeMissionBtn").addEventListener("click", () => qs("#missionOverlay").classList.remove("show"));
-    qs("#completeMissionBtn").addEventListener("click", completeMission);
-    qs("#openNotebookBtn").addEventListener("click", renderNotebook);
-    qs("#closeNotebookBtn").addEventListener("click", () => qs("#notebookOverlay").classList.remove("show"));
-    qs("#copySummaryBtn").addEventListener("click", copySummary);
-    qs("#downloadReportBtn").addEventListener("click", downloadReport);
-    qs("#submitSheetBtn").addEventListener("click", submitToSheet);
-    qs("#openResultsBtn").addEventListener("click", openResultsPage);
-    qs("#resetBtn").addEventListener("click", resetGame);
-    qs("#openTeacherBtn").addEventListener("click", () => {
-      qs("#teacherPanel").classList.toggle("show");
-      showToast("เปิดแผงครูดูผลแล้ว");
-    });
-
-    document.addEventListener("input", (event) => {
-      if (event.target.closest("#missionBody")) updateMissionScorePreview();
-      if (event.target.id === "responsibilityInput") {
-        state.responsibility = clamp(Number(event.target.value || 0), 0, 10);
-        render();
-      }
-      if (event.target.id === "creativityInput") {
-        state.creativity = clamp(Number(event.target.value || 0), 0, 10);
-        render();
-      }
-    });
-
-    document.addEventListener("change", (event) => {
-      if (event.target.closest("#missionBody")) updateMissionScorePreview();
-    });
 
     document.addEventListener("click", (event) => {
-      const move = event.target.closest("[data-move]");
-      if (move) {
-        const [dx, dy] = move.dataset.move.split(",").map(Number);
-        movePlayer(dx, dy);
-        return;
-      }
+      const panelButton = event.target.closest("[data-panel]");
+      if (panelButton) selectPanel(panelButton.dataset.panel);
 
-      const hotspot = event.target.closest("[data-mission]");
-      if (hotspot) {
-        openMission(Number(hotspot.dataset.mission), true);
-        return;
-      }
+      const zoneButton = event.target.closest("[data-open-zone]");
+      if (zoneButton) openZone(zoneButton.dataset.openZone);
 
-      const chip = event.target.closest("[data-open-mission]");
-      if (chip) {
-        const index = Number(chip.dataset.openMission);
-        state.pos = { ...missionPositions[index] };
-        render();
-        openMission(index, true);
-        return;
-      }
+      const missionRow = event.target.closest("[data-mission-row]");
+      if (missionRow) openZone(missionRow.dataset.missionRow);
 
-      const extra = event.target.closest("[data-extra]");
-      if (extra) {
-        const key = extra.dataset.extra;
-        const delta = Number(extra.dataset.delta);
-        state[key] = clamp(Number(state[key] || 0) + delta, 0, 10);
-        render();
-        return;
-      }
+      const completeButton = event.target.closest("[data-complete-zone]");
+      if (completeButton) completeZone(completeButton.dataset.completeZone);
+    });
 
-      const bottomAction = event.target.closest("[data-bottom-action]");
-      if (bottomAction) {
-        const action = bottomAction.dataset.bottomAction;
-        if (action === "home") qs("#startScreen").classList.add("show");
-        if (action === "mission") openNearestMission();
-        if (["score", "medal", "promise"].includes(action)) renderNotebook();
-        if (action === "teacher") {
-          qs("#teacherPanel").classList.toggle("show");
-          showToast("เปิดเครื่องมือสำหรับครูแล้ว");
-        }
-      }
+    document.querySelector("#closeDrawer").addEventListener("click", closeDrawer);
+    document.querySelector("#drawerBackdrop").addEventListener("click", closeDrawer);
+    document.querySelector("#soundButton").addEventListener("click", (event) => {
+      const pressed = event.currentTarget.getAttribute("aria-pressed") === "true";
+      event.currentTarget.setAttribute("aria-pressed", String(!pressed));
+      event.currentTarget.style.opacity = pressed ? "1" : ".55";
+      showToast(pressed ? "เปิดเสียงบรรยากาศแล้ว" : "ปิดเสียงบรรยากาศแล้ว");
     });
 
     document.addEventListener("keydown", (event) => {
-      const key = event.key.toLowerCase();
-      if (["arrowup", "w"].includes(key)) keyState.up = true;
-      if (["arrowdown", "s"].includes(key)) keyState.down = true;
-      if (["arrowleft", "a"].includes(key)) keyState.left = true;
-      if (["arrowright", "d"].includes(key)) keyState.right = true;
-      if (key === "enter") openNearestMission();
+      if (event.key === "Escape") closeDrawer();
     });
 
-    document.addEventListener("keyup", (event) => {
-      const key = event.key.toLowerCase();
-      if (["arrowup", "w"].includes(key)) keyState.up = false;
-      if (["arrowdown", "s"].includes(key)) keyState.down = false;
-      if (["arrowleft", "a"].includes(key)) keyState.left = false;
-      if (["arrowright", "d"].includes(key)) keyState.right = false;
-    });
-
-    function gameLoop() {
-      let dx = 0;
-      let dy = 0;
-      if (keyState.up) dy -= 4;
-      if (keyState.down) dy += 4;
-      if (keyState.left) dx -= 4;
-      if (keyState.right) dx += 4;
-      if (dx || dy) {
-        state.pos.x = clamp(state.pos.x + dx, 55, 910);
-        state.pos.y = clamp(state.pos.y + dy, 80, 625);
-        document.documentElement.style.setProperty("--px", `${state.pos.x}px`);
-        document.documentElement.style.setProperty("--py", `${state.pos.y}px`);
-      }
-      requestAnimationFrame(gameLoop);
-    }
-
-    if (state.player.name) {
-      qs("#startScreen").classList.remove("show");
-      qs("#playerName").value = state.player.name;
-      qs("#playerRoom").value = state.player.room;
-      qs("#playerNo").value = state.player.number;
-      qs("#playerAlias").value = state.player.alias;
-    }
-
-    render();
-    gameLoop();
+    renderProgress();
   </script>
 </body>
 </html>

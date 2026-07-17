@@ -35,25 +35,29 @@ function main() {
   const indexScripts = checkInlineScripts('index.html');
   const teacherScripts = checkInlineScripts('teacher-results.html');
   checkNodeFile('server.js');
+  checkNodeFile('scripts/build-sites-worker.js');
   new Function(read('Code.gs'));
 
   const requiredIndexText = [
     "Laudato Si' Mission",
-    'เกมตอบคำถาม',
-    'ส่งคะแนนไปฐานข้อมูล',
-    'teacher-results.html',
-    'missionQuizzes',
-    'LOCAL_DATABASE_URL'
+    "Laudato Si' points",
+    'แผนที่',
+    'สมุดภารกิจ',
+    'ดาวคะแนน',
+    'เหรียญรางวัล',
+    '/assets/campus.webp'
   ];
   requiredIndexText.forEach((text) => {
     assert(indexHtml.includes(text), `index.html: missing ${text}`);
   });
 
-  const quizIds = [...indexHtml.matchAll(/^\s*(wake|detective|solution|create|pitch|real): \[/gm)].map((match) => match[1]);
-  assert(quizIds.length === 6, `index.html: expected quiz for 6 missions, found ${quizIds.length}`);
+  const zoneIds = [...indexHtml.matchAll(/^\s*(school|canteen|garden|court|community): \{/gm)].map((match) => match[1]);
+  assert(zoneIds.length === 5, `index.html: expected 5 learning zones, found ${zoneIds.length}`);
   assert(teacherHtml.includes('/api/submissions'), 'teacher-results.html: missing submissions API call');
+  assert(fs.existsSync('assets/campus.webp'), 'assets/campus.webp: missing');
+  assert(fs.existsSync('assets/og.jpg'), 'assets/og.jpg: missing');
 
-  console.log(`OK: index scripts=${indexScripts}, teacher scripts=${teacherScripts}, quizzes=${quizIds.length}`);
+  console.log(`OK: index scripts=${indexScripts}, teacher scripts=${teacherScripts}, zones=${zoneIds.length}`);
 }
 
 try {

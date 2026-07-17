@@ -15,9 +15,13 @@ function writeText(file, text) {
 
 const indexHtml = readText("index.html");
 const teacherHtml = readText("teacher-results.html");
+const campusWebp = fs.readFileSync(path.join(ROOT, "assets", "campus.webp")).toString("base64");
+const ogJpg = fs.readFileSync(path.join(ROOT, "assets", "og.jpg")).toString("base64");
 
 const runtime = String.raw`const INDEX_HTML = __INDEX_HTML__;
 const TEACHER_RESULTS_HTML = __TEACHER_RESULTS_HTML__;
+const CAMPUS_WEBP = __CAMPUS_WEBP__;
+const OG_JPG = __OG_JPG__;
 
 const CSV_HEADERS = [
   "id",
@@ -73,6 +77,16 @@ function htmlResponse(body) {
     headers: {
       "Content-Type": "text/html; charset=utf-8",
       "Cache-Control": "no-store"
+    }
+  });
+}
+
+function imageResponse(base64, contentType) {
+  const binary = Uint8Array.from(atob(base64), (character) => character.charCodeAt(0));
+  return new Response(binary, {
+    headers: {
+      "Content-Type": contentType,
+      "Cache-Control": "public, max-age=86400"
     }
   });
 }
@@ -266,6 +280,14 @@ export default {
       return htmlResponse(TEACHER_RESULTS_HTML);
     }
 
+    if (url.pathname === "/assets/campus.webp") {
+      return imageResponse(CAMPUS_WEBP, "image/webp");
+    }
+
+    if (url.pathname === "/assets/og.jpg") {
+      return imageResponse(OG_JPG, "image/jpeg");
+    }
+
     return new Response("Not found", {
       status: 404,
       headers: { "Content-Type": "text/plain; charset=utf-8" }
@@ -276,7 +298,9 @@ export default {
 
 const worker = runtime
   .replace("__INDEX_HTML__", JSON.stringify(indexHtml))
-  .replace("__TEACHER_RESULTS_HTML__", JSON.stringify(teacherHtml));
+  .replace("__TEACHER_RESULTS_HTML__", JSON.stringify(teacherHtml))
+  .replace("__CAMPUS_WEBP__", JSON.stringify(campusWebp))
+  .replace("__OG_JPG__", JSON.stringify(ogJpg));
 
 writeText(path.join(OUT_DIR, "index.js"), worker);
 console.log("Built dist/server/index.js");
