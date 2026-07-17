@@ -3205,8 +3205,8 @@
     let keyState = { up: false, down: false, left: false, right: false };
     let currentMissionIndex = 0;
 
-    const $ = (selector) => document.querySelector(selector);
-    const $$ = (selector) => [...document.querySelectorAll(selector)];
+    const qs = (selector) => document.querySelector(selector);
+    const qsa = (selector) => [...document.querySelectorAll(selector)];
 
     function loadState() {
       try {
@@ -3288,26 +3288,26 @@
 
     function renderHud() {
       const score = totalScore();
-      $("#scoreText").textContent = score;
-      $("#levelText").textContent = levelFor(score);
-      $("#medalCount").textContent = state.medals.length;
-      $("#topPlayerName").textContent = state.player.name || "Player001";
-      $("#topPlayerMeta").textContent = state.player.name
+      qs("#scoreText").textContent = score;
+      qs("#levelText").textContent = levelFor(score);
+      qs("#medalCount").textContent = state.medals.length;
+      qs("#topPlayerName").textContent = state.player.name || "Player001";
+      qs("#topPlayerMeta").textContent = state.player.name
         ? `${state.player.room || "ม.6"} เลขที่ ${state.player.number || "-"}`
         : "ม.6/1 เลขที่ 12";
       const playerLabel = state.player.name
         ? `${state.player.alias || "ผู้พิทักษ์บ้านส่วนรวม"} · ${state.player.name} ${state.player.room ? `(${state.player.room})` : ""}`
         : "ยังไม่ได้ลงทะเบียนผู้เล่น";
-      $("#playerLine").textContent = playerLabel;
+      qs("#playerLine").textContent = playerLabel;
       const progress = Math.round((state.completed.length / missions.length) * 100);
-      $("#progressFill").parentElement.style.setProperty("--value", `${progress}%`);
-      $("#medalStrip").innerHTML = state.medals.length
+      qs("#progressFill").parentElement.style.setProperty("--value", `${progress}%`);
+      qs("#medalStrip").innerHTML = state.medals.length
         ? state.medals.map((medal) => `<span class="medal">เหรียญ ${escapeHtml(medal)}</span>`).join("")
         : `<span class="medal">ยังไม่มีเหรียญ</span>`;
     }
 
     function renderMissions() {
-      $("#missionList").innerHTML = missions.map((mission, index) => {
+      qs("#missionList").innerHTML = missions.map((mission, index) => {
         const locked = !isUnlocked(index);
         const complete = state.completed.includes(mission.id);
         const active = nearestMission().index === index;
@@ -3322,7 +3322,7 @@
     }
 
     function renderHotspots() {
-      $$(".hotspot").forEach((button) => {
+      qsa(".hotspot").forEach((button) => {
         const index = Number(button.dataset.mission);
         const mission = missions[index];
         button.classList.toggle("is-locked", !isUnlocked(index));
@@ -3332,9 +3332,9 @@
     }
 
     function renderTeacher() {
-      $("#responsibilityInput").value = state.responsibility;
-      $("#creativityInput").value = state.creativity;
-      $("#teacherSummary").innerHTML = `
+      qs("#responsibilityInput").value = state.responsibility;
+      qs("#creativityInput").value = state.creativity;
+      qs("#teacherSummary").innerHTML = `
         <div><b>ผู้เล่น:</b> ${escapeHtml(state.player.name || "-")}</div>
         <div><b>ห้อง/เลขที่:</b> ${escapeHtml(state.player.room || "-")} / ${escapeHtml(state.player.number || "-")}</div>
         <div><b>ความคืบหน้า:</b> ${state.completed.length}/${missions.length} ภารกิจ</div>
@@ -3361,11 +3361,11 @@
       }
       currentMissionIndex = index;
       const mission = missions[index];
-      $("#missionTitle").textContent = `${mission.stage}. ${mission.name} — ${mission.thai}`;
-      $("#missionIntro").textContent = `${mission.location}: ${mission.intro}`;
-      $("#missionBody").innerHTML = buildMissionForm(mission);
+      qs("#missionTitle").textContent = `${mission.stage}. ${mission.name} — ${mission.thai}`;
+      qs("#missionIntro").textContent = `${mission.location}: ${mission.intro}`;
+      qs("#missionBody").innerHTML = buildMissionForm(mission);
       updateMissionScorePreview();
-      $("#missionOverlay").classList.add("show");
+      qs("#missionOverlay").classList.add("show");
     }
 
     function buildMissionForm(mission) {
@@ -3474,15 +3474,15 @@
     function updateMissionScorePreview() {
       const mission = missions[currentMissionIndex];
       collectMissionAnswers(mission);
-      $("#missionScorePreview").textContent = `${calculateMissionScore(mission)} / ${mission.max}`;
+      qs("#missionScorePreview").textContent = `${calculateMissionScore(mission)} / ${mission.max}`;
     }
 
     function collectMissionAnswers(mission) {
       const answer = state.answers[mission.id] || {};
-      $$("#missionBody [data-answer]").forEach((field) => {
+      qsa("#missionBody [data-answer]").forEach((field) => {
         answer[field.dataset.answer] = field.value;
       });
-      $$("#missionBody [data-quiz]:checked").forEach((field) => {
+      qsa("#missionBody [data-quiz]:checked").forEach((field) => {
         answer[quizKey(Number(field.dataset.quiz))] = Number(field.value);
       });
       state.answers[mission.id] = answer;
@@ -3493,13 +3493,13 @@
       const quiz = quizItems(mission);
       if (!quiz.length) return;
       const answer = state.answers[mission.id] || {};
-      const scoreBadge = $("#missionBody [data-quiz-score]");
+      const scoreBadge = qs("#missionBody [data-quiz-score]");
       if (scoreBadge) scoreBadge.textContent = `${quizCorrectCount(mission)}/${quiz.length} ข้อถูก`;
       quiz.forEach((item, quizIndex) => {
         const selected = Number(answer[quizKey(quizIndex)]);
         const hasSelected = Number.isInteger(selected);
-        const card = $(`#missionBody [data-quiz-card="${quizIndex}"]`);
-        const feedback = $(`#missionBody [data-quiz-feedback="${quizIndex}"]`);
+        const card = qs(`#missionBody [data-quiz-card="${quizIndex}"]`);
+        const feedback = qs(`#missionBody [data-quiz-feedback="${quizIndex}"]`);
         if (!card || !feedback) return;
         card.querySelectorAll(".quiz-option").forEach((option, optionIndex) => {
           const isSelected = hasSelected && optionIndex === selected;
@@ -3527,7 +3527,7 @@
       state.scores[mission.id] = score;
       if (!state.completed.includes(mission.id)) state.completed.push(mission.id);
       if (!state.medals.includes(mission.medal)) state.medals.push(mission.medal);
-      $("#missionOverlay").classList.remove("show");
+      qs("#missionOverlay").classList.remove("show");
       showToast(`สำเร็จ: ได้เหรียญ ${mission.medal}`);
       render();
       if (currentMissionIndex < missions.length - 1) {
@@ -3558,14 +3558,14 @@
     }
 
     function focusMissingPlayerField() {
-      const missing = [$("#playerName"), $("#playerRoom"), $("#playerNo")].find((field) => !field.value.trim());
+      const missing = [qs("#playerName"), qs("#playerRoom"), qs("#playerNo")].find((field) => !field.value.trim());
       if (missing) missing.focus();
     }
 
     function renderNotebook() {
       const score = totalScore();
-      $("#notebookScore").textContent = score;
-      $("#notebookBody").innerHTML = `
+      qs("#notebookScore").textContent = score;
+      qs("#notebookBody").innerHTML = `
         <div class="summary-lines">
           <div><b>ผู้เล่น:</b> ${escapeHtml(state.player.name || "-")}</div>
           <div><b>ห้อง/เลขที่:</b> ${escapeHtml(state.player.room || "-")} / ${escapeHtml(state.player.number || "-")}</div>
@@ -3594,7 +3594,7 @@
           `;
         }).join("")}
       `;
-      $("#notebookOverlay").classList.add("show");
+      qs("#notebookOverlay").classList.add("show");
     }
 
     function buildReportText() {
@@ -3652,7 +3652,7 @@
         return;
       }
 
-      const button = $("#submitSheetBtn");
+      const button = qs("#submitSheetBtn");
       button.disabled = true;
       button.textContent = "กำลังส่ง...";
       try {
@@ -3705,7 +3705,7 @@
     }
 
     function showToast(message) {
-      const toast = $("#toast");
+      const toast = qs("#toast");
       toast.textContent = message;
       toast.classList.add("show");
       clearTimeout(showToast.timer);
@@ -3716,40 +3716,40 @@
       if (!confirm("ต้องการเริ่มเกมใหม่และลบข้อมูลเดิมหรือไม่")) return;
       localStorage.removeItem(STORAGE_KEY);
       state = defaultState();
-      $("#startScreen").classList.add("show");
+      qs("#startScreen").classList.add("show");
       render();
     }
 
-    $("#playerForm").addEventListener("submit", (event) => {
+    qs("#playerForm").addEventListener("submit", (event) => {
       event.preventDefault();
-      state.player.name = $("#playerName").value.trim();
-      state.player.room = $("#playerRoom").value.trim();
-      state.player.number = $("#playerNo").value.trim();
-      state.player.alias = $("#playerAlias").value.trim() || "ผู้พิทักษ์บ้านส่วนรวม";
+      state.player.name = qs("#playerName").value.trim();
+      state.player.room = qs("#playerRoom").value.trim();
+      state.player.number = qs("#playerNo").value.trim();
+      state.player.alias = qs("#playerAlias").value.trim() || "ผู้พิทักษ์บ้านส่วนรวม";
       if (!state.player.name || !state.player.room || !state.player.number) {
         showToast("กรอกชื่อ ห้อง และเลขที่ให้ครบ");
         focusMissingPlayerField();
         return;
       }
-      $("#startScreen").classList.remove("show");
+      qs("#startScreen").classList.remove("show");
       showToast("เข้าสู่โรงเรียนแล้ว เปิดภารกิจแรกได้เลย");
       openFirstMissionAfterEntry();
     });
 
-    $("#openMissionBtn").addEventListener("click", openNearestMission);
-    $("#walkMissionBtn").addEventListener("click", openNearestMission);
-    $("#centerActionBtn").addEventListener("click", openNearestMission);
-    $("#closeMissionBtn").addEventListener("click", () => $("#missionOverlay").classList.remove("show"));
-    $("#completeMissionBtn").addEventListener("click", completeMission);
-    $("#openNotebookBtn").addEventListener("click", renderNotebook);
-    $("#closeNotebookBtn").addEventListener("click", () => $("#notebookOverlay").classList.remove("show"));
-    $("#copySummaryBtn").addEventListener("click", copySummary);
-    $("#downloadReportBtn").addEventListener("click", downloadReport);
-    $("#submitSheetBtn").addEventListener("click", submitToSheet);
-    $("#openResultsBtn").addEventListener("click", openResultsPage);
-    $("#resetBtn").addEventListener("click", resetGame);
-    $("#openTeacherBtn").addEventListener("click", () => {
-      $("#teacherPanel").classList.toggle("show");
+    qs("#openMissionBtn").addEventListener("click", openNearestMission);
+    qs("#walkMissionBtn").addEventListener("click", openNearestMission);
+    qs("#centerActionBtn").addEventListener("click", openNearestMission);
+    qs("#closeMissionBtn").addEventListener("click", () => qs("#missionOverlay").classList.remove("show"));
+    qs("#completeMissionBtn").addEventListener("click", completeMission);
+    qs("#openNotebookBtn").addEventListener("click", renderNotebook);
+    qs("#closeNotebookBtn").addEventListener("click", () => qs("#notebookOverlay").classList.remove("show"));
+    qs("#copySummaryBtn").addEventListener("click", copySummary);
+    qs("#downloadReportBtn").addEventListener("click", downloadReport);
+    qs("#submitSheetBtn").addEventListener("click", submitToSheet);
+    qs("#openResultsBtn").addEventListener("click", openResultsPage);
+    qs("#resetBtn").addEventListener("click", resetGame);
+    qs("#openTeacherBtn").addEventListener("click", () => {
+      qs("#teacherPanel").classList.toggle("show");
       showToast("เปิดแผงครูดูผลแล้ว");
     });
 
@@ -3804,11 +3804,11 @@
       const bottomAction = event.target.closest("[data-bottom-action]");
       if (bottomAction) {
         const action = bottomAction.dataset.bottomAction;
-        if (action === "home") $("#startScreen").classList.add("show");
+        if (action === "home") qs("#startScreen").classList.add("show");
         if (action === "mission") openNearestMission();
         if (["score", "medal", "promise"].includes(action)) renderNotebook();
         if (action === "teacher") {
-          $("#teacherPanel").classList.toggle("show");
+          qs("#teacherPanel").classList.toggle("show");
           showToast("เปิดเครื่องมือสำหรับครูแล้ว");
         }
       }
@@ -3848,11 +3848,11 @@
     }
 
     if (state.player.name) {
-      $("#startScreen").classList.remove("show");
-      $("#playerName").value = state.player.name;
-      $("#playerRoom").value = state.player.room;
-      $("#playerNo").value = state.player.number;
-      $("#playerAlias").value = state.player.alias;
+      qs("#startScreen").classList.remove("show");
+      qs("#playerName").value = state.player.name;
+      qs("#playerRoom").value = state.player.room;
+      qs("#playerNo").value = state.player.number;
+      qs("#playerAlias").value = state.player.alias;
     }
 
     render();
