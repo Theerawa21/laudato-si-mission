@@ -7,7 +7,7 @@
   <meta name="description" content="Laudato Si’ Mission เกมผจญภัยเพื่อการศึกษา สำรวจโรงเรียนและลงมือดูแลบ้านส่วนรวม">
   <meta property="og:title" content="Laudato Si’ Mission">
   <meta property="og:description" content="เรียนรู้ ดูแล และลงมือเปลี่ยนโลก เริ่มจากโรงเรียนของเรา">
-  <meta property="og:image" content="/assets/og-classroom.jpg">
+  <meta property="og:image" content="/assets/og-cafeteria.jpg">
   <meta property="og:type" content="website">
   <title>Laudato Si' Mission</title>
   <style>
@@ -487,6 +487,24 @@
       pointer-events: auto;
     }
 
+    .cafeteria-scene {
+      position: fixed;
+      z-index: 61;
+      inset: 0;
+      overflow: hidden;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      background: #dce9de;
+      transition: opacity .3s ease, visibility .3s ease;
+    }
+
+    .cafeteria-scene.show {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     .classroom-world {
       position: absolute;
       inset: 0;
@@ -500,6 +518,21 @@
       inset: 0;
       pointer-events: none;
       background: radial-gradient(circle at center, transparent 45%, rgba(45, 48, 26, .12) 100%);
+    }
+
+    .cafeteria-world {
+      position: absolute;
+      inset: 0;
+      background: url("/assets/cafeteria.jpg") center center / cover no-repeat;
+      transform: scale(1.01);
+    }
+
+    .cafeteria-world::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 48% 48%, transparent 48%, rgba(37, 51, 33, .12) 100%);
     }
 
     .classroom-back {
@@ -599,6 +632,21 @@
     .issue-marker.is-active { box-shadow: 0 0 0 9px rgba(255,255,255,.62), 0 0 34px 14px rgba(255,209,28,.75), 0 12px 24px rgba(83,57,0,.28); }
     .issue-marker.is-done { border-color: #eaffdf; background: linear-gradient(145deg, #62bd66, #218247); box-shadow: 0 0 0 7px rgba(102,190,102,.25), 0 8px 20px rgba(25,91,47,.28); animation: none; }
 
+    .cafeteria-marker svg {
+      width: 26px;
+      height: 26px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transform: rotate(45deg);
+    }
+
+    .cafeteria-marker.cup { left: 10%; top: 28%; }
+    .cafeteria-marker.overflow { right: 14%; top: 49%; animation-delay: -.6s; }
+    .cafeteria-marker.mixed { right: 18%; bottom: 12%; animation-delay: -1.2s; }
+
     .mission-dialog {
       position: absolute;
       z-index: 6;
@@ -635,6 +683,7 @@
       background: #fff;
       text-align: left;
       font-size: 14px;
+      line-height: 1.35;
       cursor: pointer;
     }
 
@@ -650,6 +699,16 @@
     .mission-feedback.correct { color: #1b7b40; }
     .mission-feedback.wrong { color: #b04e38; }
     .classroom-submit[disabled] { cursor: not-allowed; opacity: .48; box-shadow: none; }
+
+    .eco-medal-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
 
     @keyframes classroomPulse {
       0%, 100% { transform: rotate(-45deg) translate(0,0) scale(1); }
@@ -706,6 +765,9 @@
       .issue-marker.light { left: 18%; top: 15%; }
       .issue-marker.fan { right: 12%; top: 24%; }
       .issue-marker.paper { right: 17%; bottom: 29%; }
+      .cafeteria-marker.cup { left: 12%; top: 22%; }
+      .cafeteria-marker.overflow { right: 11%; top: 38%; }
+      .cafeteria-marker.mixed { right: 14%; bottom: 32%; }
       .mission-dialog { top: auto; bottom: 16px; padding: 18px; transform: translateX(-50%); }
       .mission-dialog h2 { font-size: 20px; }
       .mission-question { font-size: 14px; }
@@ -724,6 +786,7 @@
       .drawer-head { padding: 20px; }
       .drawer-body { padding: 18px 18px 100px; }
       .classroom-world { background-position: center center; }
+      .cafeteria-world { background-size: auto 70%; background-position: 75% top; background-repeat: no-repeat; }
       .classroom-back span { display: none; }
       .classroom-back { width: 44px; padding: 0; justify-content: center; }
       .wake-medal span:last-child { display: none; }
@@ -735,6 +798,9 @@
       .issue-marker.light { left: 12%; top: 18%; }
       .issue-marker.fan { right: 9%; top: 26%; }
       .issue-marker.paper { right: 13%; bottom: 42%; }
+      .cafeteria-marker.cup { left: 8%; top: 20%; }
+      .cafeteria-marker.overflow { right: 7%; top: 38%; }
+      .cafeteria-marker.mixed { right: 9%; bottom: 42%; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -752,6 +818,7 @@
     <symbol id="i-volume" viewBox="0 0 24 24"><path d="M5 9v6h4l5 4V5L9 9H5Z"/><path d="M17 9a4 4 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
     <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6M9 12h11"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
   </svg>
 
   <main class="game-shell">
@@ -849,6 +916,37 @@
     </article>
   </section>
 
+  <section class="cafeteria-scene" id="cafeteriaScene" aria-hidden="true" aria-labelledby="cafeteriaMissionTitle">
+    <div class="cafeteria-world" role="img" aria-label="โรงอาหารมัธยมปลายและจุดแยกขยะแบบ isometric มีนักเรียนกำลังรับประทานอาหาร"></div>
+    <button class="classroom-back" id="cafeteriaBack" type="button">
+      <svg aria-hidden="true"><use href="#i-arrow-left"></use></svg><span>กลับสู่แผนที่โรงเรียน</span>
+    </button>
+
+    <section class="classroom-hud" aria-label="คะแนนและเหรียญภารกิจ Eco Detective">
+      <div class="classroom-score">Score: <b id="cafeteriaScore">60</b></div>
+      <div class="wake-medal"><span class="wake-medal-icon eco-medal-icon"><svg aria-hidden="true"><use href="#i-search"></use></svg></span><span>Eco Detective</span></div>
+    </section>
+
+    <div class="issue-layer" aria-label="เบาะแสปัญหาสิ่งแวดล้อมในโรงอาหาร">
+      <button class="issue-marker cafeteria-marker cup" type="button" data-cafeteria-issue="cup" aria-label="แก้วพลาสติกที่วางทิ้งไว้บนโต๊ะ"><svg aria-hidden="true"><use href="#i-search"></use></svg></button>
+      <button class="issue-marker cafeteria-marker overflow" type="button" data-cafeteria-issue="overflow" aria-label="ถังขยะที่ล้นทะลัก"><svg aria-hidden="true"><use href="#i-search"></use></svg></button>
+      <button class="issue-marker cafeteria-marker mixed" type="button" data-cafeteria-issue="mixed" aria-label="เศษอาหารปะปนกับพลาสติกบนพื้น"><svg aria-hidden="true"><use href="#i-search"></use></svg></button>
+    </div>
+
+    <article class="mission-dialog" aria-live="polite">
+      <header class="mission-dialog-head">
+        <h2 id="cafeteriaMissionTitle">Mission 2: Eco Detective</h2>
+        <span class="issue-context" id="cafeteriaIssueContext">เบาะแส 1/3 • แก้วพลาสติก</span>
+      </header>
+      <p class="mission-question">อะไรคือสาเหตุหลักของปัญหานี้?</p>
+      <div class="answer-list" id="cafeteriaAnswerList"></div>
+      <footer class="mission-dialog-footer">
+        <div class="mission-feedback" id="cafeteriaMissionFeedback" role="status">เลือกคำตอบที่อธิบายสาเหตุของเบาะแสนี้</div>
+        <button class="primary-button classroom-submit" id="cafeteriaSubmit" type="button" disabled>ตรวจคำตอบ</button>
+      </footer>
+    </article>
+  </section>
+
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
   <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
     <header class="drawer-head">
@@ -865,7 +963,7 @@
     const STORAGE_KEY = "laudato-si-mission-concept-v2";
     const zones = {
       school: { number: 1, title: "อาคารเรียน", subtitle: "Wake Up Call", points: 100, description: "สำรวจพฤติกรรมในห้องเรียนที่ช่วยประหยัดพลังงานและลดการใช้ทรัพยากรโดยไม่จำเป็น", action: "สำรวจห้องเรียน" },
-      canteen: { number: 2, title: "โรงอาหาร", subtitle: "Food with Care", points: 120, description: "เรียนรู้การเลือกอาหารอย่างพอดี ลดเศษอาหาร และคัดแยกขยะหลังมื้อกลางวัน", action: "เริ่มภารกิจอาหาร" },
+      canteen: { number: 2, title: "โรงอาหาร", subtitle: "Eco Detective", points: 120, description: "สืบหาเบาะแสปัญหาขยะในโรงอาหาร เรียนรู้การลดพลาสติก ลดเศษอาหาร และคัดแยกให้ถูกประเภท", action: "เริ่มสืบหาเบาะแส" },
       garden: { number: 3, title: "สวนสีเขียว", subtitle: "Plant for Tomorrow", points: 150, description: "ช่วยเพื่อนปลูกต้นไม้ วางแผนรดน้ำ และบันทึกการเติบโตเพื่อดูแลพื้นที่สีเขียวของโรงเรียน", action: "ปลูกต้นไม้เลย" },
       court: { number: 4, title: "ลานกิจกรรม", subtitle: "Create & Share", points: 180, description: "ออกแบบกิจกรรมเล็ก ๆ เพื่อชวนเพื่อนทั้งโรงเรียนร่วมดูแลบ้านส่วนรวมของเรา", action: "สร้างกิจกรรม" },
       community: { number: 5, title: "ประตูสู่ชุมชน", subtitle: "Real Life Quest", points: 250, description: "นำสิ่งที่เรียนรู้จากโรงเรียนไปทำภารกิจจริงร่วมกับครอบครัวและชุมชนใกล้ตัว", action: "ออกสู่ชุมชน" }
@@ -898,11 +996,40 @@
       }
     };
 
+    const cafeteriaIssues = {
+      cup: {
+        label: "เบาะแส 1/3 • แก้วพลาสติก",
+        answers: [
+          { text: "ใช้แก้วครั้งเดียวแล้ววางทิ้งโดยไม่คัดแยก", correct: true },
+          { text: "พกแก้วส่วนตัวมาใช้ซ้ำ", correct: false },
+          { text: "ทิ้งแก้วลงถังรีไซเคิลให้ถูกประเภท", correct: false }
+        ]
+      },
+      overflow: {
+        label: "เบาะแส 2/3 • ถังขยะล้น",
+        answers: [
+          { text: "ขยะมากขึ้นเพราะไม่ลด ไม่แยก และเก็บไม่ทัน", correct: true },
+          { text: "ใช้ภาชนะเดิมซ้ำหลังทำความสะอาด", correct: false },
+          { text: "ตรวจและนำขยะไปจัดการก่อนถังเต็ม", correct: false }
+        ]
+      },
+      mixed: {
+        label: "เบาะแส 3/3 • ขยะปะปน",
+        answers: [
+          { text: "ทิ้งเศษอาหารรวมกับพลาสติกตั้งแต่ต้นทาง", correct: true },
+          { text: "แยกเศษอาหารไปทำปุ๋ยหมัก", correct: false },
+          { text: "ล้างบรรจุภัณฑ์ก่อนส่งรีไซเคิล", correct: false }
+        ]
+      }
+    };
+
     let state = loadState();
     let activePanel = "map";
     let activeZone = "garden";
     let activeIssue = "light";
     let selectedAnswer = null;
+    let activeCafeteriaIssue = "cup";
+    let selectedCafeteriaAnswer = null;
     let toastTimer;
 
     function loadState() {
@@ -912,10 +1039,12 @@
           points: Number(saved.points || 1250),
           completed: Array.isArray(saved.completed) ? saved.completed : ["school", "canteen"],
           classroomScore: Number(saved.classroomScore || 20),
-          resolvedIssues: Array.isArray(saved.resolvedIssues) ? saved.resolvedIssues : []
+          resolvedIssues: Array.isArray(saved.resolvedIssues) ? saved.resolvedIssues : [],
+          cafeteriaScore: Number(saved.cafeteriaScore || 60),
+          resolvedCafeteriaIssues: Array.isArray(saved.resolvedCafeteriaIssues) ? saved.resolvedCafeteriaIssues : []
         };
       } catch (error) {
-        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [] };
+        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [] };
       }
     }
 
@@ -1004,6 +1133,10 @@
         openClassroom();
         return;
       }
+      if (id === "canteen") {
+        openCafeteria();
+        return;
+      }
       openDrawer(zoneContent(id));
     }
 
@@ -1021,6 +1154,28 @@
     function closeClassroom() {
       document.querySelector("#classroomScene").classList.remove("show");
       document.querySelector("#classroomScene").setAttribute("aria-hidden", "true");
+    }
+
+    function openCafeteria() {
+      closeDrawer();
+      const nextIssue = Object.keys(cafeteriaIssues).find((id) => !state.resolvedCafeteriaIssues.includes(id));
+      activeCafeteriaIssue = nextIssue || "cup";
+      selectedCafeteriaAnswer = null;
+      renderCafeteria();
+      document.querySelector("#cafeteriaScene").classList.add("show");
+      document.querySelector("#cafeteriaScene").setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => document.querySelector(`[data-cafeteria-issue="${activeCafeteriaIssue}"]`).focus());
+    }
+
+    function closeCafeteria() {
+      document.querySelector("#cafeteriaScene").classList.remove("show");
+      document.querySelector("#cafeteriaScene").setAttribute("aria-hidden", "true");
+    }
+
+    function selectCafeteriaIssue(id) {
+      activeCafeteriaIssue = id;
+      selectedCafeteriaAnswer = null;
+      renderCafeteria();
     }
 
     function selectIssue(id) {
@@ -1083,6 +1238,62 @@
       showToast("Wake Up Call: +20 คะแนน");
     }
 
+    function renderCafeteria() {
+      const issue = cafeteriaIssues[activeCafeteriaIssue];
+      const resolved = state.resolvedCafeteriaIssues.includes(activeCafeteriaIssue);
+      document.querySelector("#cafeteriaScore").textContent = state.cafeteriaScore;
+      document.querySelector("#cafeteriaIssueContext").textContent = issue.label;
+      document.querySelectorAll("[data-cafeteria-issue]").forEach((marker) => {
+        const done = state.resolvedCafeteriaIssues.includes(marker.dataset.cafeteriaIssue);
+        marker.classList.toggle("is-active", marker.dataset.cafeteriaIssue === activeCafeteriaIssue);
+        marker.classList.toggle("is-done", done);
+        marker.innerHTML = done
+          ? "<span>✓</span>"
+          : '<svg aria-hidden="true"><use href="#i-search"></use></svg>';
+      });
+      document.querySelector("#cafeteriaAnswerList").innerHTML = issue.answers.map((answer, index) => `
+        <button class="answer-option ${selectedCafeteriaAnswer === index ? "is-selected" : ""}" type="button" data-cafeteria-answer="${index}" ${resolved ? "disabled" : ""}>
+          <span class="answer-dot">${selectedCafeteriaAnswer === index ? "✓" : ""}</span><span>${answer.text}</span>
+        </button>
+      `).join("");
+      const submit = document.querySelector("#cafeteriaSubmit");
+      submit.disabled = resolved || selectedCafeteriaAnswer === null;
+      submit.textContent = resolved ? "ตรวจสอบเบาะแสแล้ว ✓" : "ตรวจคำตอบ";
+      const feedback = document.querySelector("#cafeteriaMissionFeedback");
+      feedback.className = "mission-feedback";
+      feedback.textContent = resolved ? "ไขปริศนาและระบุสาเหตุของปัญหาจุดนี้แล้ว" : "เลือกคำตอบที่อธิบายสาเหตุของเบาะแสนี้";
+    }
+
+    function chooseCafeteriaAnswer(index) {
+      if (state.resolvedCafeteriaIssues.includes(activeCafeteriaIssue)) return;
+      selectedCafeteriaAnswer = index;
+      renderCafeteria();
+    }
+
+    function submitCafeteriaAnswer() {
+      if (selectedCafeteriaAnswer === null || state.resolvedCafeteriaIssues.includes(activeCafeteriaIssue)) return;
+      const issue = cafeteriaIssues[activeCafeteriaIssue];
+      const correct = issue.answers[selectedCafeteriaAnswer].correct;
+      const options = [...document.querySelectorAll("[data-cafeteria-answer]")];
+      const feedback = document.querySelector("#cafeteriaMissionFeedback");
+      if (!correct) {
+        options[selectedCafeteriaAnswer]?.classList.add("is-wrong");
+        feedback.className = "mission-feedback wrong";
+        feedback.textContent = "ลองสังเกตว่าพฤติกรรมใดทำให้ขยะเพิ่มขึ้นหรือปะปนกัน";
+        return;
+      }
+      options[selectedCafeteriaAnswer]?.classList.add("is-correct");
+      state.resolvedCafeteriaIssues.push(activeCafeteriaIssue);
+      state.cafeteriaScore += 20;
+      state.points = Math.min(MAX_POINTS, state.points + 20);
+      saveState();
+      renderProgress();
+      renderCafeteria();
+      feedback.className = "mission-feedback correct";
+      feedback.textContent = "ถูกต้อง! +20 คะแนน ไขปริศนาสิ่งแวดล้อมจุดนี้สำเร็จแล้ว";
+      showToast("Eco Detective: +20 คะแนน");
+    }
+
     function completeZone(id) {
       if (state.completed.includes(id)) return;
       const zone = zones[id];
@@ -1120,12 +1331,20 @@
 
       const classroomAnswer = event.target.closest("[data-classroom-answer]");
       if (classroomAnswer) chooseClassroomAnswer(Number(classroomAnswer.dataset.classroomAnswer));
+
+      const cafeteriaMarker = event.target.closest("[data-cafeteria-issue]");
+      if (cafeteriaMarker) selectCafeteriaIssue(cafeteriaMarker.dataset.cafeteriaIssue);
+
+      const cafeteriaAnswer = event.target.closest("[data-cafeteria-answer]");
+      if (cafeteriaAnswer) chooseCafeteriaAnswer(Number(cafeteriaAnswer.dataset.cafeteriaAnswer));
     });
 
     document.querySelector("#closeDrawer").addEventListener("click", closeDrawer);
     document.querySelector("#drawerBackdrop").addEventListener("click", closeDrawer);
     document.querySelector("#classroomBack").addEventListener("click", closeClassroom);
     document.querySelector("#classroomSubmit").addEventListener("click", submitClassroomAnswer);
+    document.querySelector("#cafeteriaBack").addEventListener("click", closeCafeteria);
+    document.querySelector("#cafeteriaSubmit").addEventListener("click", submitCafeteriaAnswer);
     document.querySelector("#soundButton").addEventListener("click", (event) => {
       const pressed = event.currentTarget.getAttribute("aria-pressed") === "true";
       event.currentTarget.setAttribute("aria-pressed", String(!pressed));
@@ -1134,7 +1353,9 @@
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && document.querySelector("#classroomScene").classList.contains("show")) {
+      if (event.key === "Escape" && document.querySelector("#cafeteriaScene").classList.contains("show")) {
+        closeCafeteria();
+      } else if (event.key === "Escape" && document.querySelector("#classroomScene").classList.contains("show")) {
         closeClassroom();
       } else if (event.key === "Escape") {
         closeDrawer();
@@ -1143,6 +1364,7 @@
 
     renderProgress();
     renderClassroom();
+    renderCafeteria();
   </script>
 </body>
 </html>

@@ -49,6 +49,10 @@ function main() {
     '/assets/classroom.webp',
     'Mission 1: Wake Up Call',
     'พฤติกรรมใดของมนุษย์ทำให้เกิดปัญหานี้?',
+    '/assets/cafeteria.jpg',
+    'Mission 2: Eco Detective',
+    'อะไรคือสาเหตุหลักของปัญหานี้?',
+    'Eco Detective',
     'Score:'
   ];
   requiredIndexText.forEach((text) => {
@@ -62,6 +66,8 @@ function main() {
   assert(fs.existsSync('assets/og.jpg'), 'assets/og.jpg: missing');
   assert(fs.existsSync('assets/classroom.webp'), 'assets/classroom.webp: missing');
   assert(fs.existsSync('assets/og-classroom.jpg'), 'assets/og-classroom.jpg: missing');
+  assert(fs.existsSync('assets/cafeteria.jpg'), 'assets/cafeteria.jpg: missing');
+  assert(fs.existsSync('assets/og-cafeteria.jpg'), 'assets/og-cafeteria.jpg: missing');
 
   console.log(`OK: index scripts=${indexScripts}, teacher scripts=${teacherScripts}, zones=${zoneIds.length}`);
 }
