@@ -4,6 +4,7 @@
   "private": true,
   "description": "Local web server and file database for Laudato Si' 3D Mission.",
   "scripts": {
+    "build": "node scripts/build-sites-worker.js",
     "start": "node server.js",
     "dev": "node server.js",
     "check": "node scripts/check.js",
