@@ -7,7 +7,7 @@
   <meta name="description" content="Laudato Si’ Mission เกมผจญภัยเพื่อการศึกษา สำรวจโรงเรียนและลงมือดูแลบ้านส่วนรวม">
   <meta property="og:title" content="Laudato Si’ Mission">
   <meta property="og:description" content="เรียนรู้ ดูแล และลงมือเปลี่ยนโลก เริ่มจากโรงเรียนของเรา">
-  <meta property="og:image" content="/assets/og-pitch-stage.jpg">
+  <meta property="og:image" content="/assets/og-community-gate.jpg">
   <meta property="og:type" content="website">
   <title>Laudato Si' Mission</title>
   <style>
@@ -303,6 +303,7 @@
     .hotspot.garden { left: 72%; top: 73%; --pin: #2d9d68; animation-delay: -.8s; }
     .hotspot.court { left: 49%; top: 56%; --pin: #347ec2; animation-delay: -1.2s; }
     .hotspot.community { left: 55%; top: 26%; --pin: #8b5bc5; animation-delay: -1.6s; }
+    .hotspot.quest { left: 67%; top: 29%; --pin: #e3a52d; animation-delay: -2s; }
 
     .mission-teaser {
       position: fixed;
@@ -559,6 +560,24 @@
       pointer-events: auto;
     }
 
+    .quest-scene {
+      position: fixed;
+      z-index: 65;
+      inset: 0;
+      overflow: hidden;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      background: #e8e1b5;
+      transition: opacity .3s ease, visibility .3s ease;
+    }
+
+    .quest-scene.show {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     .classroom-world {
       position: absolute;
       inset: 0;
@@ -632,6 +651,21 @@
       inset: 0;
       pointer-events: none;
       background: radial-gradient(circle at 59% 48%, transparent 47%, rgba(32, 54, 30, .13) 100%);
+    }
+
+    .quest-world {
+      position: absolute;
+      inset: 0;
+      background: url("/assets/community-gate.jpg") center center / cover no-repeat;
+      transform: scale(1.01);
+    }
+
+    .quest-world::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 62% 48%, transparent 47%, rgba(64, 61, 24, .14) 100%);
     }
 
     .classroom-back {
@@ -975,6 +1009,60 @@
     .pitch-submit { min-width: 175px; }
     .pitch-submit[disabled] { cursor: not-allowed; opacity: .5; box-shadow: none; }
 
+    .guardian-medal-icon {
+      position: relative;
+      overflow: visible;
+      box-shadow: inset 0 0 0 2px rgba(137,83,0,.28), 0 0 17px rgba(255,213,60,.72);
+    }
+
+    .guardian-medal-icon::after {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border: 1px solid rgba(255,218,94,.55);
+      border-radius: 50%;
+      animation: guardianGlow 2.2s ease-in-out infinite;
+    }
+
+    .guardian-medal-icon svg { width: 27px; height: 27px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    .quest-dialog {
+      position: absolute;
+      z-index: 6;
+      left: 63%;
+      top: 53%;
+      width: min(820px, calc(100vw - 76px));
+      padding: 24px 28px 22px;
+      border: 2px solid rgba(255,255,255,.91);
+      border-radius: 29px;
+      color: var(--ink);
+      background: rgba(249, 252, 242, .91);
+      box-shadow: 0 30px 84px rgba(60, 55, 18, .34);
+      transform: translate(-50%, -50%);
+      backdrop-filter: blur(18px) saturate(1.08);
+    }
+
+    .quest-dialog h2 { margin: 0; color: var(--green-900); font-size: clamp(25px, 2.4vw, 34px); line-height: 1.2; letter-spacing: -.55px; }
+    .promise-label { display: block; margin: 11px 0 7px; color: var(--green-900); font-size: clamp(18px, 1.8vw, 24px); font-weight: 950; }
+    .promise-textarea { width: 100%; min-height: 105px; max-height: 145px; resize: vertical; padding: 13px 15px; border: 1px solid rgba(47,99,51,.36); border-radius: 16px; color: var(--ink); background: rgba(255,255,255,.89); box-shadow: inset 0 2px 7px rgba(31,66,31,.05); font: 14px/1.55 "Noto Sans Thai", "Leelawadee UI", "Tahoma", sans-serif; }
+    .promise-textarea:focus { outline: 3px solid rgba(78,157,74,.2); border-color: #4e9d4a; }
+    .promise-textarea:disabled { color: #49614f; background: rgba(236,244,231,.82); opacity: 1; }
+    .quest-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; margin-top: 12px; }
+    .quest-action { min-height: 78px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 9px; border: 1px solid rgba(68,127,66,.28); border-radius: 16px; color: var(--green-900); background: rgba(255,255,255,.78); font: 900 11px/1.3 "Noto Sans Thai", "Leelawadee UI", sans-serif; cursor: pointer; transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease; }
+    .quest-action:hover { transform: translateY(-2px); border-color: #75ad68; }
+    .quest-action[aria-pressed="true"] { border-color: #4e9d4a; background: #e7f5dc; box-shadow: 0 0 0 3px rgba(80,155,72,.13); }
+    .quest-action-icon { width: 38px; height: 38px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 12px; color: #257b42; background: #e0f0d8; }
+    .quest-action:nth-child(3) .quest-action-icon { color: #9a6800; background: #fff0bd; }
+    .quest-action:nth-child(4) .quest-action-icon { color: #247da3; background: #dff3fb; }
+    .quest-action svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .quest-submit { min-width: 190px; }
+    .quest-submit[disabled] { cursor: not-allowed; opacity: .5; box-shadow: none; }
+
+    @keyframes guardianGlow {
+      0%, 100% { opacity: .35; transform: scale(.92) rotate(0); }
+      50% { opacity: 1; transform: scale(1.08) rotate(12deg); }
+    }
+
     @keyframes classroomPulse {
       0%, 100% { transform: rotate(-45deg) translate(0,0) scale(1); }
       50% { transform: rotate(-45deg) translate(-3px,-3px) scale(1.06); }
@@ -1036,6 +1124,7 @@
       .solution-dialog { left: 50%; width: calc(100vw - 30px); padding: 20px; }
       .creator-dialog { left: 50%; width: calc(100vw - 30px); padding: 20px; }
       .pitch-dialog { left: 50%; width: calc(100vw - 30px); padding: 20px; }
+      .quest-dialog { left: 50%; width: calc(100vw - 30px); padding: 20px; }
       .mission-dialog { top: auto; bottom: 16px; padding: 18px; transform: translateX(-50%); }
       .mission-dialog h2 { font-size: 20px; }
       .mission-question { font-size: 14px; }
@@ -1051,6 +1140,7 @@
       .hotspot.garden { left: 68%; top: 68%; }
       .hotspot.court { left: 43%; top: 55%; }
       .hotspot.community { left: 50%; top: 27%; }
+      .hotspot.quest { left: 61%; top: 31%; }
       .drawer-head { padding: 20px; }
       .drawer-body { padding: 18px 18px 100px; }
       .classroom-world { background-position: center center; }
@@ -1058,6 +1148,7 @@
       .garden-world { background-size: auto 69%; background-position: 44% top; background-repeat: no-repeat; }
       .creative-world { background-size: auto 67%; background-position: 47% top; background-repeat: no-repeat; }
       .pitch-world { background-size: auto 68%; background-position: 42% top; background-repeat: no-repeat; }
+      .quest-world { background-size: auto 66%; background-position: 38% top; background-repeat: no-repeat; }
       .classroom-back span { display: none; }
       .classroom-back { width: 44px; padding: 0; justify-content: center; }
       .wake-medal span:last-child { display: none; }
@@ -1107,6 +1198,15 @@
       .pitch-dialog { top: auto; bottom: 10px; width: calc(100vw - 20px); padding: 13px; border-radius: 20px; transform: translateX(-50%); }
       .pitch-dialog h2 { font-size: 18px; line-height: 1.2; }
       .pitch-submit { min-width: 128px; min-height: 36px; padding: 0 10px; font-size: 10px; }
+      .quest-dialog { top: auto; bottom: 10px; width: calc(100vw - 20px); padding: 13px; border-radius: 20px; transform: translateX(-50%); }
+      .quest-dialog h2 { font-size: 18px; line-height: 1.2; }
+      .promise-label { margin: 7px 0 4px; font-size: 14px; }
+      .promise-textarea { min-height: 63px; max-height: 72px; padding: 8px 9px; font-size: 10px; }
+      .quest-actions { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 8px; }
+      .quest-action { min-height: 43px; justify-content: flex-start; padding: 5px 7px; border-radius: 11px; font-size: 8px; }
+      .quest-action-icon { width: 28px; height: 28px; border-radius: 8px; }
+      .quest-action svg { width: 18px; height: 18px; }
+      .quest-submit { min-width: 138px; min-height: 36px; padding: 0 10px; font-size: 9px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1132,6 +1232,10 @@
     <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16.5 8"/></symbol>
     <symbol id="i-brush-leaf" viewBox="0 0 24 24"><path d="m4 20 5.5-1.5L20 8l-4-4L5.5 14.5 4 20Z"/><path d="m12.5 7.5 4 4M4 20l3-3"/><path d="M14.5 18.5c2.7-4.7 5.1-5.9 7-6-1.1 4.1-3.2 6.2-7 6Z"/><path d="M14.5 18.5c1.4-1.7 2.9-3 4.8-4.1"/></symbol>
     <symbol id="i-mic-globe" viewBox="0 0 24 24"><rect x="8.5" y="2.5" width="7" height="11" rx="3.5"/><path d="M5.5 10.5v.5a6.5 6.5 0 0 0 13 0v-.5M12 17.5v4M8.5 21.5h7"/><circle cx="18.5" cy="6" r="3.5"/><path d="M15.2 6h6.6M18.5 2.5c1 1 1.4 2.1 1.4 3.5s-.4 2.5-1.4 3.5M18.5 2.5c-1 1-1.4 2.1-1.4 3.5s.4 2.5 1.4 3.5"/></symbol>
+    <symbol id="i-bottle-reduce" viewBox="0 0 24 24"><path d="M10 3h4v3l2 2v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8l2-2V3Z"/><path d="M9 11h6M5 5l14 14"/></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="M4 8h7v12H4V8ZM13 8h7v12h-7V8ZM3 5h9M12 5h9"/><path d="m6 13 1.5-2L9 13M16 12h2M15 16h4"/></symbol>
+    <symbol id="i-bulb-off" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8.5 14.5C7 13.4 6 11.6 6 9.5A6 6 0 0 1 15.9 5M18 8a6 6 0 0 1-2.5 6.5L15 16H9"/><path d="M3 3l18 18"/></symbol>
+    <symbol id="i-shield-globe" viewBox="0 0 24 24"><path d="M12 2.5c2.8 2 5.6 2.7 8 2.7v6.2c0 5.1-3.3 8.4-8 10.1-4.7-1.7-8-5-8-10.1V5.2c2.4 0 5.2-.7 8-2.7Z"/><circle cx="12" cy="11.5" r="5"/><path d="M7 11.5h10M12 6.5c1.6 1.5 2.2 3.1 2.2 5s-.6 3.5-2.2 5M12 6.5c-1.6 1.5-2.2 3.1-2.2 5s.6 3.5 2.2 5"/></symbol>
   </svg>
 
   <main class="game-shell">
@@ -1152,7 +1256,7 @@
       </button>
       <button class="nav-button" type="button" data-panel="missions" aria-pressed="false">
         <span class="nav-icon"><svg><use href="#i-book"></use></svg></span>
-        <span class="nav-copy"><strong>สมุดภารกิจ</strong><small>5 พื้นที่เรียนรู้</small></span>
+        <span class="nav-copy"><strong>สมุดภารกิจ</strong><small>6 พื้นที่เรียนรู้</small></span>
       </button>
       <button class="nav-button" type="button" data-panel="score" aria-pressed="false">
         <span class="nav-icon"><svg><use href="#i-star"></use></svg></span>
@@ -1185,6 +1289,7 @@
       <button class="hotspot garden" type="button" data-open-zone="garden" aria-label="สวนสีเขียว"><span>3</span></button>
       <button class="hotspot court" type="button" data-open-zone="court" aria-label="ลานกิจกรรม"><span>4</span></button>
       <button class="hotspot community" type="button" data-open-zone="community" aria-label="เวทีเพื่อโลก"><span>5</span></button>
+      <button class="hotspot quest" type="button" data-open-zone="quest" aria-label="ประตูสู่ชุมชน"><span>6</span></button>
     </div>
 
     <section class="progress-hud" aria-label="ความคืบหน้า Laudato Si' points">
@@ -1398,6 +1503,42 @@
     </article>
   </section>
 
+  <section class="quest-scene" id="questScene" aria-hidden="true" aria-labelledby="questMissionTitle">
+    <div class="quest-world" role="img" aria-label="ประตูทางออกโรงเรียนมัธยมปลายแบบ isometric เปิดกว้างสู่ชุมชน มีนักเรียนสะพายเป้ยืนมองออกไปข้างนอก"></div>
+    <button class="classroom-back" id="questBack" type="button">
+      <svg aria-hidden="true"><use href="#i-arrow-left"></use></svg><span>กลับสู่แผนที่โรงเรียน</span>
+    </button>
+
+    <section class="classroom-hud" aria-label="คะแนนรวมและเหรียญผู้พิทักษ์ Laudato Si'">
+      <div class="classroom-score">Score: <b id="questScore">250</b></div>
+      <div class="wake-medal"><span class="wake-medal-icon guardian-medal-icon"><svg aria-hidden="true"><use href="#i-shield-globe"></use></svg></span><span>ผู้พิทักษ์ Laudato Si'</span></div>
+    </section>
+
+    <article class="quest-dialog" aria-live="polite">
+      <header class="creator-dialog-head">
+        <h2 id="questMissionTitle">Mission 6: Real Life Quest</h2>
+        <span class="creator-progress" id="questProgress">เลือกแล้ว 0/4 การกระทำ</span>
+      </header>
+
+      <form id="questForm">
+        <label class="promise-label" for="questPromise">ฉันจะดูแลบ้านส่วนรวมโดย...</label>
+        <textarea class="promise-textarea" id="questPromise" name="promise" maxlength="400" placeholder="เขียนคำมั่นสัญญาที่คุณพร้อมเริ่มทำในชีวิตจริง..."></textarea>
+
+        <div class="quest-actions" aria-label="เลือกการกระทำที่ตั้งใจทำ">
+          <button class="quest-action" type="button" data-quest-action="plastic" aria-pressed="false"><span class="quest-action-icon"><svg aria-hidden="true"><use href="#i-bottle-reduce"></use></svg></span><span>ลดการใช้พลาสติก</span></button>
+          <button class="quest-action" type="button" data-quest-action="sort" aria-pressed="false"><span class="quest-action-icon"><svg aria-hidden="true"><use href="#i-sort"></use></svg></span><span>แยกขยะ</span></button>
+          <button class="quest-action" type="button" data-quest-action="lights" aria-pressed="false"><span class="quest-action-icon"><svg aria-hidden="true"><use href="#i-bulb-off"></use></svg></span><span>ปิดไฟ</span></button>
+          <button class="quest-action" type="button" data-quest-action="water" aria-pressed="false"><span class="quest-action-icon"><svg aria-hidden="true"><use href="#i-drop"></use></svg></span><span>ประหยัดน้ำ</span></button>
+        </div>
+
+        <footer class="creator-footer">
+          <div class="creator-feedback" id="questFeedback" role="status">เลือกอย่างน้อย 1 การกระทำ และเขียนคำมั่นสัญญา 15 ตัวอักษรขึ้นไป</div>
+          <button class="primary-button quest-submit" id="questSubmit" type="submit" disabled>ยืนยันคำมั่นสัญญา</button>
+        </footer>
+      </form>
+    </article>
+  </section>
+
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
   <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
     <header class="drawer-head">
@@ -1417,7 +1558,8 @@
       canteen: { number: 2, title: "โรงอาหาร", subtitle: "Eco Detective", points: 120, description: "สืบหาเบาะแสปัญหาขยะในโรงอาหาร เรียนรู้การลดพลาสติก ลดเศษอาหาร และคัดแยกให้ถูกประเภท", action: "เริ่มสืบหาเบาะแส" },
       garden: { number: 3, title: "สวนสีเขียว", subtitle: "Mission Possible", points: 150, description: "ออกแบบทางแก้ที่เหมาะสม เป็นไปได้ และเชื่อมโยงกับการดูแลบ้านส่วนรวมตาม Laudato Si'", action: "ออกแบบทางออกของฉัน" },
       court: { number: 4, title: "ลานกิจกรรม", subtitle: "Create & Launch", points: 180, description: "สร้างผลงานรักษ์โลก ตั้งแต่ชื่อ ปัญหา ทางออก ไปจนถึงข้อความรณรงค์ที่เชื่อมโยงกับ Laudato Si'", action: "สร้างและเปิดตัวผลงาน" },
-      community: { number: 5, title: "เวทีเพื่อโลก", subtitle: "Pitch for the Planet", points: 250, description: "นำเสนอปัญหา สาเหตุ ทางออก ผลลัพธ์ และการนำผลงานรักษ์โลกไปใช้จริงอย่างมั่นใจ", action: "เตรียมขึ้นเวที" }
+      community: { number: 5, title: "เวทีเพื่อโลก", subtitle: "Pitch for the Planet", points: 250, description: "นำเสนอปัญหา สาเหตุ ทางออก ผลลัพธ์ และการนำผลงานรักษ์โลกไปใช้จริงอย่างมั่นใจ", action: "เตรียมขึ้นเวที" },
+      quest: { number: 6, title: "ประตูสู่ชุมชน", subtitle: "Real Life Quest", points: 300, description: "เลือกการลงมือทำและเขียนคำมั่นสัญญาที่จะดูแลบ้านส่วนรวมต่อไปในชีวิตจริง", action: "เริ่มภารกิจชีวิตจริง" }
     };
 
     const classroomIssues = {
@@ -1502,10 +1644,14 @@
           creatorLaunched: Boolean(saved.creatorLaunched),
           pitchScore: Number(saved.pitchScore || 200),
           pitchDraft: saved.pitchDraft && typeof saved.pitchDraft === "object" ? saved.pitchDraft : { problem: "", cause: "", solution: "", result: "", realUse: "" },
-          pitchPresented: Boolean(saved.pitchPresented)
+          pitchPresented: Boolean(saved.pitchPresented),
+          questScore: Number(saved.questScore || 250),
+          questPromise: typeof saved.questPromise === "string" ? saved.questPromise : "",
+          questActions: Array.isArray(saved.questActions) ? saved.questActions : [],
+          questCommitted: Boolean(saved.questCommitted)
         };
       } catch (error) {
-        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [], gardenScore: 110, gardenIdea: "", gardenActions: [], gardenSubmitted: false, creatorScore: 160, creatorDraft: { title: "", problem: "", solution: "", campaign: "", laudato: "" }, creatorLaunched: false, pitchScore: 200, pitchDraft: { problem: "", cause: "", solution: "", result: "", realUse: "" }, pitchPresented: false };
+        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [], gardenScore: 110, gardenIdea: "", gardenActions: [], gardenSubmitted: false, creatorScore: 160, creatorDraft: { title: "", problem: "", solution: "", campaign: "", laudato: "" }, creatorLaunched: false, pitchScore: 200, pitchDraft: { problem: "", cause: "", solution: "", result: "", realUse: "" }, pitchPresented: false, questScore: 250, questPromise: "", questActions: [], questCommitted: false };
       }
     }
 
@@ -1541,10 +1687,10 @@
 
     function panelContent(panel) {
       if (panel === "missions") {
-        return { kicker: "สมุดภารกิจ", title: "5 พื้นที่เรียนรู้", body: `<p>เลือกภารกิจ แล้วลงมือทำทีละขั้นเพื่อสะสม Laudato Si' points</p><div class="mission-list">${missionRows()}</div>` };
+        return { kicker: "สมุดภารกิจ", title: "6 พื้นที่เรียนรู้", body: `<p>เลือกภารกิจ แล้วลงมือทำทีละขั้นเพื่อสะสม Laudato Si' points</p><div class="mission-list">${missionRows()}</div>` };
       }
       if (panel === "score") {
-        return { kicker: "ดาวคะแนน", title: "พลังการเปลี่ยนแปลงของฉัน", body: `<p>ทุกการตัดสินใจที่ดีจะเพิ่มพลังให้บ้านส่วนรวม</p><div class="stat-grid"><div class="stat"><small>Laudato Si' points</small><strong>${formatNumber(state.points)}</strong></div><div class="stat gold"><small>ภารกิจสำเร็จ</small><strong>${state.completed.length}/5</strong></div><div class="stat"><small>ระดับปัจจุบัน</small><strong style="font-size:18px">Green Explorer</strong></div><div class="stat gold"><small>เป้าหมายถัดไป</small><strong style="font-size:18px">Eco Leader</strong></div></div>` };
+        return { kicker: "ดาวคะแนน", title: "พลังการเปลี่ยนแปลงของฉัน", body: `<p>ทุกการตัดสินใจที่ดีจะเพิ่มพลังให้บ้านส่วนรวม</p><div class="stat-grid"><div class="stat"><small>Laudato Si' points</small><strong>${formatNumber(state.points)}</strong></div><div class="stat gold"><small>ภารกิจสำเร็จ</small><strong>${state.completed.length}/6</strong></div><div class="stat"><small>ระดับปัจจุบัน</small><strong style="font-size:18px">Green Explorer</strong></div><div class="stat gold"><small>เป้าหมายถัดไป</small><strong style="font-size:18px">Eco Leader</strong></div></div>` };
       }
       if (panel === "medals") {
         return { kicker: "เหรียญรางวัล", title: "รางวัลจากการลงมือทำ", body: `<p>แต่ละเหรียญคือหลักฐานของสิ่งดี ๆ ที่เราได้ทำร่วมกัน</p><div class="medal-grid">${Object.entries(zones).map(([id, zone]) => `<div class="medal-card ${state.completed.includes(id) ? "" : "locked"}"><div class="medal-symbol">${state.completed.includes(id) ? "✦" : "?"}</div><strong>${zone.title}</strong></div>`).join("")}</div>` };
@@ -1608,6 +1754,10 @@
       }
       if (id === "community") {
         openPitch();
+        return;
+      }
+      if (id === "quest") {
+        openQuest();
         return;
       }
       openDrawer(zoneContent(id));
@@ -1682,6 +1832,19 @@
     function closePitch() {
       document.querySelector("#pitchScene").classList.remove("show");
       document.querySelector("#pitchScene").setAttribute("aria-hidden", "true");
+    }
+
+    function openQuest() {
+      closeDrawer();
+      renderQuest();
+      document.querySelector("#questScene").classList.add("show");
+      document.querySelector("#questScene").setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => (state.questCommitted ? document.querySelector("#questBack") : document.querySelector("#questPromise")).focus());
+    }
+
+    function closeQuest() {
+      document.querySelector("#questScene").classList.remove("show");
+      document.querySelector("#questScene").setAttribute("aria-hidden", "true");
     }
 
     function selectCafeteriaIssue(id) {
@@ -1966,6 +2129,52 @@
       showToast("Pitch for the Planet: +60 คะแนน");
     }
 
+    function renderQuest() {
+      const committed = state.questCommitted;
+      const textarea = document.querySelector("#questPromise");
+      if (textarea.value !== state.questPromise) textarea.value = state.questPromise;
+      textarea.disabled = committed;
+      document.querySelector("#questScore").textContent = state.questScore;
+      document.querySelector("#questProgress").textContent = `เลือกแล้ว ${state.questActions.length}/4 การกระทำ`;
+      document.querySelectorAll("[data-quest-action]").forEach((button) => {
+        const selected = state.questActions.includes(button.dataset.questAction);
+        button.setAttribute("aria-pressed", String(selected));
+        button.disabled = committed;
+      });
+      const ready = state.questActions.length > 0 && state.questPromise.trim().length >= 15;
+      const submit = document.querySelector("#questSubmit");
+      submit.disabled = committed || !ready;
+      submit.textContent = committed ? "ยืนยันคำมั่นสัญญาแล้ว ✓" : "ยืนยันคำมั่นสัญญา";
+      const feedback = document.querySelector("#questFeedback");
+      feedback.className = committed ? "creator-feedback success" : "creator-feedback";
+      feedback.textContent = committed
+        ? "การเดินทางครั้งใหม่เริ่มต้นแล้ว คุณคือผู้พิทักษ์ Laudato Si' +75 คะแนน"
+        : ready
+          ? "คำมั่นสัญญาพร้อมแล้ว ยืนยันเมื่อคุณพร้อมลงมือทำจริง"
+          : "เลือกอย่างน้อย 1 การกระทำ และเขียนคำมั่นสัญญา 15 ตัวอักษรขึ้นไป";
+    }
+
+    function toggleQuestAction(action) {
+      if (state.questCommitted) return;
+      state.questActions = state.questActions.includes(action)
+        ? state.questActions.filter((item) => item !== action)
+        : [...state.questActions, action];
+      saveState();
+      renderQuest();
+    }
+
+    function submitQuest(event) {
+      event.preventDefault();
+      if (state.questCommitted || state.questActions.length === 0 || state.questPromise.trim().length < 15) return;
+      state.questCommitted = true;
+      state.questScore += 75;
+      state.points = Math.min(MAX_POINTS, state.points + 75);
+      saveState();
+      renderProgress();
+      renderQuest();
+      showToast("Real Life Quest: +75 คะแนน");
+    }
+
     function completeZone(id) {
       if (state.completed.includes(id)) return;
       const zone = zones[id];
@@ -2012,6 +2221,9 @@
 
       const gardenAction = event.target.closest("[data-garden-action]");
       if (gardenAction) toggleGardenAction(gardenAction.dataset.gardenAction);
+
+      const questAction = event.target.closest("[data-quest-action]");
+      if (questAction) toggleQuestAction(questAction.dataset.questAction);
     });
 
     document.querySelector("#closeDrawer").addEventListener("click", closeDrawer);
@@ -2033,6 +2245,13 @@
     document.querySelector("#pitchBack").addEventListener("click", closePitch);
     document.querySelector("#pitchForm").addEventListener("input", updatePitchDraft);
     document.querySelector("#pitchForm").addEventListener("submit", submitPitch);
+    document.querySelector("#questBack").addEventListener("click", closeQuest);
+    document.querySelector("#questPromise").addEventListener("input", (event) => {
+      state.questPromise = event.target.value;
+      saveState();
+      renderQuest();
+    });
+    document.querySelector("#questForm").addEventListener("submit", submitQuest);
     document.querySelector("#soundButton").addEventListener("click", (event) => {
       const pressed = event.currentTarget.getAttribute("aria-pressed") === "true";
       event.currentTarget.setAttribute("aria-pressed", String(!pressed));
@@ -2041,7 +2260,9 @@
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && document.querySelector("#pitchScene").classList.contains("show")) {
+      if (event.key === "Escape" && document.querySelector("#questScene").classList.contains("show")) {
+        closeQuest();
+      } else if (event.key === "Escape" && document.querySelector("#pitchScene").classList.contains("show")) {
         closePitch();
       } else if (event.key === "Escape" && document.querySelector("#creativeScene").classList.contains("show")) {
         closeCreative();
@@ -2062,6 +2283,7 @@
     renderGarden();
     renderCreative();
     renderPitch();
+    renderQuest();
   </script>
 </body>
 </html>

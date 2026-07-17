@@ -76,14 +76,22 @@ function main() {
     'ผลลัพธ์ของผลงาน',
     'การนำไปใช้จริง',
     'Voice of Our Common Home',
+    '/assets/community-gate.jpg',
+    'Mission 6: Real Life Quest',
+    'ฉันจะดูแลบ้านส่วนรวมโดย...',
+    'ลดการใช้พลาสติก',
+    'แยกขยะ',
+    'ปิดไฟ',
+    'ประหยัดน้ำ',
+    "ผู้พิทักษ์ Laudato Si'",
     'Score:'
   ];
   requiredIndexText.forEach((text) => {
     assert(indexHtml.includes(text), `index.html: missing ${text}`);
   });
 
-  const zoneIds = [...indexHtml.matchAll(/^\s*(school|canteen|garden|court|community): \{/gm)].map((match) => match[1]);
-  assert(zoneIds.length === 5, `index.html: expected 5 learning zones, found ${zoneIds.length}`);
+  const zoneIds = [...indexHtml.matchAll(/^\s*(school|canteen|garden|court|community|quest): \{/gm)].map((match) => match[1]);
+  assert(zoneIds.length === 6, `index.html: expected 6 learning zones, found ${zoneIds.length}`);
   assert(teacherHtml.includes('/api/submissions'), 'teacher-results.html: missing submissions API call');
   assert(fs.existsSync('assets/campus.webp'), 'assets/campus.webp: missing');
   assert(fs.existsSync('assets/og.jpg'), 'assets/og.jpg: missing');
@@ -97,6 +105,8 @@ function main() {
   assert(fs.existsSync('assets/og-creative-space.jpg'), 'assets/og-creative-space.jpg: missing');
   assert(fs.existsSync('assets/pitch-stage.jpg'), 'assets/pitch-stage.jpg: missing');
   assert(fs.existsSync('assets/og-pitch-stage.jpg'), 'assets/og-pitch-stage.jpg: missing');
+  assert(fs.existsSync('assets/community-gate.jpg'), 'assets/community-gate.jpg: missing');
+  assert(fs.existsSync('assets/og-community-gate.jpg'), 'assets/og-community-gate.jpg: missing');
 
   console.log(`OK: index scripts=${indexScripts}, teacher scripts=${teacherScripts}, zones=${zoneIds.length}`);
 }

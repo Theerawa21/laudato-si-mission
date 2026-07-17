@@ -27,6 +27,8 @@ const creativeJpg = fs.readFileSync(path.join(ROOT, "assets", "creative-space.jp
 const creativeOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-creative-space.jpg")).toString("base64");
 const pitchJpg = fs.readFileSync(path.join(ROOT, "assets", "pitch-stage.jpg")).toString("base64");
 const pitchOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-pitch-stage.jpg")).toString("base64");
+const communityGateJpg = fs.readFileSync(path.join(ROOT, "assets", "community-gate.jpg")).toString("base64");
+const communityGateOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-community-gate.jpg")).toString("base64");
 
 const runtime = String.raw`const INDEX_HTML = __INDEX_HTML__;
 const TEACHER_RESULTS_HTML = __TEACHER_RESULTS_HTML__;
@@ -42,6 +44,8 @@ const CREATIVE_JPG = __CREATIVE_JPG__;
 const CREATIVE_OG_JPG = __CREATIVE_OG_JPG__;
 const PITCH_JPG = __PITCH_JPG__;
 const PITCH_OG_JPG = __PITCH_OG_JPG__;
+const COMMUNITY_GATE_JPG = __COMMUNITY_GATE_JPG__;
+const COMMUNITY_GATE_OG_JPG = __COMMUNITY_GATE_OG_JPG__;
 
 const CSV_HEADERS = [
   "id",
@@ -348,6 +352,14 @@ export default {
       return imageResponse(PITCH_OG_JPG, "image/jpeg");
     }
 
+    if (url.pathname === "/assets/community-gate.jpg") {
+      return imageResponse(COMMUNITY_GATE_JPG, "image/jpeg");
+    }
+
+    if (url.pathname === "/assets/og-community-gate.jpg") {
+      return imageResponse(COMMUNITY_GATE_OG_JPG, "image/jpeg");
+    }
+
     return new Response("Not found", {
       status: 404,
       headers: { "Content-Type": "text/plain; charset=utf-8" }
@@ -370,7 +382,9 @@ const worker = runtime
   .replace("__CREATIVE_JPG__", JSON.stringify(creativeJpg))
   .replace("__CREATIVE_OG_JPG__", JSON.stringify(creativeOgJpg))
   .replace("__PITCH_JPG__", JSON.stringify(pitchJpg))
-  .replace("__PITCH_OG_JPG__", JSON.stringify(pitchOgJpg));
+  .replace("__PITCH_OG_JPG__", JSON.stringify(pitchOgJpg))
+  .replace("__COMMUNITY_GATE_JPG__", JSON.stringify(communityGateJpg))
+  .replace("__COMMUNITY_GATE_OG_JPG__", JSON.stringify(communityGateOgJpg));
 
 writeText(path.join(OUT_DIR, "index.js"), worker);
 console.log("Built dist/server/index.js");
