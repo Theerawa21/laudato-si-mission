@@ -25,6 +25,8 @@ const gardenJpg = fs.readFileSync(path.join(ROOT, "assets", "garden.jpg")).toStr
 const gardenOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-garden.jpg")).toString("base64");
 const creativeJpg = fs.readFileSync(path.join(ROOT, "assets", "creative-space.jpg")).toString("base64");
 const creativeOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-creative-space.jpg")).toString("base64");
+const pitchJpg = fs.readFileSync(path.join(ROOT, "assets", "pitch-stage.jpg")).toString("base64");
+const pitchOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-pitch-stage.jpg")).toString("base64");
 
 const runtime = String.raw`const INDEX_HTML = __INDEX_HTML__;
 const TEACHER_RESULTS_HTML = __TEACHER_RESULTS_HTML__;
@@ -38,6 +40,8 @@ const GARDEN_JPG = __GARDEN_JPG__;
 const GARDEN_OG_JPG = __GARDEN_OG_JPG__;
 const CREATIVE_JPG = __CREATIVE_JPG__;
 const CREATIVE_OG_JPG = __CREATIVE_OG_JPG__;
+const PITCH_JPG = __PITCH_JPG__;
+const PITCH_OG_JPG = __PITCH_OG_JPG__;
 
 const CSV_HEADERS = [
   "id",
@@ -336,6 +340,14 @@ export default {
       return imageResponse(CREATIVE_OG_JPG, "image/jpeg");
     }
 
+    if (url.pathname === "/assets/pitch-stage.jpg") {
+      return imageResponse(PITCH_JPG, "image/jpeg");
+    }
+
+    if (url.pathname === "/assets/og-pitch-stage.jpg") {
+      return imageResponse(PITCH_OG_JPG, "image/jpeg");
+    }
+
     return new Response("Not found", {
       status: 404,
       headers: { "Content-Type": "text/plain; charset=utf-8" }
@@ -356,7 +368,9 @@ const worker = runtime
   .replace("__GARDEN_JPG__", JSON.stringify(gardenJpg))
   .replace("__GARDEN_OG_JPG__", JSON.stringify(gardenOgJpg))
   .replace("__CREATIVE_JPG__", JSON.stringify(creativeJpg))
-  .replace("__CREATIVE_OG_JPG__", JSON.stringify(creativeOgJpg));
+  .replace("__CREATIVE_OG_JPG__", JSON.stringify(creativeOgJpg))
+  .replace("__PITCH_JPG__", JSON.stringify(pitchJpg))
+  .replace("__PITCH_OG_JPG__", JSON.stringify(pitchOgJpg));
 
 writeText(path.join(OUT_DIR, "index.js"), worker);
 console.log("Built dist/server/index.js");

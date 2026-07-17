@@ -7,7 +7,7 @@
   <meta name="description" content="Laudato Si’ Mission เกมผจญภัยเพื่อการศึกษา สำรวจโรงเรียนและลงมือดูแลบ้านส่วนรวม">
   <meta property="og:title" content="Laudato Si’ Mission">
   <meta property="og:description" content="เรียนรู้ ดูแล และลงมือเปลี่ยนโลก เริ่มจากโรงเรียนของเรา">
-  <meta property="og:image" content="/assets/og-creative-space.jpg">
+  <meta property="og:image" content="/assets/og-pitch-stage.jpg">
   <meta property="og:type" content="website">
   <title>Laudato Si' Mission</title>
   <style>
@@ -541,6 +541,24 @@
       pointer-events: auto;
     }
 
+    .pitch-scene {
+      position: fixed;
+      z-index: 64;
+      inset: 0;
+      overflow: hidden;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      background: #d9e8cf;
+      transition: opacity .3s ease, visibility .3s ease;
+    }
+
+    .pitch-scene.show {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     .classroom-world {
       position: absolute;
       inset: 0;
@@ -599,6 +617,21 @@
       inset: 0;
       pointer-events: none;
       background: radial-gradient(circle at 58% 50%, transparent 46%, rgba(40, 54, 29, .14) 100%);
+    }
+
+    .pitch-world {
+      position: absolute;
+      inset: 0;
+      background: url("/assets/pitch-stage.jpg") center center / cover no-repeat;
+      transform: scale(1.01);
+    }
+
+    .pitch-world::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 59% 48%, transparent 47%, rgba(32, 54, 30, .13) 100%);
     }
 
     .classroom-back {
@@ -912,6 +945,36 @@
     .creator-submit { min-width: 175px; }
     .creator-submit[disabled] { cursor: not-allowed; opacity: .5; box-shadow: none; }
 
+    .voice-medal-icon svg {
+      width: 26px;
+      height: 26px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .pitch-dialog {
+      position: absolute;
+      z-index: 6;
+      left: 62%;
+      top: 53%;
+      width: min(875px, calc(100vw - 76px));
+      padding: 23px 26px 21px;
+      border: 2px solid rgba(255,255,255,.9);
+      border-radius: 28px;
+      color: var(--ink);
+      background: rgba(247, 252, 246, .9);
+      box-shadow: 0 28px 80px rgba(30, 59, 34, .34);
+      transform: translate(-50%, -50%);
+      backdrop-filter: blur(18px) saturate(1.08);
+    }
+
+    .pitch-dialog h2 { margin: 0; color: var(--green-900); font-size: clamp(24px, 2.3vw, 33px); line-height: 1.2; letter-spacing: -.55px; }
+    .pitch-submit { min-width: 175px; }
+    .pitch-submit[disabled] { cursor: not-allowed; opacity: .5; box-shadow: none; }
+
     @keyframes classroomPulse {
       0%, 100% { transform: rotate(-45deg) translate(0,0) scale(1); }
       50% { transform: rotate(-45deg) translate(-3px,-3px) scale(1.06); }
@@ -972,6 +1035,7 @@
       .cafeteria-marker.mixed { right: 14%; bottom: 32%; }
       .solution-dialog { left: 50%; width: calc(100vw - 30px); padding: 20px; }
       .creator-dialog { left: 50%; width: calc(100vw - 30px); padding: 20px; }
+      .pitch-dialog { left: 50%; width: calc(100vw - 30px); padding: 20px; }
       .mission-dialog { top: auto; bottom: 16px; padding: 18px; transform: translateX(-50%); }
       .mission-dialog h2 { font-size: 20px; }
       .mission-question { font-size: 14px; }
@@ -993,6 +1057,7 @@
       .cafeteria-world { background-size: auto 70%; background-position: 75% top; background-repeat: no-repeat; }
       .garden-world { background-size: auto 69%; background-position: 44% top; background-repeat: no-repeat; }
       .creative-world { background-size: auto 67%; background-position: 47% top; background-repeat: no-repeat; }
+      .pitch-world { background-size: auto 68%; background-position: 42% top; background-repeat: no-repeat; }
       .classroom-back span { display: none; }
       .classroom-back { width: 44px; padding: 0; justify-content: center; }
       .wake-medal span:last-child { display: none; }
@@ -1039,6 +1104,9 @@
       .creator-footer { gap: 8px; margin-top: 8px; }
       .creator-feedback { font-size: 8px; }
       .creator-submit { min-width: 128px; min-height: 36px; padding: 0 10px; font-size: 10px; }
+      .pitch-dialog { top: auto; bottom: 10px; width: calc(100vw - 20px); padding: 13px; border-radius: 20px; transform: translateX(-50%); }
+      .pitch-dialog h2 { font-size: 18px; line-height: 1.2; }
+      .pitch-submit { min-width: 128px; min-height: 36px; padding: 0 10px; font-size: 10px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1063,6 +1131,7 @@
     <symbol id="i-target" viewBox="0 0 24 24"><circle cx="11" cy="13" r="7"/><circle cx="11" cy="13" r="3"/><path d="m13.5 10.5 6-6M16 4.5h3.5V8"/></symbol>
     <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16.5 8"/></symbol>
     <symbol id="i-brush-leaf" viewBox="0 0 24 24"><path d="m4 20 5.5-1.5L20 8l-4-4L5.5 14.5 4 20Z"/><path d="m12.5 7.5 4 4M4 20l3-3"/><path d="M14.5 18.5c2.7-4.7 5.1-5.9 7-6-1.1 4.1-3.2 6.2-7 6Z"/><path d="M14.5 18.5c1.4-1.7 2.9-3 4.8-4.1"/></symbol>
+    <symbol id="i-mic-globe" viewBox="0 0 24 24"><rect x="8.5" y="2.5" width="7" height="11" rx="3.5"/><path d="M5.5 10.5v.5a6.5 6.5 0 0 0 13 0v-.5M12 17.5v4M8.5 21.5h7"/><circle cx="18.5" cy="6" r="3.5"/><path d="M15.2 6h6.6M18.5 2.5c1 1 1.4 2.1 1.4 3.5s-.4 2.5-1.4 3.5M18.5 2.5c-1 1-1.4 2.1-1.4 3.5s.4 2.5 1.4 3.5"/></symbol>
   </svg>
 
   <main class="game-shell">
@@ -1115,7 +1184,7 @@
       <button class="hotspot canteen completed" type="button" data-open-zone="canteen" aria-label="โรงอาหาร"><span>2</span></button>
       <button class="hotspot garden" type="button" data-open-zone="garden" aria-label="สวนสีเขียว"><span>3</span></button>
       <button class="hotspot court" type="button" data-open-zone="court" aria-label="ลานกิจกรรม"><span>4</span></button>
-      <button class="hotspot community" type="button" data-open-zone="community" aria-label="ประตูสู่ชุมชน"><span>5</span></button>
+      <button class="hotspot community" type="button" data-open-zone="community" aria-label="เวทีเพื่อโลก"><span>5</span></button>
     </div>
 
     <section class="progress-hud" aria-label="ความคืบหน้า Laudato Si' points">
@@ -1280,6 +1349,55 @@
     </article>
   </section>
 
+  <section class="pitch-scene" id="pitchScene" aria-hidden="true" aria-labelledby="pitchMissionTitle">
+    <div class="pitch-world" role="img" aria-label="เวทีนำเสนองานกลางแจ้งในโรงเรียนมัธยมปลายแบบ isometric มีนักเรียนยืนพูดหน้าไมโครโฟนและเพื่อนนั่งฟังบนม้านั่งไม้"></div>
+    <button class="classroom-back" id="pitchBack" type="button">
+      <svg aria-hidden="true"><use href="#i-arrow-left"></use></svg><span>กลับสู่แผนที่โรงเรียน</span>
+    </button>
+
+    <section class="classroom-hud" aria-label="คะแนนและเหรียญ Voice of Our Common Home">
+      <div class="classroom-score">Score: <b id="pitchScore">200</b></div>
+      <div class="wake-medal"><span class="wake-medal-icon voice-medal-icon"><svg aria-hidden="true"><use href="#i-mic-globe"></use></svg></span><span>Voice of Our Common Home</span></div>
+    </section>
+
+    <article class="pitch-dialog" aria-live="polite">
+      <header class="creator-dialog-head">
+        <h2 id="pitchMissionTitle">Mission 5: Pitch for the Planet</h2>
+        <span class="creator-progress" id="pitchProgress">เตรียมแล้ว 0/5 หัวข้อ</span>
+      </header>
+      <p class="creator-lead">เตรียมเรื่องเล่าให้กระชับ ชัดเจน และชวนเพื่อนเห็นว่าผลงานนี้สามารถเปลี่ยนโรงเรียนได้จริง</p>
+
+      <form id="pitchForm">
+        <div class="creator-form-grid">
+          <div class="creator-field full">
+            <label for="pitchProblem">ปัญหาที่เลือก</label>
+            <input id="pitchProblem" name="problem" maxlength="100" placeholder="ปัญหาสิ่งแวดล้อมที่ผลงานของคุณต้องการแก้ไข" autocomplete="off">
+          </div>
+          <div class="creator-field">
+            <label for="pitchCause">สาเหตุ</label>
+            <textarea id="pitchCause" name="cause" maxlength="240" placeholder="อะไรคือสาเหตุสำคัญของปัญหานี้"></textarea>
+          </div>
+          <div class="creator-field">
+            <label for="pitchSolution">แนวทางแก้ไข</label>
+            <textarea id="pitchSolution" name="solution" maxlength="240" placeholder="ผลงานของคุณแก้ปัญหาอย่างไร"></textarea>
+          </div>
+          <div class="creator-field">
+            <label for="pitchResult">ผลลัพธ์ของผลงาน</label>
+            <textarea id="pitchResult" name="result" maxlength="240" placeholder="เมื่อทดลองแล้วเกิดการเปลี่ยนแปลงอะไร"></textarea>
+          </div>
+          <div class="creator-field">
+            <label for="pitchRealUse">การนำไปใช้จริง</label>
+            <textarea id="pitchRealUse" name="realUse" maxlength="240" placeholder="โรงเรียนหรือชุมชนจะต่อยอดผลงานนี้อย่างไร"></textarea>
+          </div>
+        </div>
+        <footer class="creator-footer">
+          <div class="creator-feedback" id="pitchFeedback" role="status">เตรียมข้อมูลให้ครบทั้ง 5 หัวข้อก่อนขึ้นเวที</div>
+          <button class="primary-button pitch-submit" id="pitchSubmit" type="submit" disabled>เริ่มนำเสนอ</button>
+        </footer>
+      </form>
+    </article>
+  </section>
+
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
   <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
     <header class="drawer-head">
@@ -1299,7 +1417,7 @@
       canteen: { number: 2, title: "โรงอาหาร", subtitle: "Eco Detective", points: 120, description: "สืบหาเบาะแสปัญหาขยะในโรงอาหาร เรียนรู้การลดพลาสติก ลดเศษอาหาร และคัดแยกให้ถูกประเภท", action: "เริ่มสืบหาเบาะแส" },
       garden: { number: 3, title: "สวนสีเขียว", subtitle: "Mission Possible", points: 150, description: "ออกแบบทางแก้ที่เหมาะสม เป็นไปได้ และเชื่อมโยงกับการดูแลบ้านส่วนรวมตาม Laudato Si'", action: "ออกแบบทางออกของฉัน" },
       court: { number: 4, title: "ลานกิจกรรม", subtitle: "Create & Launch", points: 180, description: "สร้างผลงานรักษ์โลก ตั้งแต่ชื่อ ปัญหา ทางออก ไปจนถึงข้อความรณรงค์ที่เชื่อมโยงกับ Laudato Si'", action: "สร้างและเปิดตัวผลงาน" },
-      community: { number: 5, title: "ประตูสู่ชุมชน", subtitle: "Real Life Quest", points: 250, description: "นำสิ่งที่เรียนรู้จากโรงเรียนไปทำภารกิจจริงร่วมกับครอบครัวและชุมชนใกล้ตัว", action: "ออกสู่ชุมชน" }
+      community: { number: 5, title: "เวทีเพื่อโลก", subtitle: "Pitch for the Planet", points: 250, description: "นำเสนอปัญหา สาเหตุ ทางออก ผลลัพธ์ และการนำผลงานรักษ์โลกไปใช้จริงอย่างมั่นใจ", action: "เตรียมขึ้นเวที" }
     };
 
     const classroomIssues = {
@@ -1381,10 +1499,13 @@
           gardenSubmitted: Boolean(saved.gardenSubmitted),
           creatorScore: Number(saved.creatorScore || 160),
           creatorDraft: saved.creatorDraft && typeof saved.creatorDraft === "object" ? saved.creatorDraft : { title: "", problem: "", solution: "", campaign: "", laudato: "" },
-          creatorLaunched: Boolean(saved.creatorLaunched)
+          creatorLaunched: Boolean(saved.creatorLaunched),
+          pitchScore: Number(saved.pitchScore || 200),
+          pitchDraft: saved.pitchDraft && typeof saved.pitchDraft === "object" ? saved.pitchDraft : { problem: "", cause: "", solution: "", result: "", realUse: "" },
+          pitchPresented: Boolean(saved.pitchPresented)
         };
       } catch (error) {
-        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [], gardenScore: 110, gardenIdea: "", gardenActions: [], gardenSubmitted: false, creatorScore: 160, creatorDraft: { title: "", problem: "", solution: "", campaign: "", laudato: "" }, creatorLaunched: false };
+        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [], gardenScore: 110, gardenIdea: "", gardenActions: [], gardenSubmitted: false, creatorScore: 160, creatorDraft: { title: "", problem: "", solution: "", campaign: "", laudato: "" }, creatorLaunched: false, pitchScore: 200, pitchDraft: { problem: "", cause: "", solution: "", result: "", realUse: "" }, pitchPresented: false };
       }
     }
 
@@ -1485,6 +1606,10 @@
         openCreative();
         return;
       }
+      if (id === "community") {
+        openPitch();
+        return;
+      }
       openDrawer(zoneContent(id));
     }
 
@@ -1544,6 +1669,19 @@
     function closeCreative() {
       document.querySelector("#creativeScene").classList.remove("show");
       document.querySelector("#creativeScene").setAttribute("aria-hidden", "true");
+    }
+
+    function openPitch() {
+      closeDrawer();
+      renderPitch();
+      document.querySelector("#pitchScene").classList.add("show");
+      document.querySelector("#pitchScene").setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => (state.pitchPresented ? document.querySelector("#pitchBack") : document.querySelector("#pitchProblem")).focus());
+    }
+
+    function closePitch() {
+      document.querySelector("#pitchScene").classList.remove("show");
+      document.querySelector("#pitchScene").setAttribute("aria-hidden", "true");
     }
 
     function selectCafeteriaIssue(id) {
@@ -1779,6 +1917,55 @@
       showToast("Create & Launch: +50 คะแนน");
     }
 
+    function pitchFields() {
+      return ["problem", "cause", "solution", "result", "realUse"];
+    }
+
+    function renderPitch() {
+      const presented = state.pitchPresented;
+      const fields = pitchFields();
+      fields.forEach((key) => {
+        const control = document.querySelector(`#pitchForm [name="${key}"]`);
+        const value = typeof state.pitchDraft[key] === "string" ? state.pitchDraft[key] : "";
+        if (control.value !== value) control.value = value;
+        control.disabled = presented;
+      });
+      const filled = fields.filter((key) => String(state.pitchDraft[key] || "").trim().length > 0).length;
+      document.querySelector("#pitchProgress").textContent = `เตรียมแล้ว ${filled}/5 หัวข้อ`;
+      document.querySelector("#pitchScore").textContent = state.pitchScore;
+      const ready = fields.every((key) => String(state.pitchDraft[key] || "").trim().length >= 8);
+      const submit = document.querySelector("#pitchSubmit");
+      submit.disabled = presented || !ready;
+      submit.textContent = presented ? "นำเสนอสำเร็จแล้ว ✓" : "เริ่มนำเสนอ";
+      const feedback = document.querySelector("#pitchFeedback");
+      feedback.className = presented ? "creator-feedback success" : "creator-feedback";
+      feedback.textContent = presented
+        ? "เสียงของคุณส่งต่อความหวังให้บ้านส่วนรวมแล้ว +60 คะแนน"
+        : ready
+          ? "สคริปต์พร้อมแล้ว สูดหายใจลึก ๆ และเริ่มนำเสนอได้เลย"
+          : "เตรียมข้อมูลให้ครบทั้ง 5 หัวข้อ โดยเขียนอย่างน้อยหัวข้อละ 8 ตัวอักษร";
+    }
+
+    function updatePitchDraft(event) {
+      if (state.pitchPresented) return;
+      state.pitchDraft[event.target.name] = event.target.value;
+      saveState();
+      renderPitch();
+    }
+
+    function submitPitch(event) {
+      event.preventDefault();
+      const ready = pitchFields().every((key) => String(state.pitchDraft[key] || "").trim().length >= 8);
+      if (state.pitchPresented || !ready) return;
+      state.pitchPresented = true;
+      state.pitchScore += 60;
+      state.points = Math.min(MAX_POINTS, state.points + 60);
+      saveState();
+      renderProgress();
+      renderPitch();
+      showToast("Pitch for the Planet: +60 คะแนน");
+    }
+
     function completeZone(id) {
       if (state.completed.includes(id)) return;
       const zone = zones[id];
@@ -1843,6 +2030,9 @@
     document.querySelector("#creativeBack").addEventListener("click", closeCreative);
     document.querySelector("#creatorForm").addEventListener("input", updateCreatorDraft);
     document.querySelector("#creatorForm").addEventListener("submit", submitCreator);
+    document.querySelector("#pitchBack").addEventListener("click", closePitch);
+    document.querySelector("#pitchForm").addEventListener("input", updatePitchDraft);
+    document.querySelector("#pitchForm").addEventListener("submit", submitPitch);
     document.querySelector("#soundButton").addEventListener("click", (event) => {
       const pressed = event.currentTarget.getAttribute("aria-pressed") === "true";
       event.currentTarget.setAttribute("aria-pressed", String(!pressed));
@@ -1851,7 +2041,9 @@
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && document.querySelector("#creativeScene").classList.contains("show")) {
+      if (event.key === "Escape" && document.querySelector("#pitchScene").classList.contains("show")) {
+        closePitch();
+      } else if (event.key === "Escape" && document.querySelector("#creativeScene").classList.contains("show")) {
         closeCreative();
       } else if (event.key === "Escape" && document.querySelector("#cafeteriaScene").classList.contains("show")) {
         closeCafeteria();
@@ -1869,6 +2061,7 @@
     renderCafeteria();
     renderGarden();
     renderCreative();
+    renderPitch();
   </script>
 </body>
 </html>

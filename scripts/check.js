@@ -68,6 +68,14 @@ function main() {
     'ข้อความรณรงค์',
     "แนวคิด Laudato Si'",
     'Creator',
+    '/assets/pitch-stage.jpg',
+    'Mission 5: Pitch for the Planet',
+    'ปัญหาที่เลือก',
+    'สาเหตุ',
+    'แนวทางแก้ไข',
+    'ผลลัพธ์ของผลงาน',
+    'การนำไปใช้จริง',
+    'Voice of Our Common Home',
     'Score:'
   ];
   requiredIndexText.forEach((text) => {
@@ -87,6 +95,8 @@ function main() {
   assert(fs.existsSync('assets/og-garden.jpg'), 'assets/og-garden.jpg: missing');
   assert(fs.existsSync('assets/creative-space.jpg'), 'assets/creative-space.jpg: missing');
   assert(fs.existsSync('assets/og-creative-space.jpg'), 'assets/og-creative-space.jpg: missing');
+  assert(fs.existsSync('assets/pitch-stage.jpg'), 'assets/pitch-stage.jpg: missing');
+  assert(fs.existsSync('assets/og-pitch-stage.jpg'), 'assets/og-pitch-stage.jpg: missing');
 
   console.log(`OK: index scripts=${indexScripts}, teacher scripts=${teacherScripts}, zones=${zoneIds.length}`);
 }
