@@ -17,11 +17,15 @@ const indexHtml = readText("index.html");
 const teacherHtml = readText("teacher-results.html");
 const campusWebp = fs.readFileSync(path.join(ROOT, "assets", "campus.webp")).toString("base64");
 const ogJpg = fs.readFileSync(path.join(ROOT, "assets", "og.jpg")).toString("base64");
+const classroomWebp = fs.readFileSync(path.join(ROOT, "assets", "classroom.webp")).toString("base64");
+const classroomOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-classroom.jpg")).toString("base64");
 
 const runtime = String.raw`const INDEX_HTML = __INDEX_HTML__;
 const TEACHER_RESULTS_HTML = __TEACHER_RESULTS_HTML__;
 const CAMPUS_WEBP = __CAMPUS_WEBP__;
 const OG_JPG = __OG_JPG__;
+const CLASSROOM_WEBP = __CLASSROOM_WEBP__;
+const CLASSROOM_OG_JPG = __CLASSROOM_OG_JPG__;
 
 const CSV_HEADERS = [
   "id",
@@ -288,6 +292,14 @@ export default {
       return imageResponse(OG_JPG, "image/jpeg");
     }
 
+    if (url.pathname === "/assets/classroom.webp") {
+      return imageResponse(CLASSROOM_WEBP, "image/webp");
+    }
+
+    if (url.pathname === "/assets/og-classroom.jpg") {
+      return imageResponse(CLASSROOM_OG_JPG, "image/jpeg");
+    }
+
     return new Response("Not found", {
       status: 404,
       headers: { "Content-Type": "text/plain; charset=utf-8" }
@@ -300,7 +312,9 @@ const worker = runtime
   .replace("__INDEX_HTML__", JSON.stringify(indexHtml))
   .replace("__TEACHER_RESULTS_HTML__", JSON.stringify(teacherHtml))
   .replace("__CAMPUS_WEBP__", JSON.stringify(campusWebp))
-  .replace("__OG_JPG__", JSON.stringify(ogJpg));
+  .replace("__OG_JPG__", JSON.stringify(ogJpg))
+  .replace("__CLASSROOM_WEBP__", JSON.stringify(classroomWebp))
+  .replace("__CLASSROOM_OG_JPG__", JSON.stringify(classroomOgJpg));
 
 writeText(path.join(OUT_DIR, "index.js"), worker);
 console.log("Built dist/server/index.js");

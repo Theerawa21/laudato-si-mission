@@ -7,7 +7,7 @@
   <meta name="description" content="Laudato Si’ Mission เกมผจญภัยเพื่อการศึกษา สำรวจโรงเรียนและลงมือดูแลบ้านส่วนรวม">
   <meta property="og:title" content="Laudato Si’ Mission">
   <meta property="og:description" content="เรียนรู้ ดูแล และลงมือเปลี่ยนโลก เริ่มจากโรงเรียนของเรา">
-  <meta property="og:image" content="/assets/og.jpg">
+  <meta property="og:image" content="/assets/og-classroom.jpg">
   <meta property="og:type" content="website">
   <title>Laudato Si' Mission</title>
   <style>
@@ -335,7 +335,7 @@
       background: var(--green-800);
       box-shadow: 0 7px 15px rgba(15,99,57,.24);
       font-weight: 800;
-      font-size: 12px;
+      font-size: 14px;
       cursor: pointer;
     }
 
@@ -469,6 +469,193 @@
     }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+    .classroom-scene {
+      position: fixed;
+      z-index: 60;
+      inset: 0;
+      overflow: hidden;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      background: #d8dfc9;
+      transition: opacity .3s ease, visibility .3s ease;
+    }
+
+    .classroom-scene.show {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .classroom-world {
+      position: absolute;
+      inset: 0;
+      background: url("/assets/classroom.webp") center center / cover no-repeat;
+      transform: scale(1.01);
+    }
+
+    .classroom-world::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at center, transparent 45%, rgba(45, 48, 26, .12) 100%);
+    }
+
+    .classroom-back {
+      position: absolute;
+      z-index: 5;
+      top: 22px;
+      left: 22px;
+      min-height: 50px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 17px;
+      border: 2px solid rgba(255,255,255,.92);
+      border-radius: 16px;
+      color: var(--green-900);
+      background: rgba(255,255,255,.95);
+      box-shadow: var(--soft-shadow);
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+    }
+
+    .classroom-back svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .classroom-hud {
+      position: absolute;
+      z-index: 5;
+      top: 22px;
+      right: 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px;
+      border: 2px solid rgba(255,255,255,.92);
+      border-radius: 20px;
+      background: rgba(255,255,255,.95);
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .classroom-score {
+      min-width: 132px;
+      padding: 7px 13px;
+      border-right: 1px solid #dfe8de;
+      color: var(--green-900);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .classroom-score b { margin-left: 4px; font-size: 25px; }
+
+    .wake-medal {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 3px 10px 3px 2px;
+      color: var(--green-900);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .wake-medal-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 3px solid #ffe284;
+      border-radius: 50%;
+      color: #7c4f00;
+      background: radial-gradient(circle at 35% 27%, #fff1aa, #f0b622 58%, #bd7806);
+      box-shadow: inset 0 0 0 2px rgba(137,83,0,.28);
+      font-size: 19px;
+    }
+
+    .issue-marker {
+      position: absolute;
+      z-index: 4;
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border: 4px solid #fff9d7;
+      border-radius: 50% 50% 50% 13px;
+      color: #fff;
+      background: linear-gradient(145deg, #ffd73d, #e9a600);
+      box-shadow: 0 0 0 7px rgba(255,222,73,.28), 0 0 26px 10px rgba(255,214,45,.62), 0 11px 22px rgba(83,57,0,.25);
+      transform: rotate(-45deg);
+      cursor: pointer;
+      animation: classroomPulse 2.2s ease-in-out infinite;
+    }
+
+    .issue-marker > span { transform: rotate(45deg); font-size: 29px; font-weight: 950; line-height: 1; }
+    .issue-marker.light { left: 24%; top: 11%; }
+    .issue-marker.fan { right: 13%; top: 17%; animation-delay: -.6s; }
+    .issue-marker.paper { right: 24%; bottom: 15%; animation-delay: -1.2s; }
+    .issue-marker.is-active { box-shadow: 0 0 0 9px rgba(255,255,255,.62), 0 0 34px 14px rgba(255,209,28,.75), 0 12px 24px rgba(83,57,0,.28); }
+    .issue-marker.is-done { border-color: #eaffdf; background: linear-gradient(145deg, #62bd66, #218247); box-shadow: 0 0 0 7px rgba(102,190,102,.25), 0 8px 20px rgba(25,91,47,.28); animation: none; }
+
+    .mission-dialog {
+      position: absolute;
+      z-index: 6;
+      left: 50%;
+      top: 55%;
+      width: min(650px, calc(100vw - 36px));
+      padding: 22px 24px 20px;
+      border: 3px solid rgba(255,255,255,.95);
+      border-radius: 24px;
+      color: var(--ink);
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 24px 60px rgba(44,42,22,.3);
+      transform: translate(-50%, -10%);
+      backdrop-filter: blur(14px);
+    }
+
+    .mission-dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+    .mission-dialog h2 { margin: 0; color: var(--green-900); font-size: clamp(21px, 2vw, 29px); letter-spacing: -.4px; }
+    .issue-context { flex: 0 0 auto; padding: 7px 10px; border-radius: 10px; color: #8c6300; background: #fff3c3; font-size: 10px; font-weight: 900; }
+    .mission-question { margin: 0 0 14px; font-size: clamp(15px, 1.5vw, 19px); font-weight: 800; line-height: 1.5; }
+    .answer-list { display: grid; gap: 8px; }
+
+    .answer-option {
+      width: 100%;
+      min-height: 43px;
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px solid #d5dfd3;
+      border-radius: 12px;
+      color: var(--ink);
+      background: #fff;
+      text-align: left;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .answer-option:hover { border-color: #77b882; background: #f7fbf5; }
+    .answer-option.is-selected { border-color: var(--green-700); background: #edf8ea; box-shadow: 0 0 0 2px rgba(20,122,69,.13); }
+    .answer-option.is-correct { border-color: #3b9855; background: #e7f7e5; }
+    .answer-option.is-wrong { border-color: #d97663; background: #fff0eb; }
+    .answer-dot { width: 21px; height: 21px; display: grid; place-items: center; border: 2px solid #9dae9f; border-radius: 50%; color: #fff; font-size: 11px; }
+    .answer-option.is-selected .answer-dot { border-color: var(--green-700); background: var(--green-700); }
+
+    .mission-dialog-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; }
+    .mission-feedback { min-height: 20px; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .mission-feedback.correct { color: #1b7b40; }
+    .mission-feedback.wrong { color: #b04e38; }
+    .classroom-submit[disabled] { cursor: not-allowed; opacity: .48; box-shadow: none; }
+
+    @keyframes classroomPulse {
+      0%, 100% { transform: rotate(-45deg) translate(0,0) scale(1); }
+      50% { transform: rotate(-45deg) translate(-3px,-3px) scale(1.06); }
+    }
+
     @keyframes float {
       0%, 100% { transform: rotate(-45deg) translate(0,0); }
       50% { transform: rotate(-45deg) translate(-5px,-5px); }
@@ -508,6 +695,20 @@
       .hotspot.school { left: 18%; }
       .hotspot.canteen { left: 76%; }
       .toast { bottom: 170px; }
+      .classroom-back { top: 12px; left: 12px; min-height: 44px; padding: 0 12px; }
+      .classroom-hud { top: 12px; right: 12px; padding: 6px; }
+      .classroom-score { min-width: auto; padding: 5px 9px; font-size: 11px; }
+      .classroom-score b { font-size: 19px; }
+      .wake-medal { padding-right: 5px; }
+      .wake-medal-icon { width: 34px; height: 34px; font-size: 15px; }
+      .issue-marker { width: 49px; height: 49px; }
+      .issue-marker > span { font-size: 24px; }
+      .issue-marker.light { left: 18%; top: 15%; }
+      .issue-marker.fan { right: 12%; top: 24%; }
+      .issue-marker.paper { right: 17%; bottom: 29%; }
+      .mission-dialog { top: auto; bottom: 16px; padding: 18px; transform: translateX(-50%); }
+      .mission-dialog h2 { font-size: 20px; }
+      .mission-question { font-size: 14px; }
     }
 
     @media (max-width: 560px) {
@@ -522,6 +723,18 @@
       .hotspot.community { left: 50%; top: 27%; }
       .drawer-head { padding: 20px; }
       .drawer-body { padding: 18px 18px 100px; }
+      .classroom-world { background-position: center center; }
+      .classroom-back span { display: none; }
+      .classroom-back { width: 44px; padding: 0; justify-content: center; }
+      .wake-medal span:last-child { display: none; }
+      .mission-dialog { bottom: 10px; width: calc(100vw - 20px); padding: 15px; border-radius: 19px; }
+      .mission-dialog-head { margin-bottom: 8px; }
+      .issue-context { display: none; }
+      .answer-option { min-height: 39px; padding: 7px 9px; font-size: 12px; }
+      .mission-dialog-footer { margin-top: 10px; }
+      .issue-marker.light { left: 12%; top: 18%; }
+      .issue-marker.fan { right: 9%; top: 26%; }
+      .issue-marker.paper { right: 13%; bottom: 42%; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -538,6 +751,7 @@
     <symbol id="i-medal" viewBox="0 0 24 24"><circle cx="12" cy="15" r="5"/><path d="m8.5 3 3.5 7 3.5-7M5.5 3l4 8M18.5 3l-4 8"/></symbol>
     <symbol id="i-volume" viewBox="0 0 24 24"><path d="M5 9v6h4l5 4V5L9 9H5Z"/><path d="M17 9a4 4 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6M9 12h11"/></symbol>
   </svg>
 
   <main class="game-shell">
@@ -604,6 +818,37 @@
     </section>
   </main>
 
+  <section class="classroom-scene" id="classroomScene" aria-hidden="true" aria-labelledby="classroomMissionTitle">
+    <div class="classroom-world" role="img" aria-label="ห้องเรียนมัธยมปลายแบบ isometric มีนักเรียนยืนอยู่กลางห้อง"></div>
+    <button class="classroom-back" id="classroomBack" type="button">
+      <svg aria-hidden="true"><use href="#i-arrow-left"></use></svg><span>กลับสู่แผนที่โรงเรียน</span>
+    </button>
+
+    <section class="classroom-hud" aria-label="คะแนนและเหรียญภารกิจ">
+      <div class="classroom-score">Score: <b id="classroomScore">20</b></div>
+      <div class="wake-medal"><span class="wake-medal-icon">★</span><span>Wake Up</span></div>
+    </section>
+
+    <div class="issue-layer" aria-label="ปัญหาสิ่งแวดล้อมในห้องเรียน">
+      <button class="issue-marker light" type="button" data-issue="light" aria-label="หลอดไฟที่เปิดทิ้งไว้"><span>?</span></button>
+      <button class="issue-marker fan" type="button" data-issue="fan" aria-label="พัดลมที่เปิดทิ้งไว้"><span>?</span></button>
+      <button class="issue-marker paper" type="button" data-issue="paper" aria-label="ขยะกระดาษบนพื้น"><span>?</span></button>
+    </div>
+
+    <article class="mission-dialog" aria-live="polite">
+      <header class="mission-dialog-head">
+        <h2 id="classroomMissionTitle">Mission 1: Wake Up Call</h2>
+        <span class="issue-context" id="issueContext">จุดที่ 1/3 • หลอดไฟ</span>
+      </header>
+      <p class="mission-question">พฤติกรรมใดของมนุษย์ทำให้เกิดปัญหานี้?</p>
+      <div class="answer-list" id="answerList"></div>
+      <footer class="mission-dialog-footer">
+        <div class="mission-feedback" id="missionFeedback" role="status">เลือกคำตอบที่ตรงกับปัญหาที่พบ</div>
+        <button class="primary-button classroom-submit" id="classroomSubmit" type="button" disabled>ตรวจคำตอบ</button>
+      </footer>
+    </article>
+  </section>
+
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
   <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
     <header class="drawer-head">
@@ -626,17 +871,51 @@
       community: { number: 5, title: "ประตูสู่ชุมชน", subtitle: "Real Life Quest", points: 250, description: "นำสิ่งที่เรียนรู้จากโรงเรียนไปทำภารกิจจริงร่วมกับครอบครัวและชุมชนใกล้ตัว", action: "ออกสู่ชุมชน" }
     };
 
+    const classroomIssues = {
+      light: {
+        label: "จุดที่ 1/3 • หลอดไฟ",
+        answers: [
+          { text: "เปิดไฟไว้ทั้งที่แสงธรรมชาติเพียงพอ", correct: true },
+          { text: "เปิดหน้าต่างเพื่อรับแสงจากภายนอก", correct: false },
+          { text: "ปิดไฟก่อนออกจากห้องเรียน", correct: false }
+        ]
+      },
+      fan: {
+        label: "จุดที่ 2/3 • พัดลม",
+        answers: [
+          { text: "เปิดพัดลมทิ้งไว้ทั้งที่ไม่มีผู้ใช้งาน", correct: true },
+          { text: "ปิดพัดลมเมื่อทุกคนออกจากบริเวณ", correct: false },
+          { text: "นั่งรวมกันในบริเวณที่อากาศถ่ายเท", correct: false }
+        ]
+      },
+      paper: {
+        label: "จุดที่ 3/3 • ขยะกระดาษ",
+        answers: [
+          { text: "ทิ้งกระดาษบนพื้นแทนการคัดแยก", correct: true },
+          { text: "ใช้กระดาษทั้งสองหน้าให้คุ้มค่า", correct: false },
+          { text: "นำกระดาษที่ใช้แล้วไปรีไซเคิล", correct: false }
+        ]
+      }
+    };
+
     let state = loadState();
     let activePanel = "map";
     let activeZone = "garden";
+    let activeIssue = "light";
+    let selectedAnswer = null;
     let toastTimer;
 
     function loadState() {
       try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        return { points: Number(saved.points || 1250), completed: Array.isArray(saved.completed) ? saved.completed : ["school", "canteen"] };
+        return {
+          points: Number(saved.points || 1250),
+          completed: Array.isArray(saved.completed) ? saved.completed : ["school", "canteen"],
+          classroomScore: Number(saved.classroomScore || 20),
+          resolvedIssues: Array.isArray(saved.resolvedIssues) ? saved.resolvedIssues : []
+        };
       } catch (error) {
-        return { points: 1250, completed: ["school", "canteen"] };
+        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [] };
       }
     }
 
@@ -721,7 +1000,87 @@
 
     function openZone(id) {
       activeZone = id;
+      if (id === "school") {
+        openClassroom();
+        return;
+      }
       openDrawer(zoneContent(id));
+    }
+
+    function openClassroom() {
+      closeDrawer();
+      const nextIssue = Object.keys(classroomIssues).find((id) => !state.resolvedIssues.includes(id));
+      activeIssue = nextIssue || "light";
+      selectedAnswer = null;
+      renderClassroom();
+      document.querySelector("#classroomScene").classList.add("show");
+      document.querySelector("#classroomScene").setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => document.querySelector(`[data-issue="${activeIssue}"]`).focus());
+    }
+
+    function closeClassroom() {
+      document.querySelector("#classroomScene").classList.remove("show");
+      document.querySelector("#classroomScene").setAttribute("aria-hidden", "true");
+    }
+
+    function selectIssue(id) {
+      activeIssue = id;
+      selectedAnswer = null;
+      renderClassroom();
+    }
+
+    function renderClassroom() {
+      const issue = classroomIssues[activeIssue];
+      const resolved = state.resolvedIssues.includes(activeIssue);
+      document.querySelector("#classroomScore").textContent = state.classroomScore;
+      document.querySelector("#issueContext").textContent = issue.label;
+      document.querySelectorAll("[data-issue]").forEach((marker) => {
+        const done = state.resolvedIssues.includes(marker.dataset.issue);
+        marker.classList.toggle("is-active", marker.dataset.issue === activeIssue);
+        marker.classList.toggle("is-done", done);
+        marker.querySelector("span").textContent = done ? "✓" : "?";
+      });
+      document.querySelector("#answerList").innerHTML = issue.answers.map((answer, index) => `
+        <button class="answer-option ${selectedAnswer === index ? "is-selected" : ""}" type="button" data-classroom-answer="${index}" ${resolved ? "disabled" : ""}>
+          <span class="answer-dot">${selectedAnswer === index ? "✓" : ""}</span><span>${answer.text}</span>
+        </button>
+      `).join("");
+      const submit = document.querySelector("#classroomSubmit");
+      submit.disabled = resolved || selectedAnswer === null;
+      submit.textContent = resolved ? "สำรวจจุดนี้แล้ว ✓" : "ตรวจคำตอบ";
+      const feedback = document.querySelector("#missionFeedback");
+      feedback.className = "mission-feedback";
+      feedback.textContent = resolved ? "ค้นพบและแก้ไขพฤติกรรมที่เป็นปัญหาแล้ว" : "เลือกคำตอบที่ตรงกับปัญหาที่พบ";
+    }
+
+    function chooseClassroomAnswer(index) {
+      if (state.resolvedIssues.includes(activeIssue)) return;
+      selectedAnswer = index;
+      renderClassroom();
+    }
+
+    function submitClassroomAnswer() {
+      if (selectedAnswer === null || state.resolvedIssues.includes(activeIssue)) return;
+      const issue = classroomIssues[activeIssue];
+      const correct = issue.answers[selectedAnswer].correct;
+      const options = [...document.querySelectorAll("[data-classroom-answer]")];
+      const feedback = document.querySelector("#missionFeedback");
+      if (!correct) {
+        options[selectedAnswer]?.classList.add("is-wrong");
+        feedback.className = "mission-feedback wrong";
+        feedback.textContent = "ลองสังเกตว่าพฤติกรรมใดใช้ทรัพยากรโดยไม่จำเป็น";
+        return;
+      }
+      options[selectedAnswer]?.classList.add("is-correct");
+      state.resolvedIssues.push(activeIssue);
+      state.classroomScore += 20;
+      state.points = Math.min(MAX_POINTS, state.points + 20);
+      saveState();
+      renderProgress();
+      renderClassroom();
+      feedback.className = "mission-feedback correct";
+      feedback.textContent = "ถูกต้อง! +20 คะแนน ปัญหาจุดนี้ได้รับการแก้ไขแล้ว";
+      showToast("Wake Up Call: +20 คะแนน");
     }
 
     function completeZone(id) {
@@ -755,10 +1114,18 @@
 
       const completeButton = event.target.closest("[data-complete-zone]");
       if (completeButton) completeZone(completeButton.dataset.completeZone);
+
+      const issueMarker = event.target.closest("[data-issue]");
+      if (issueMarker) selectIssue(issueMarker.dataset.issue);
+
+      const classroomAnswer = event.target.closest("[data-classroom-answer]");
+      if (classroomAnswer) chooseClassroomAnswer(Number(classroomAnswer.dataset.classroomAnswer));
     });
 
     document.querySelector("#closeDrawer").addEventListener("click", closeDrawer);
     document.querySelector("#drawerBackdrop").addEventListener("click", closeDrawer);
+    document.querySelector("#classroomBack").addEventListener("click", closeClassroom);
+    document.querySelector("#classroomSubmit").addEventListener("click", submitClassroomAnswer);
     document.querySelector("#soundButton").addEventListener("click", (event) => {
       const pressed = event.currentTarget.getAttribute("aria-pressed") === "true";
       event.currentTarget.setAttribute("aria-pressed", String(!pressed));
@@ -767,10 +1134,15 @@
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeDrawer();
+      if (event.key === "Escape" && document.querySelector("#classroomScene").classList.contains("show")) {
+        closeClassroom();
+      } else if (event.key === "Escape") {
+        closeDrawer();
+      }
     });
 
     renderProgress();
+    renderClassroom();
   </script>
 </body>
 </html>

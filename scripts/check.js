@@ -45,7 +45,11 @@ function main() {
     'สมุดภารกิจ',
     'ดาวคะแนน',
     'เหรียญรางวัล',
-    '/assets/campus.webp'
+    '/assets/campus.webp',
+    '/assets/classroom.webp',
+    'Mission 1: Wake Up Call',
+    'พฤติกรรมใดของมนุษย์ทำให้เกิดปัญหานี้?',
+    'Score:'
   ];
   requiredIndexText.forEach((text) => {
     assert(indexHtml.includes(text), `index.html: missing ${text}`);
@@ -56,6 +60,8 @@ function main() {
   assert(teacherHtml.includes('/api/submissions'), 'teacher-results.html: missing submissions API call');
   assert(fs.existsSync('assets/campus.webp'), 'assets/campus.webp: missing');
   assert(fs.existsSync('assets/og.jpg'), 'assets/og.jpg: missing');
+  assert(fs.existsSync('assets/classroom.webp'), 'assets/classroom.webp: missing');
+  assert(fs.existsSync('assets/og-classroom.jpg'), 'assets/og-classroom.jpg: missing');
 
   console.log(`OK: index scripts=${indexScripts}, teacher scripts=${teacherScripts}, zones=${zoneIds.length}`);
 }
