@@ -29,6 +29,10 @@ const pitchJpg = fs.readFileSync(path.join(ROOT, "assets", "pitch-stage.jpg")).t
 const pitchOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-pitch-stage.jpg")).toString("base64");
 const communityGateJpg = fs.readFileSync(path.join(ROOT, "assets", "community-gate.jpg")).toString("base64");
 const communityGateOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-community-gate.jpg")).toString("base64");
+const mainMenuSchoolJpg = fs.readFileSync(path.join(ROOT, "assets", "main-menu-school.jpg")).toString("base64");
+const studentPreviewJpg = fs.readFileSync(path.join(ROOT, "assets", "student-preview.jpg")).toString("base64");
+const healedWorldJpg = fs.readFileSync(path.join(ROOT, "assets", "healed-world.jpg")).toString("base64");
+const mainMenuOgJpg = fs.readFileSync(path.join(ROOT, "assets", "og-main-menu.jpg")).toString("base64");
 
 const runtime = String.raw`const INDEX_HTML = __INDEX_HTML__;
 const TEACHER_RESULTS_HTML = __TEACHER_RESULTS_HTML__;
@@ -46,6 +50,10 @@ const PITCH_JPG = __PITCH_JPG__;
 const PITCH_OG_JPG = __PITCH_OG_JPG__;
 const COMMUNITY_GATE_JPG = __COMMUNITY_GATE_JPG__;
 const COMMUNITY_GATE_OG_JPG = __COMMUNITY_GATE_OG_JPG__;
+const MAIN_MENU_SCHOOL_JPG = __MAIN_MENU_SCHOOL_JPG__;
+const STUDENT_PREVIEW_JPG = __STUDENT_PREVIEW_JPG__;
+const HEALED_WORLD_JPG = __HEALED_WORLD_JPG__;
+const MAIN_MENU_OG_JPG = __MAIN_MENU_OG_JPG__;
 
 const CSV_HEADERS = [
   "id",
@@ -360,6 +368,22 @@ export default {
       return imageResponse(COMMUNITY_GATE_OG_JPG, "image/jpeg");
     }
 
+    if (url.pathname === "/assets/main-menu-school.jpg") {
+      return imageResponse(MAIN_MENU_SCHOOL_JPG, "image/jpeg");
+    }
+
+    if (url.pathname === "/assets/student-preview.jpg") {
+      return imageResponse(STUDENT_PREVIEW_JPG, "image/jpeg");
+    }
+
+    if (url.pathname === "/assets/healed-world.jpg") {
+      return imageResponse(HEALED_WORLD_JPG, "image/jpeg");
+    }
+
+    if (url.pathname === "/assets/og-main-menu.jpg") {
+      return imageResponse(MAIN_MENU_OG_JPG, "image/jpeg");
+    }
+
     return new Response("Not found", {
       status: 404,
       headers: { "Content-Type": "text/plain; charset=utf-8" }
@@ -384,7 +408,11 @@ const worker = runtime
   .replace("__PITCH_JPG__", JSON.stringify(pitchJpg))
   .replace("__PITCH_OG_JPG__", JSON.stringify(pitchOgJpg))
   .replace("__COMMUNITY_GATE_JPG__", JSON.stringify(communityGateJpg))
-  .replace("__COMMUNITY_GATE_OG_JPG__", JSON.stringify(communityGateOgJpg));
+  .replace("__COMMUNITY_GATE_OG_JPG__", JSON.stringify(communityGateOgJpg))
+  .replace("__MAIN_MENU_SCHOOL_JPG__", JSON.stringify(mainMenuSchoolJpg))
+  .replace("__STUDENT_PREVIEW_JPG__", JSON.stringify(studentPreviewJpg))
+  .replace("__HEALED_WORLD_JPG__", JSON.stringify(healedWorldJpg))
+  .replace("__MAIN_MENU_OG_JPG__", JSON.stringify(mainMenuOgJpg));
 
 writeText(path.join(OUT_DIR, "index.js"), worker);
 console.log("Built dist/server/index.js");

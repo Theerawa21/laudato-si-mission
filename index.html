@@ -7,7 +7,7 @@
   <meta name="description" content="Laudato Si’ Mission เกมผจญภัยเพื่อการศึกษา สำรวจโรงเรียนและลงมือดูแลบ้านส่วนรวม">
   <meta property="og:title" content="Laudato Si’ Mission">
   <meta property="og:description" content="เรียนรู้ ดูแล และลงมือเปลี่ยนโลก เริ่มจากโรงเรียนของเรา">
-  <meta property="og:image" content="/assets/og-community-gate.jpg">
+  <meta property="og:image" content="/assets/og-main-menu.jpg">
   <meta property="og:type" content="website">
   <title>Laudato Si' Mission</title>
   <style>
@@ -1209,6 +1209,366 @@
       .quest-submit { min-width: 138px; min-height: 36px; padding: 0 10px; font-size: 9px; }
     }
 
+    .screen-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      overflow: auto;
+      padding: 34px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .35s ease, visibility .35s ease;
+      background-position: center;
+      background-size: cover;
+    }
+
+    .screen-layer.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .start-screen {
+      background-image: url("/assets/main-menu-school.jpg");
+    }
+
+    .start-screen::before,
+    .registration-screen::before,
+    .ending-screen::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .start-screen::before {
+      background: radial-gradient(circle at 50% 46%, rgba(255,255,255,.1) 0 22%, rgba(4,55,31,.16) 78%, rgba(4,34,22,.38) 100%);
+    }
+
+    .start-content {
+      position: relative;
+      display: grid;
+      justify-items: center;
+      text-align: center;
+      filter: drop-shadow(0 18px 38px rgba(7,47,29,.28));
+      animation: start-rise .7s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .start-emblem {
+      width: 126px;
+      height: 126px;
+      display: grid;
+      place-items: center;
+      margin-bottom: -12px;
+      border: 7px solid rgba(255,255,255,.92);
+      border-radius: 50%;
+      color: #fff;
+      background: linear-gradient(145deg, #58be67, #0c6f43 66%, #07522f);
+      box-shadow: 0 0 0 5px rgba(92,183,100,.8), 0 17px 32px rgba(7,71,39,.35);
+    }
+
+    .start-emblem svg { width: 74px; height: 74px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+
+    .start-title {
+      margin: 0;
+      max-width: 900px;
+      color: #fff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(58px, 7.4vw, 118px);
+      font-weight: 800;
+      line-height: .93;
+      letter-spacing: -4px;
+      text-wrap: balance;
+      text-shadow: 0 5px 0 #0d6d42, 0 0 0 #fff, 0 13px 30px rgba(4,45,26,.5);
+      -webkit-text-stroke: 2px rgba(255,255,255,.8);
+    }
+
+    .start-title span { display: block; }
+
+    .start-button {
+      min-width: min(420px, 76vw);
+      min-height: 82px;
+      margin-top: 46px;
+      padding: 0 48px;
+      border: 4px solid #fff;
+      border-radius: 999px;
+      color: #fff;
+      background: linear-gradient(180deg, #2fd0bd, #049a88 55%, #057266);
+      box-shadow: 0 0 0 6px rgba(77,235,219,.64), 0 0 34px rgba(71,255,229,.82), inset 0 3px 0 rgba(255,255,255,.5), 0 16px 28px rgba(4,62,45,.35);
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+      animation: button-glow 2s ease-in-out infinite;
+    }
+
+    .start-button:hover { transform: translateY(-4px) scale(1.025); }
+
+    .registration-screen {
+      z-index: 81;
+      background-image: url("/assets/main-menu-school.jpg");
+    }
+
+    .registration-screen::before {
+      background: rgba(10,72,47,.2);
+      backdrop-filter: blur(7px);
+    }
+
+    .registration-panel {
+      position: relative;
+      width: min(1050px, 94vw);
+      display: grid;
+      grid-template-columns: 1.1fr .78fr;
+      gap: 44px;
+      padding: 46px 50px 38px;
+      border: 2px solid rgba(255,255,255,.9);
+      border-radius: 34px;
+      color: #173e2c;
+      background: rgba(250,255,252,.88);
+      box-shadow: 0 0 0 5px rgba(177,225,255,.45), 0 24px 70px rgba(5,56,35,.32), inset 0 1px 0 #fff;
+      backdrop-filter: blur(22px) saturate(1.18);
+      animation: panel-pop .5s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .registration-panel h2 {
+      grid-column: 1 / -1;
+      margin: 0;
+      color: #0b438a;
+      text-align: center;
+      font-size: clamp(34px, 4.2vw, 57px);
+      line-height: 1.05;
+      letter-spacing: -.9px;
+    }
+
+    .registration-panel h2::after {
+      content: "";
+      display: block;
+      width: min(560px, 74%);
+      height: 2px;
+      margin: 22px auto 0;
+      background: linear-gradient(90deg, transparent, #7fb7d5 25%, #73ae6d 50%, #7fb7d5 75%, transparent);
+    }
+
+    .registration-form { display: grid; align-content: center; gap: 18px; }
+
+    .registration-field { display: grid; grid-template-columns: 92px 1fr; align-items: center; gap: 12px; }
+
+    .registration-field label { color: #123f7f; font-size: 19px; font-weight: 800; }
+
+    .registration-field input,
+    .registration-field select {
+      width: 100%;
+      height: 58px;
+      padding: 0 17px;
+      border: 2px solid #a8cce1;
+      border-radius: 16px;
+      color: #173e2c;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 6px 15px rgba(24,91,128,.08), inset 0 1px 2px rgba(8,62,98,.05);
+      font: inherit;
+      font-size: 17px;
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .registration-field input:focus,
+    .registration-field select:focus { border-color: #1b8dcb; box-shadow: 0 0 0 4px rgba(56,157,220,.16); }
+
+    .registration-submit {
+      min-height: 62px;
+      margin: 10px 0 0 104px;
+      border: 3px solid #fff;
+      border-radius: 16px;
+      color: #fff;
+      background: linear-gradient(180deg, #2ebc70, #0d8651);
+      box-shadow: 0 0 0 3px rgba(64,182,113,.45), 0 12px 24px rgba(8,99,57,.25), inset 0 2px 0 rgba(255,255,255,.35);
+      font-size: 22px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .registration-preview {
+      height: 390px;
+      min-height: 0;
+      overflow: hidden;
+      border-left: 2px solid rgba(113,171,203,.42);
+      border-radius: 0 24px 24px 0;
+      background: linear-gradient(145deg, rgba(222,245,255,.84), rgba(255,255,255,.65));
+    }
+
+    .registration-preview img { width: 100%; height: 100%; display: block; object-fit: contain; object-position: center; }
+
+    .ending-screen {
+      z-index: 82;
+      background-image: url("/assets/healed-world.jpg");
+    }
+
+    .ending-screen::before { background: radial-gradient(circle at 50% 42%, rgba(255,255,255,.04) 0 36%, rgba(8,57,31,.15) 85%); }
+
+    .ending-panel {
+      position: relative;
+      width: min(1080px, 95vw);
+      padding: 28px 42px 30px;
+      border: 2px solid rgba(255,255,255,.92);
+      border-radius: 38px;
+      text-align: center;
+      background: rgba(255,255,248,.91);
+      box-shadow: 0 0 0 4px rgba(146,176,60,.7), 0 25px 75px rgba(6,52,28,.3), inset 0 1px 0 #fff;
+      backdrop-filter: blur(20px) saturate(1.08);
+      animation: panel-pop .65s cubic-bezier(.2,.9,.25,1) both;
+    }
+
+    .ending-panel h2 {
+      margin: 0;
+      color: #167038;
+      font-size: clamp(38px, 4.3vw, 62px);
+      line-height: 1;
+      text-shadow: 0 2px 0 #fff, 0 6px 15px rgba(78,118,33,.2);
+    }
+
+    .ending-score { margin: 15px 0 8px; color: #4f321c; font-size: clamp(25px, 2.8vw, 39px); font-weight: 900; }
+    .ending-score strong { color: #15813f; font-size: 1.28em; text-shadow: 0 2px 0 #fff, 0 0 16px rgba(255,215,67,.52); }
+
+    .ending-achievement {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      align-items: center;
+      gap: 20px;
+      max-width: 800px;
+      margin: 0 auto 12px;
+      text-align: left;
+    }
+
+    .guardian-emblem {
+      width: 170px;
+      height: 170px;
+      display: grid;
+      place-items: center;
+      margin: auto;
+      color: #fff8cb;
+      background: radial-gradient(circle at 35% 28%, #4fbe67, #087044 67%, #064628);
+      border: 10px solid #e7b63b;
+      clip-path: polygon(50% 0, 92% 14%, 87% 66%, 50% 100%, 13% 66%, 8% 14%);
+      filter: drop-shadow(0 0 17px rgba(255,203,68,.78));
+    }
+
+    .guardian-emblem svg { width: 105px; height: 105px; fill: none; stroke: currentColor; stroke-width: 1.35; }
+
+    .ending-level h3 { margin: 0; color: #176f36; font: 800 clamp(28px, 3.2vw, 46px)/1.05 Georgia, serif; text-shadow: 0 2px 0 #fff, 0 0 15px rgba(235,190,46,.62); }
+    .ending-level p { margin: 9px 0 0; color: #583b28; font-size: clamp(17px, 2vw, 26px); font-weight: 800; }
+
+    .ending-medals { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; max-width: 850px; margin: 10px auto 22px; }
+
+    .ending-medal { min-width: 0; display: grid; justify-items: center; gap: 7px; color: #335642; font-size: 11px; font-weight: 800; line-height: 1.15; }
+
+    .ending-medal-icon {
+      width: 74px;
+      height: 74px;
+      display: grid;
+      place-items: center;
+      border: 6px solid #edc657;
+      border-radius: 50%;
+      color: #fff;
+      background: linear-gradient(145deg, #2d9d58, #0b633b);
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,.45), 0 8px 15px rgba(67,77,30,.2);
+    }
+
+    .ending-medal:nth-child(2) .ending-medal-icon,
+    .ending-medal:nth-child(5) .ending-medal-icon { background: linear-gradient(145deg, #3d9bd2, #175d9c); }
+    .ending-medal:nth-child(3) .ending-medal-icon { background: linear-gradient(145deg, #c8a538, #8b6c15); }
+    .ending-medal:nth-child(4) .ending-medal-icon { background: linear-gradient(145deg, #56ae66, #26793c); }
+    .ending-medal:nth-child(6) .ending-medal-icon { background: linear-gradient(145deg, #8b70c9, #55418c); }
+    .ending-medal-icon svg { width: 39px; height: 39px; fill: none; stroke: currentColor; stroke-width: 1.7; }
+
+    .ending-actions { display: flex; justify-content: center; gap: 18px; }
+    .ending-action {
+      min-width: 250px;
+      min-height: 60px;
+      padding: 0 28px;
+      border: 3px solid #fff;
+      border-radius: 18px;
+      color: #fff;
+      background: linear-gradient(180deg, #3f91dd, #1d62b2);
+      box-shadow: 0 0 0 3px rgba(43,112,182,.35), 0 10px 21px rgba(11,65,116,.2);
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .ending-action.secondary { background: linear-gradient(180deg, #53b967, #228b43); box-shadow: 0 0 0 3px rgba(54,142,69,.35), 0 10px 21px rgba(11,98,48,.2); }
+
+    .certificate-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      opacity: 0;
+      visibility: hidden;
+      background: rgba(4,35,22,.66);
+      backdrop-filter: blur(9px);
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    .certificate-modal.show { opacity: 1; visibility: visible; }
+    .certificate-card {
+      position: relative;
+      width: min(820px, 94vw);
+      padding: 48px 58px;
+      border: 9px double #d0a53a;
+      color: #17492e;
+      background: #fffdf2;
+      box-shadow: 0 24px 60px rgba(0,0,0,.32);
+      text-align: center;
+    }
+    .certificate-card h2 { margin: 0 0 8px; font-size: clamp(37px, 5vw, 60px); }
+    .certificate-card h3 { margin: 17px 0 7px; font: 800 clamp(25px, 3.7vw, 42px)/1.1 Georgia, serif; color: #14713b; }
+    .certificate-card p { margin: 6px 0; font-size: 18px; }
+    .certificate-close { position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; border: 0; border-radius: 50%; color: #fff; background: #0d6b40; cursor: pointer; }
+    .certificate-close svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    @keyframes start-rise { from { opacity: 0; transform: translateY(24px) scale(.97); } }
+    @keyframes panel-pop { from { opacity: 0; transform: translateY(18px) scale(.97); } }
+    @keyframes button-glow { 50% { box-shadow: 0 0 0 7px rgba(77,235,219,.48), 0 0 43px rgba(71,255,229,.9), inset 0 3px 0 rgba(255,255,255,.5), 0 16px 28px rgba(4,62,45,.35); } }
+
+    @media (max-width: 700px) {
+      .screen-layer { padding: 16px; }
+      .start-emblem { width: 92px; height: 92px; border-width: 5px; }
+      .start-emblem svg { width: 56px; height: 56px; }
+      .start-title { max-width: 360px; font-size: clamp(50px, 16vw, 72px); letter-spacing: -2px; line-height: .94; }
+      .start-button { min-width: min(310px, 80vw); min-height: 66px; margin-top: 35px; padding: 0 26px; font-size: 23px; }
+      .registration-screen, .ending-screen { align-items: start; }
+      .registration-panel { width: min(430px, 96vw); grid-template-columns: 1fr; gap: 18px; margin: auto; padding: 26px 20px 22px; border-radius: 27px; }
+      .registration-panel h2 { font-size: 34px; }
+      .registration-panel h2::after { margin-top: 13px; }
+      .registration-form { gap: 11px; }
+      .registration-field { grid-template-columns: 67px 1fr; gap: 8px; }
+      .registration-field label { font-size: 15px; }
+      .registration-field input, .registration-field select { height: 48px; padding: 0 11px; font-size: 14px; border-radius: 13px; }
+      .registration-submit { min-height: 52px; margin: 8px 0 0 75px; font-size: 18px; }
+      .registration-preview { height: 220px; min-height: 0; max-height: 230px; border: 0; border-top: 1px solid rgba(113,171,203,.42); border-radius: 18px; }
+      .registration-preview img { object-position: center; }
+      .ending-panel { width: min(440px, 96vw); margin: auto; padding: 22px 14px 20px; border-radius: 28px; }
+      .ending-panel h2 { font-size: 38px; }
+      .ending-score { margin: 10px 0 6px; font-size: 23px; }
+      .ending-achievement { grid-template-columns: 96px 1fr; gap: 10px; margin-bottom: 9px; }
+      .guardian-emblem { width: 92px; height: 92px; border-width: 6px; }
+      .guardian-emblem svg { width: 58px; height: 58px; }
+      .ending-level h3 { font-size: 24px; }
+      .ending-level p { margin-top: 5px; font-size: 14px; }
+      .ending-medals { grid-template-columns: repeat(3, 1fr); gap: 10px 6px; margin: 10px auto 17px; }
+      .ending-medal { font-size: 9px; }
+      .ending-medal-icon { width: 51px; height: 51px; border-width: 4px; }
+      .ending-medal-icon svg { width: 27px; height: 27px; }
+      .ending-actions { gap: 10px; }
+      .ending-action { min-width: 0; flex: 1; min-height: 50px; padding: 0 12px; border-radius: 14px; font-size: 15px; }
+      .certificate-card { padding: 42px 20px 32px; }
+      .certificate-card p { font-size: 15px; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
     }
@@ -1237,6 +1597,80 @@
     <symbol id="i-bulb-off" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8.5 14.5C7 13.4 6 11.6 6 9.5A6 6 0 0 1 15.9 5M18 8a6 6 0 0 1-2.5 6.5L15 16H9"/><path d="M3 3l18 18"/></symbol>
     <symbol id="i-shield-globe" viewBox="0 0 24 24"><path d="M12 2.5c2.8 2 5.6 2.7 8 2.7v6.2c0 5.1-3.3 8.4-8 10.1-4.7-1.7-8-5-8-10.1V5.2c2.4 0 5.2-.7 8-2.7Z"/><circle cx="12" cy="11.5" r="5"/><path d="M7 11.5h10M12 6.5c1.6 1.5 2.2 3.1 2.2 5s-.6 3.5-2.2 5M12 6.5c-1.6 1.5-2.2 3.1-2.2 5s.6 3.5 2.2 5"/></symbol>
   </svg>
+
+  <section class="screen-layer start-screen show" id="startScreen" aria-hidden="false" aria-labelledby="startTitle">
+    <div class="start-content">
+      <span class="start-emblem" aria-hidden="true"><svg><use href="#i-shield-globe"></use></svg></span>
+      <h1 class="start-title" id="startTitle"><span>Laudato Si'</span><span>Mission</span></h1>
+      <button class="start-button" id="startGameButton" type="button">START GAME</button>
+    </div>
+  </section>
+
+  <section class="screen-layer registration-screen" id="registrationScreen" aria-hidden="true" aria-labelledby="registrationTitle">
+    <div class="registration-panel">
+      <h2 id="registrationTitle">ลงทะเบียนนักเรียน</h2>
+      <form class="registration-form" id="registrationForm">
+        <div class="registration-field">
+          <label for="playerName">ชื่อ</label>
+          <input id="playerName" name="name" type="text" maxlength="80" autocomplete="name" required>
+        </div>
+        <div class="registration-field">
+          <label for="playerClass">ชั้น</label>
+          <select id="playerClass" name="class" required>
+            <option value="">เลือกชั้น</option>
+            <option>ม.1</option><option>ม.2</option><option>ม.3</option>
+            <option>ม.4</option><option>ม.5</option><option>ม.6</option>
+          </select>
+        </div>
+        <div class="registration-field">
+          <label for="playerNumber">เลขที่</label>
+          <input id="playerNumber" name="number" type="number" inputmode="numeric" min="1" max="99" required>
+        </div>
+        <button class="registration-submit" type="submit">ยืนยัน</button>
+      </form>
+      <div class="registration-preview" aria-label="ตัวอย่างตัวละครนักเรียนมัธยมปลาย">
+        <img src="/assets/student-preview.jpg" alt="ตัวละครนักเรียนมัธยมปลายในชุดนักเรียน ยืนบนแท่นสวนสีเขียว">
+      </div>
+    </div>
+  </section>
+
+  <section class="screen-layer ending-screen" id="endingScreen" aria-hidden="true" aria-labelledby="endingTitle">
+    <article class="ending-panel">
+      <h2 id="endingTitle">ภารกิจสำเร็จ</h2>
+      <p class="ending-score">คะแนนรวม: <strong>250</strong></p>
+      <div class="ending-achievement">
+        <span class="guardian-emblem" aria-hidden="true"><svg><use href="#i-shield-globe"></use></svg></span>
+        <div class="ending-level">
+          <h3>Guardian of Our Common Home</h3>
+          <p>(ผู้พิทักษ์บ้านส่วนรวม)</p>
+        </div>
+      </div>
+      <div class="ending-medals" aria-label="เหรียญรางวัลแห่งความสำเร็จทั้ง 6 เหรียญ">
+        <div class="ending-medal"><span class="ending-medal-icon"><svg><use href="#i-bulb-off"></use></svg></span><span>Wake Up</span></div>
+        <div class="ending-medal"><span class="ending-medal-icon"><svg><use href="#i-search"></use></svg></span><span>Eco Detective</span></div>
+        <div class="ending-medal"><span class="ending-medal-icon"><svg><use href="#i-tree"></use></svg></span><span>นักออกแบบโลกใหม่</span></div>
+        <div class="ending-medal"><span class="ending-medal-icon"><svg><use href="#i-brush-leaf"></use></svg></span><span>Creator</span></div>
+        <div class="ending-medal"><span class="ending-medal-icon"><svg><use href="#i-mic-globe"></use></svg></span><span>Voice of Our Common Home</span></div>
+        <div class="ending-medal"><span class="ending-medal-icon"><svg><use href="#i-shield-globe"></use></svg></span><span>ผู้พิทักษ์ Laudato Si'</span></div>
+      </div>
+      <div class="ending-actions">
+        <button class="ending-action" id="certificateButton" type="button">ดูเกียรติบัตร</button>
+        <button class="ending-action secondary" id="playAgainButton" type="button">เล่นอีกครั้ง</button>
+      </div>
+    </article>
+  </section>
+
+  <div class="certificate-modal" id="certificateModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="certificateTitle">
+    <article class="certificate-card">
+      <button class="certificate-close" id="certificateClose" type="button" aria-label="ปิดเกียรติบัตร"><svg><use href="#i-close"></use></svg></button>
+      <p>Laudato Si' Mission</p>
+      <h2 id="certificateTitle">เกียรติบัตร</h2>
+      <p>ขอมอบเกียรติบัตรฉบับนี้ให้แก่</p>
+      <h3 id="certificateName">นักเรียนผู้พิทักษ์บ้านส่วนรวม</h3>
+      <p id="certificateClass">ชั้น — เลขที่ —</p>
+      <p>ผู้สำเร็จภารกิจระดับ <strong>Guardian of Our Common Home</strong></p>
+    </article>
+  </div>
 
   <main class="game-shell">
     <div class="world" aria-label="แผนที่โรงเรียนในมุมมองแบบ isometric"></div>
@@ -1648,10 +2082,13 @@
           questScore: Number(saved.questScore || 250),
           questPromise: typeof saved.questPromise === "string" ? saved.questPromise : "",
           questActions: Array.isArray(saved.questActions) ? saved.questActions : [],
-          questCommitted: Boolean(saved.questCommitted)
+          questCommitted: Boolean(saved.questCommitted),
+          playerName: typeof saved.playerName === "string" ? saved.playerName : "",
+          playerClass: typeof saved.playerClass === "string" ? saved.playerClass : "",
+          playerNumber: typeof saved.playerNumber === "string" ? saved.playerNumber : ""
         };
       } catch (error) {
-        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [], gardenScore: 110, gardenIdea: "", gardenActions: [], gardenSubmitted: false, creatorScore: 160, creatorDraft: { title: "", problem: "", solution: "", campaign: "", laudato: "" }, creatorLaunched: false, pitchScore: 200, pitchDraft: { problem: "", cause: "", solution: "", result: "", realUse: "" }, pitchPresented: false, questScore: 250, questPromise: "", questActions: [], questCommitted: false };
+        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [], gardenScore: 110, gardenIdea: "", gardenActions: [], gardenSubmitted: false, creatorScore: 160, creatorDraft: { title: "", problem: "", solution: "", campaign: "", laudato: "" }, creatorLaunched: false, pitchScore: 200, pitchDraft: { problem: "", cause: "", solution: "", result: "", realUse: "" }, pitchPresented: false, questScore: 250, questPromise: "", questActions: [], questCommitted: false, playerName: "", playerClass: "", playerNumber: "" };
       }
     }
 
@@ -1661,6 +2098,70 @@
 
     function formatNumber(number) {
       return new Intl.NumberFormat("th-TH").format(number);
+    }
+
+    function setScreen(id) {
+      ["startScreen", "registrationScreen", "endingScreen"].forEach((screenId) => {
+        const screen = document.querySelector(`#${screenId}`);
+        const visible = screenId === id;
+        screen.classList.toggle("show", visible);
+        screen.setAttribute("aria-hidden", String(!visible));
+      });
+    }
+
+    function openRegistration() {
+      document.querySelector("#playerName").value = state.playerName;
+      document.querySelector("#playerClass").value = state.playerClass;
+      document.querySelector("#playerNumber").value = state.playerNumber;
+      setScreen("registrationScreen");
+      requestAnimationFrame(() => document.querySelector("#playerName").focus());
+    }
+
+    function submitRegistration(event) {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      state.playerName = String(form.get("name") || "").trim();
+      state.playerClass = String(form.get("class") || "").trim();
+      state.playerNumber = String(form.get("number") || "").trim();
+      if (!state.playerName || !state.playerClass || !state.playerNumber) return;
+      saveState();
+      setScreen("");
+      showToast(`ยินดีต้อนรับ ${state.playerName}`);
+    }
+
+    function openEnding() {
+      closeQuest();
+      document.querySelector("#certificateName").textContent = state.playerName || "นักเรียนผู้พิทักษ์บ้านส่วนรวม";
+      document.querySelector("#certificateClass").textContent = state.playerClass && state.playerNumber
+        ? `ชั้น ${state.playerClass} เลขที่ ${state.playerNumber}`
+        : "ชั้น — เลขที่ —";
+      setScreen("endingScreen");
+      requestAnimationFrame(() => document.querySelector("#certificateButton").focus());
+    }
+
+    function toggleCertificate(show) {
+      const modal = document.querySelector("#certificateModal");
+      modal.classList.toggle("show", show);
+      modal.setAttribute("aria-hidden", String(!show));
+      if (show) requestAnimationFrame(() => document.querySelector("#certificateClose").focus());
+      else document.querySelector("#certificateButton").focus();
+    }
+
+    function playAgain() {
+      const profile = { playerName: state.playerName, playerClass: state.playerClass, playerNumber: state.playerNumber };
+      localStorage.removeItem(STORAGE_KEY);
+      state = loadState();
+      Object.assign(state, profile);
+      saveState();
+      renderProgress();
+      renderClassroom();
+      renderCafeteria();
+      renderGarden();
+      renderCreative();
+      renderPitch();
+      renderQuest();
+      setScreen("startScreen");
+      requestAnimationFrame(() => document.querySelector("#startGameButton").focus());
     }
 
     function renderProgress() {
@@ -2143,8 +2644,8 @@
       });
       const ready = state.questActions.length > 0 && state.questPromise.trim().length >= 15;
       const submit = document.querySelector("#questSubmit");
-      submit.disabled = committed || !ready;
-      submit.textContent = committed ? "ยืนยันคำมั่นสัญญาแล้ว ✓" : "ยืนยันคำมั่นสัญญา";
+      submit.disabled = !committed && !ready;
+      submit.textContent = committed ? "ดูสรุปผล" : "ยืนยันคำมั่นสัญญา";
       const feedback = document.querySelector("#questFeedback");
       feedback.className = committed ? "creator-feedback success" : "creator-feedback";
       feedback.textContent = committed
@@ -2165,7 +2666,11 @@
 
     function submitQuest(event) {
       event.preventDefault();
-      if (state.questCommitted || state.questActions.length === 0 || state.questPromise.trim().length < 15) return;
+      if (state.questCommitted) {
+        openEnding();
+        return;
+      }
+      if (state.questActions.length === 0 || state.questPromise.trim().length < 15) return;
       state.questCommitted = true;
       state.questScore += 75;
       state.points = Math.min(MAX_POINTS, state.points + 75);
@@ -2173,6 +2678,7 @@
       renderProgress();
       renderQuest();
       showToast("Real Life Quest: +75 คะแนน");
+      window.setTimeout(openEnding, 420);
     }
 
     function completeZone(id) {
@@ -2252,6 +2758,14 @@
       renderQuest();
     });
     document.querySelector("#questForm").addEventListener("submit", submitQuest);
+    document.querySelector("#startGameButton").addEventListener("click", openRegistration);
+    document.querySelector("#registrationForm").addEventListener("submit", submitRegistration);
+    document.querySelector("#certificateButton").addEventListener("click", () => toggleCertificate(true));
+    document.querySelector("#certificateClose").addEventListener("click", () => toggleCertificate(false));
+    document.querySelector("#certificateModal").addEventListener("click", (event) => {
+      if (event.target.id === "certificateModal") toggleCertificate(false);
+    });
+    document.querySelector("#playAgainButton").addEventListener("click", playAgain);
     document.querySelector("#soundButton").addEventListener("click", (event) => {
       const pressed = event.currentTarget.getAttribute("aria-pressed") === "true";
       event.currentTarget.setAttribute("aria-pressed", String(!pressed));
@@ -2260,7 +2774,9 @@
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && document.querySelector("#questScene").classList.contains("show")) {
+      if (event.key === "Escape" && document.querySelector("#certificateModal").classList.contains("show")) {
+        toggleCertificate(false);
+      } else if (event.key === "Escape" && document.querySelector("#questScene").classList.contains("show")) {
         closeQuest();
       } else if (event.key === "Escape" && document.querySelector("#pitchScene").classList.contains("show")) {
         closePitch();

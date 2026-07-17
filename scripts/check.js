@@ -84,6 +84,21 @@ function main() {
     'ปิดไฟ',
     'ประหยัดน้ำ',
     "ผู้พิทักษ์ Laudato Si'",
+    '/assets/main-menu-school.jpg',
+    'START GAME',
+    'ลงทะเบียนนักเรียน',
+    'ชื่อ',
+    'ชั้น',
+    'เลขที่',
+    'ยืนยัน',
+    '/assets/student-preview.jpg',
+    '/assets/healed-world.jpg',
+    'ภารกิจสำเร็จ',
+    'คะแนนรวม: <strong>250</strong>',
+    'Guardian of Our Common Home',
+    '(ผู้พิทักษ์บ้านส่วนรวม)',
+    'ดูเกียรติบัตร',
+    'เล่นอีกครั้ง',
     'Score:'
   ];
   requiredIndexText.forEach((text) => {
@@ -107,6 +122,10 @@ function main() {
   assert(fs.existsSync('assets/og-pitch-stage.jpg'), 'assets/og-pitch-stage.jpg: missing');
   assert(fs.existsSync('assets/community-gate.jpg'), 'assets/community-gate.jpg: missing');
   assert(fs.existsSync('assets/og-community-gate.jpg'), 'assets/og-community-gate.jpg: missing');
+  assert(fs.existsSync('assets/main-menu-school.jpg'), 'assets/main-menu-school.jpg: missing');
+  assert(fs.existsSync('assets/student-preview.jpg'), 'assets/student-preview.jpg: missing');
+  assert(fs.existsSync('assets/healed-world.jpg'), 'assets/healed-world.jpg: missing');
+  assert(fs.existsSync('assets/og-main-menu.jpg'), 'assets/og-main-menu.jpg: missing');
 
   console.log(`OK: index scripts=${indexScripts}, teacher scripts=${teacherScripts}, zones=${zoneIds.length}`);
 }
