@@ -97,6 +97,8 @@ function main() {
     'คะแนนรวม: <strong>250</strong>',
     'Guardian of Our Common Home',
     '(ผู้พิทักษ์บ้านส่วนรวม)',
+    'บันทึกผลให้ครู',
+    'fetch("/api/submissions"',
     'ดูเกียรติบัตร',
     'เล่นอีกครั้ง',
     'Score:'

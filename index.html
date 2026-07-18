@@ -1496,7 +1496,7 @@
     .ending-medal:nth-child(6) .ending-medal-icon { background: linear-gradient(145deg, #8b70c9, #55418c); }
     .ending-medal-icon svg { width: 39px; height: 39px; fill: none; stroke: currentColor; stroke-width: 1.7; }
 
-    .ending-actions { display: flex; justify-content: center; gap: 18px; }
+    .ending-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
     .ending-action {
       min-width: 250px;
       min-height: 60px;
@@ -1511,6 +1511,11 @@
       cursor: pointer;
     }
     .ending-action.secondary { background: linear-gradient(180deg, #53b967, #228b43); box-shadow: 0 0 0 3px rgba(54,142,69,.35), 0 10px 21px rgba(11,98,48,.2); }
+    .ending-action.save { background: linear-gradient(180deg, #e8a832, #bd7113); box-shadow: 0 0 0 3px rgba(191,119,24,.35), 0 10px 21px rgba(111,62,7,.2); }
+    .ending-action[disabled] { cursor: not-allowed; opacity: .72; transform: none; }
+    .ending-save-status { width: 100%; min-height: 23px; margin: -6px 0 0; color: #3c5c48; font-size: 14px; font-weight: 800; }
+    .ending-save-status.success { color: #15713a; }
+    .ending-save-status.error { color: #a3402f; }
 
     .certificate-modal {
       position: fixed;
@@ -1576,7 +1581,8 @@
       .ending-medal-icon { width: 51px; height: 51px; border-width: 4px; }
       .ending-medal-icon svg { width: 27px; height: 27px; }
       .ending-actions { gap: 10px; }
-      .ending-action { min-width: 0; flex: 1; min-height: 50px; padding: 0 12px; border-radius: 14px; font-size: 15px; }
+      .ending-action { min-width: 0; flex: 1 1 135px; min-height: 50px; padding: 0 12px; border-radius: 14px; font-size: 15px; }
+      .ending-save-status { font-size: 12px; }
       .certificate-card { padding: 42px 20px 32px; }
       .certificate-card p { font-size: 15px; }
     }
@@ -1666,8 +1672,10 @@
         <div class="ending-medal"><span class="ending-medal-icon"><svg><use href="#i-shield-globe"></use></svg></span><span>ผู้พิทักษ์ Laudato Si'</span></div>
       </div>
       <div class="ending-actions">
+        <button class="ending-action save" id="saveResultButton" type="button">บันทึกผลให้ครู</button>
         <button class="ending-action" id="certificateButton" type="button">ดูเกียรติบัตร</button>
         <button class="ending-action secondary" id="playAgainButton" type="button">เล่นอีกครั้ง</button>
+        <p class="ending-save-status" id="endingSaveStatus" role="status" aria-live="polite">บันทึกผลเพื่อให้ครูดูคะแนนและดาวน์โหลดรายงานได้</p>
       </div>
     </article>
   </section>
@@ -2097,10 +2105,12 @@
           questCommitted: Boolean(saved.questCommitted),
           playerName: typeof saved.playerName === "string" ? saved.playerName : "",
           playerClass: typeof saved.playerClass === "string" ? saved.playerClass : "",
-          playerNumber: typeof saved.playerNumber === "string" ? saved.playerNumber : ""
+          playerNumber: typeof saved.playerNumber === "string" ? saved.playerNumber : "",
+          resultSubmitted: Boolean(saved.resultSubmitted),
+          resultSubmissionId: typeof saved.resultSubmissionId === "string" ? saved.resultSubmissionId : ""
         };
       } catch (error) {
-        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [], gardenScore: 110, gardenIdea: "", gardenActions: [], gardenSubmitted: false, creatorScore: 160, creatorDraft: { title: "", problem: "", solution: "", campaign: "", laudato: "" }, creatorLaunched: false, pitchScore: 200, pitchDraft: { problem: "", cause: "", solution: "", result: "", realUse: "" }, pitchPresented: false, questScore: 250, questPromise: "", questActions: [], questCommitted: false, playerName: "", playerClass: "", playerNumber: "" };
+        return { points: 1250, completed: ["school", "canteen"], classroomScore: 20, resolvedIssues: [], cafeteriaScore: 60, resolvedCafeteriaIssues: [], gardenScore: 110, gardenIdea: "", gardenActions: [], gardenSubmitted: false, creatorScore: 160, creatorDraft: { title: "", problem: "", solution: "", campaign: "", laudato: "" }, creatorLaunched: false, pitchScore: 200, pitchDraft: { problem: "", cause: "", solution: "", result: "", realUse: "" }, pitchPresented: false, questScore: 250, questPromise: "", questActions: [], questCommitted: false, playerName: "", playerClass: "", playerNumber: "", resultSubmitted: false, resultSubmissionId: "" };
       }
     }
 
@@ -2147,8 +2157,84 @@
       document.querySelector("#certificateClass").textContent = state.playerClass && state.playerNumber
         ? `ชั้น ${state.playerClass} เลขที่ ${state.playerNumber}`
         : "ชั้น — เลขที่ —";
+      renderResultSubmissionState();
       setScreen("endingScreen");
-      requestAnimationFrame(() => document.querySelector("#certificateButton").focus());
+      requestAnimationFrame(() => (state.resultSubmitted ? document.querySelector("#certificateButton") : document.querySelector("#saveResultButton")).focus());
+    }
+
+    function resultPayload() {
+      return {
+        player: {
+          name: state.playerName,
+          room: state.playerClass,
+          number: state.playerNumber,
+          alias: "ผู้พิทักษ์บ้านส่วนรวม"
+        },
+        score: 250,
+        maxScore: 250,
+        level: "Guardian of Our Common Home",
+        completed: ["Wake Up Call", "Eco Detective", "Mission Possible", "Create & Launch", "Pitch for the Planet", "Real Life Quest"],
+        medals: ["Wake Up", "Eco Detective", "นักออกแบบโลกใหม่", "Creator", "Voice of Our Common Home", "ผู้พิทักษ์ Laudato Si'"],
+        responsibility: 10,
+        creativity: 10,
+        missionScores: {
+          wake: 20,
+          detective: 60,
+          solution: 110,
+          create: 160,
+          pitch: 200,
+          real: 250
+        },
+        answers: {
+          wake: { resolved: state.resolvedIssues },
+          detective: { resolved: state.resolvedCafeteriaIssues },
+          solution: { actions: state.gardenActions, idea: state.gardenIdea },
+          create: state.creatorDraft,
+          pitch: state.pitchDraft,
+          real: { actions: state.questActions, promise: state.questPromise }
+        },
+        reportText: `${state.playerName} ${state.playerClass}/${state.playerNumber} — ${state.questPromise}`
+      };
+    }
+
+    function renderResultSubmissionState() {
+      const button = document.querySelector("#saveResultButton");
+      const status = document.querySelector("#endingSaveStatus");
+      button.disabled = state.resultSubmitted;
+      button.textContent = state.resultSubmitted ? "บันทึกผลแล้ว ✓" : "บันทึกผลให้ครู";
+      status.className = `ending-save-status${state.resultSubmitted ? " success" : ""}`;
+      status.textContent = state.resultSubmitted
+        ? "บันทึกผลเรียบร้อยแล้ว ครูสามารถดูคะแนนและดาวน์โหลด CSV ได้"
+        : "บันทึกผลเพื่อให้ครูดูคะแนนและดาวน์โหลดรายงานได้";
+    }
+
+    async function submitResult() {
+      if (state.resultSubmitted) return;
+      const button = document.querySelector("#saveResultButton");
+      const status = document.querySelector("#endingSaveStatus");
+      button.disabled = true;
+      button.textContent = "กำลังบันทึก...";
+      status.className = "ending-save-status";
+      status.textContent = "กำลังส่งผลคะแนนเข้าสู่ฐานข้อมูล";
+      try {
+        const response = await fetch("/api/submissions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(resultPayload())
+        });
+        const data = await response.json();
+        if (!response.ok || !data.ok) throw new Error(data.message || `HTTP ${response.status}`);
+        state.resultSubmitted = true;
+        state.resultSubmissionId = String(data.submission?.id || "");
+        saveState();
+        renderResultSubmissionState();
+        showToast("บันทึกผลคะแนนให้ครูเรียบร้อยแล้ว");
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "ลองบันทึกอีกครั้ง";
+        status.className = "ending-save-status error";
+        status.textContent = `บันทึกไม่สำเร็จ: ${String(error.message || error)}`;
+      }
     }
 
     function toggleCertificate(show) {
@@ -2773,6 +2859,7 @@
     document.querySelector("#startGameButton").addEventListener("click", openRegistration);
     document.querySelector("#registrationForm").addEventListener("submit", submitRegistration);
     document.querySelector("#certificateButton").addEventListener("click", () => toggleCertificate(true));
+    document.querySelector("#saveResultButton").addEventListener("click", submitResult);
     document.querySelector("#certificateClose").addEventListener("click", () => toggleCertificate(false));
     document.querySelector("#certificateModal").addEventListener("click", (event) => {
       if (event.target.id === "certificateModal") toggleCertificate(false);
