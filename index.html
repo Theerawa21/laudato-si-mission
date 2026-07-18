@@ -81,6 +81,39 @@
         linear-gradient(180deg, rgba(7, 55, 31, .05), transparent 30%, rgba(7, 41, 25, .16));
     }
 
+    .map-player-character {
+      position: fixed;
+      z-index: 7;
+      left: 48%;
+      bottom: 92px;
+      width: clamp(145px, 14vw, 245px);
+      aspect-ratio: 941 / 1672;
+      pointer-events: none;
+      transform: translateX(-50%);
+      filter: drop-shadow(0 18px 13px rgba(8, 45, 25, .32));
+      animation: character-breathe 4s ease-in-out infinite;
+    }
+
+    .map-player-character::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      left: 22%;
+      right: 20%;
+      bottom: 1.5%;
+      height: 5.5%;
+      border-radius: 50%;
+      background: rgba(13, 52, 30, .32);
+      filter: blur(7px);
+    }
+
+    .map-player-character img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
     .brand-card {
       position: fixed;
       z-index: 20;
@@ -220,12 +253,12 @@
     .avatar {
       width: 42px;
       height: 42px;
-      display: grid;
-      place-items: center;
+      display: block;
+      overflow: hidden;
       border-radius: 14px;
-      color: #fff;
-      font-weight: 900;
-      background: linear-gradient(145deg, #68b8d7, #277da1);
+      border: 2px solid rgba(255,255,255,.95);
+      background: #dff3ff url("/assets/female-student.png") 50% 6% / 165% auto no-repeat;
+      box-shadow: inset 0 0 0 1px rgba(16,91,57,.13);
     }
 
     .player-copy strong, .player-copy small { display: block; }
@@ -1082,6 +1115,7 @@
     @media (max-width: 900px) {
       :root { --rail: 0px; }
       .world { inset: 0 0 80px; background-position: 48% center; }
+      .map-player-character { left: 46%; bottom: 145px; width: clamp(120px, 22vw, 180px); }
       .brand-card { top: 12px; left: 12px; width: 166px; padding: 12px; border-radius: 18px; }
       .brand-card h1 { font-size: 17px; }
       .brand-card p { display: none; }
@@ -1138,6 +1172,7 @@
 
     @media (max-width: 560px) {
       .world { background-position: 51% center; }
+      .map-player-character { left: 43%; bottom: 140px; width: 112px; opacity: .96; }
       .mission-teaser { top: 72px; left: 12px; right: 12px; width: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
       .mission-teaser .eyeline { margin: 0 0 2px; }
       .mission-teaser h2 { font-size: 13px; }
@@ -1404,15 +1439,27 @@
     }
 
     .registration-preview {
+      position: relative;
       height: 390px;
       min-height: 0;
       overflow: hidden;
       border-left: 2px solid rgba(113,171,203,.42);
       border-radius: 0 24px 24px 0;
-      background: linear-gradient(145deg, rgba(222,245,255,.84), rgba(255,255,255,.65));
+      background:
+        radial-gradient(ellipse at 50% 92%, rgba(79,139,69,.34) 0 18%, transparent 19%),
+        linear-gradient(145deg, rgba(222,245,255,.84), rgba(255,255,255,.65));
     }
 
-    .registration-preview img { width: 100%; height: 100%; display: block; object-fit: contain; object-position: center; }
+    .registration-preview img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      object-position: center;
+      filter: drop-shadow(0 14px 12px rgba(30,79,48,.24));
+    }
 
     .ending-screen {
       z-index: 82;
@@ -1550,6 +1597,10 @@
     @keyframes start-rise { from { opacity: 0; transform: translateY(24px) scale(.97); } }
     @keyframes panel-pop { from { opacity: 0; transform: translateY(18px) scale(.97); } }
     @keyframes button-glow { 50% { box-shadow: 0 0 0 7px rgba(77,235,219,.48), 0 0 43px rgba(71,255,229,.9), inset 0 3px 0 rgba(255,255,255,.5), 0 16px 28px rgba(4,62,45,.35); } }
+    @keyframes character-breathe {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-5px); }
+    }
 
     @media (max-width: 700px) {
       .screen-layer { padding: 16px; }
@@ -1647,7 +1698,7 @@
         <button class="registration-submit" type="submit">ยืนยัน</button>
       </form>
       <div class="registration-preview" aria-label="ตัวอย่างตัวละครนักเรียนมัธยมปลาย">
-        <img src="/assets/student-preview.jpg" alt="ตัวละครนักเรียนมัธยมปลายในชุดนักเรียน ยืนบนแท่นสวนสีเขียว">
+        <img src="/assets/female-student.png" alt="ตัวละครนักเรียนหญิงมัธยมปลายในชุดนักเรียน สะพายกระเป๋ารักษ์โลกสีเขียว">
       </div>
     </div>
   </section>
@@ -1694,6 +1745,9 @@
 
   <main class="game-shell">
     <div class="world" aria-label="แผนที่โรงเรียนในมุมมองแบบ isometric"></div>
+    <div class="map-player-character" aria-label="ตัวละครผู้เล่น นักเรียนหญิงผู้พิทักษ์บ้านส่วนรวม">
+      <img src="/assets/female-student.png" alt="นักเรียนหญิงในชุดนักเรียนสะพายกระเป๋าสีเขียว">
+    </div>
 
     <header class="brand-card">
       <div class="brand-row">
@@ -1723,7 +1777,7 @@
     </nav>
 
     <section class="player-card" aria-label="ข้อมูลผู้เล่น">
-      <span class="avatar">ST</span>
+      <span class="avatar" aria-hidden="true"></span>
       <span class="player-copy"><strong>ผู้พิทักษ์รุ่นใหม่</strong><small>ระดับ Green Explorer</small></span>
       <button class="sound-button" type="button" id="soundButton" aria-label="เปิดหรือปิดเสียง" aria-pressed="false"><span class="icon"><svg><use href="#i-volume"></use></svg></span></button>
     </section>

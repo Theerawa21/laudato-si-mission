@@ -91,7 +91,7 @@ function main() {
     'ชั้น',
     'เลขที่',
     'ยืนยัน',
-    '/assets/student-preview.jpg',
+    '/assets/female-student.png',
     '/assets/healed-world.jpg',
     'ภารกิจสำเร็จ',
     'คะแนนรวม: <strong>250</strong>',
@@ -125,7 +125,7 @@ function main() {
   assert(fs.existsSync('assets/community-gate.jpg'), 'assets/community-gate.jpg: missing');
   assert(fs.existsSync('assets/og-community-gate.jpg'), 'assets/og-community-gate.jpg: missing');
   assert(fs.existsSync('assets/main-menu-school.jpg'), 'assets/main-menu-school.jpg: missing');
-  assert(fs.existsSync('assets/student-preview.jpg'), 'assets/student-preview.jpg: missing');
+  assert(fs.existsSync('assets/female-student.png'), 'assets/female-student.png: missing');
   assert(fs.existsSync('assets/healed-world.jpg'), 'assets/healed-world.jpg: missing');
   assert(fs.existsSync('assets/og-main-menu.jpg'), 'assets/og-main-menu.jpg: missing');
 
